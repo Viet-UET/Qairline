@@ -1,0 +1,89 @@
+/* --- CSS CHO FOOTER --- */
+  .site-footer-main {
+    height: 424px;
+    background-color: #0e6552;
+    /* Đây là mấu chốt để tạo nền xanh */
+    color: #ffffff;
+    /* Đây là mấu chốt để đổi chữ thành màu trắng */
+    padding: 3rem 2rem;
+    margin-top: 2rem;
+    /* Khoảng cách với nội dung bên trên */
+  }
+
+  .footer-content {
+    max-width: 1200px;
+    background-color: #0e6552;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .footer-logo-links {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+  }
+
+  .footer-logo {
+    width: 250px;
+    height: auto;
+  }
+
+  .footer-links {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    /* 2 cột */
+    gap: 1rem 2rem;
+    /* Khoảng cách hàng và cột */
+    max-width: 500px;
+    /* Giới hạn chiều rộng của lưới links */
+  }
+
+  .footer-links a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1rem;
+  }
+
+  .footer-links a:hover {
+    text-decoration: underline;
+  }
+
+  .footer-legal {
+    border-top: 1px solid #4a8a7a;
+    /* Đường kẻ mờ */
+    padding-top: 2rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #c0dcd7;
+    /* Màu chữ nhạt hơn */
+  }
+
+  .footer-legal p {
+    margin: 0.5rem 0;
+    color: #c0dcd7;
+    /* Ghi đè màu chữ <p> mặc định */
+  }
+
+  /* --- CSS responsive cho 2 phần mới --- */
+  @media (max-width: 768px) {
+    .suggestions-grid {
+      flex-direction: column;
+      /* Xếp thẻ theo cột */
+    }
+
+    .footer-logo-links {
+      flex-direction: column;
+      /* Xếp logo trên links */
+      align-items: center;
+      text-align: center;
+    }
+
+    .footer-links {
+      grid-template-columns: 1fr;
+      /* 1 cột */
+      text-align: center;
+    }
+  }

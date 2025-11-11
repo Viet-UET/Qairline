@@ -7,12 +7,6 @@ body {
   color: #0e6552;
 }
 
-.logo-image {
-  width: 200px;
-  margin-left: 81px;
-  margin-top: 30px;
-}
-
 .header-image {
   width: 901px;
   margin-top: 1rem;
@@ -31,13 +25,13 @@ body {
 }
 
 h1 {
-  font-size: 64px;
+  margin-top: 500px;
+  font-size: 80px;
   font-weight: bold;
-  font-stretch: normal;
-  font-style: normal;
-  line-height: normal;
+
   letter-spacing: normal;
   text-align: center;
+
 }
 
 h2 {
@@ -68,161 +62,18 @@ a {
   color: inherit;
 }
 
-/* --- Header --- */
-.site-header {
-  color: #0e6552;
-  font-size: 24px;
-  padding: 1rem 2rem;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  position: fixed;
-  /* Giữ header cố định */
-  top: 0;
-  left: 0;
-  width: 100%;
-  background-color: #f9f9f9;
-  /* Thêm nền trắng để không bị trong suốt khi cuộn */
-  z-index: 1000;
-  /* Đảm bảo header luôn ở trên cùng */
-  box-sizing: border-box;
-  /* Đảm bảo padding không làm vỡ layout */
-}
 
-.active {
-  font-weight: bold;
-
-  text-decoration: underline;
-}
-
-.main-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.main-nav .logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-.main-nav ul {
-  list-style: none;
-  display: flex;
-  margin: 0;
-  padding: 0;
-}
-
-.main-nav li {
-  margin-left: 1.5rem;
-}
-
-.main-nav a:hover {
-  text-decoration: underline;
-}
 
 .button {
-  align-items: center;
+  padding: 1.5rem 2.5rem;
   display: flex;
   justify-content: center;
   margin-top: 1rem;
 }
 
-.book-now-button {
-  width: 401px;
-  height: 54px;
-  background-color: #529246;
-  color: #fff;
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 11px;
-  cursor: pointer;
-  font-size: 1rem;
-}
 
-.user-actions {
-  display: flex;
-  flex-direction: column;
-  /* Xếp ngôn ngữ ở trên, nút ở dưới */
-  align-items: flex-end;
-  /* Căn tất cả sang phải */
-}
 
-.language-selector {
-  font-size: 16px;
-  /* Kích thước nhỏ hơn */
-  font-weight: bold;
-  color: #0e6552;
-  margin-bottom: 8px;
-  /* Khoảng cách với các nút bên dưới */
-}
 
-.auth-links {
-  display: flex;
-  gap: 10px;
-  /* Khoảng cách giữa 2 nút */
-}
-
-/* Kiểu CHUNG cho cả 2 nút */
-.login-btn,
-.register-btn {
-  display: inline-block;
-  padding: 8px 24px;
-  font-size: 16px;
-  font-weight: bold;
-  border-radius: 50px;
-  /* Bo tròn hoàn toàn */
-  text-align: center;
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
-  /* Đặt border 2px trong suốt để giữ kích thước */
-}
-
-/* Kiểu RIÊNG cho nút Đăng nhập */
-.login-btn {
-  background-color: #fff;
-  color: #0e6552;
-  border-color: #0e6552;
-  /* Màu viền xanh */
-}
-
-.login-btn:hover {
-  background-color: #f0f0f0;
-}
-
-/* Kiểu RIÊNG cho nút Đăng ký */
-.register-btn {
-  background-color: #529246;
-  /* Màu xanh lá cây từ nút 'book-now-button' của bạn */
-  color: #fff;
-  border-color: #529246;
-}
-
-.register-btn:hover {
-  background-color: #4a833f;
-  /* Màu xanh đậm hơn khi hover */
-}
-
-/* --- Nội dung bài viết --- */
-main {
-  display: flex;
-  justify-content: center;
-  padding-top: 120px;
-}
-
-.article-container h1 {
-  font-size: 2.5rem;
-  text-align: center;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.article-container .subtitle {
-  font-size: 1.2rem;
-  text-align: center;
-  color: #666;
-  margin-bottom: 2rem;
-}
 
 /* --- Lưới ảnh --- */
 .image-grid {
@@ -264,201 +115,6 @@ main {
     margin-left: 0;
   }
 
-  /* --- CSS CHO PHẦN "CÓ THỂ BẠN QUAN TÂM" --- */
-
-  /* Container chính cho phần gợi ý */
-  .suggestions-section {
-    max-width: 900px;
-    /* Giống với .article-container để căn thẳng hàng */
-    margin: 2rem auto;
-    /* Tự động căn giữa và tạo khoảng cách */
-    padding: 1.5rem 2.5rem;
-    /* Giống với .article-container */
-    background-color: #ffffff;
-    /* Nền trắng */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    box-sizing: border-box;
-  }
-
-  .suggestions-title {
-    font-size: 28px;
-    font-weight: bold;
-    color: #0e6552;
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-
-  .suggestions-grid {
-    display: flex;
-    /* Đây là mấu chốt để tạo lưới 3 cột */
-    justify-content: space-between;
-    gap: 1.5rem;
-    /* Khoảng cách giữa các thẻ */
-  }
-
-  /* Từng thẻ gợi ý */
-  .suggestion-card {
-    flex: 1;
-    /* Cả 3 thẻ co dãn bằng nhau */
-    min-width: 0;
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    overflow: hidden;
-    /* Để bo góc cho ảnh */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .suggestion-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-  }
-
-  .suggestion-image {
-    width: 100%;
-    height: 180px;
-    /* Đặt chiều cao cố định cho ảnh */
-    object-fit: cover;
-    /* Đảm bảo ảnh lấp đầy mà không bị méo */
-  }
-
-  .suggestion-content {
-    padding: 1rem;
-  }
-
-  .suggestion-title-card {
-    /* Đổi tên để không xung đột với .suggestions-title */
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #333;
-    /* Màu chữ tiêu đề thẻ */
-    margin: 0 0 0.25rem 0;
-  }
-
-  .suggestion-location {
-    font-size: 0.9rem;
-    color: #666;
-    margin-bottom: 0.75rem;
-  }
-
-  .suggestion-tags {
-    margin-bottom: 0.75rem;
-  }
-
-  .tag {
-    font-size: 0.8rem;
-    font-weight: bold;
-    background-color: #fff1e0;
-    /* Màu nền vàng nhạt */
-    color: #d97706;
-    /* Màu chữ cam đậm */
-    padding: 4px 8px;
-    border-radius: 20px;
-    margin-right: 5px;
-  }
-
-  .suggestion-rating {
-    display: flex;
-    align-items: center;
-    font-size: 0.9rem;
-    color: #333;
-  }
-
-  .star-icon {
-    color: #f59e0b;
-    /* Màu vàng */
-    margin-right: 4px;
-  }
-
-  /* --- CSS CHO FOOTER --- */
-  .site-footer-main {
-    height: 424px;
-    background-color: #0e6552;
-    /* Đây là mấu chốt để tạo nền xanh */
-    color: #ffffff;
-    /* Đây là mấu chốt để đổi chữ thành màu trắng */
-    padding: 3rem 2rem;
-    margin-top: 2rem;
-    /* Khoảng cách với nội dung bên trên */
-  }
-
-  .footer-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  }
-
-  .footer-logo-links {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 2rem;
-  }
-
-  .footer-logo {
-    width: 200px;
-    height: auto;
-    /* Thêm filter để logo màu trắng nếu cần */
-    /* filter: brightness(0) invert(1); */
-  }
-
-  .footer-links {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    /* 2 cột */
-    gap: 1rem 2rem;
-    /* Khoảng cách hàng và cột */
-    max-width: 500px;
-    /* Giới hạn chiều rộng của lưới links */
-  }
-
-  .footer-links a {
-    color: #ffffff;
-    text-decoration: none;
-    font-size: 1rem;
-  }
-
-  .footer-links a:hover {
-    text-decoration: underline;
-  }
-
-  .footer-legal {
-    border-top: 1px solid #4a8a7a;
-    /* Đường kẻ mờ */
-    padding-top: 2rem;
-    font-size: 0.8rem;
-    line-height: 1.5;
-    color: #c0dcd7;
-    /* Màu chữ nhạt hơn */
-  }
-
-  .footer-legal p {
-    margin: 0.5rem 0;
-    color: #c0dcd7;
-    /* Ghi đè màu chữ <p> mặc định */
-  }
-
-  /* --- CSS responsive cho 2 phần mới --- */
-  @media (max-width: 768px) {
-    .suggestions-grid {
-      flex-direction: column;
-      /* Xếp thẻ theo cột */
-    }
-
-    .footer-logo-links {
-      flex-direction: column;
-      /* Xếp logo trên links */
-      align-items: center;
-      text-align: center;
-    }
-
-    .footer-links {
-      grid-template-columns: 1fr;
-      /* 1 cột */
-      text-align: center;
-    }
-  }
+  
+  
 }

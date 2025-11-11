@@ -1,0 +1,120 @@
+/* --- Header --- */
+.site-header {
+  color: #0e6552;
+  font-size: 24px;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  /* Giữ header cố định */
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #f9f9f9;
+  /* Thêm nền trắng để không bị trong suốt khi cuộn */
+  z-index: 1000;
+  /* Đảm bảo header luôn ở trên cùng */
+  box-sizing: border-box;
+  /* Đảm bảo padding không làm vỡ layout */
+}
+.logo-image {
+  width: 200px;
+  margin-left: 81px;
+  margin-top: 30px;
+}
+
+
+
+.active {
+  font-weight: bold;
+
+  text-decoration: underline;
+}
+
+.main-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.main-nav .logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.main-nav ul {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.main-nav li {
+  margin-left: 1.5rem;
+}
+
+.main-nav a:hover {
+  text-decoration: underline;
+}
+.user-actions {
+  display: flex;
+  flex-direction: column;
+  /* Xếp ngôn ngữ ở trên, nút ở dưới */
+  align-items: flex-end;
+  /* Căn tất cả sang phải */
+}
+
+.language-selector {
+  font-size: 16px;
+  /* Kích thước nhỏ hơn */
+  font-weight: bold;
+  color: #0e6552;
+  margin-bottom: 8px;
+  /* Khoảng cách với các nút bên dưới */
+}
+
+.auth-links {
+  display: flex;
+  gap: 10px;
+  /* Khoảng cách giữa 2 nút */
+}
+
+/* Kiểu CHUNG cho cả 2 nút */
+.login-btn,
+.register-btn {
+  display: inline-block;
+  padding: 8px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 50px;
+  /* Bo tròn hoàn toàn */
+  text-align: center;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  /* Đặt border 2px trong suốt để giữ kích thước */
+}
+
+/* Kiểu RIÊNG cho nút Đăng nhập */
+.login-btn {
+  background-color: #fff;
+  color: #0e6552;
+  border-color: #0e6552;
+  /* Màu viền xanh */
+}
+
+.login-btn:hover {
+  background-color: #f0f0f0;
+}
+
+/* Kiểu RIÊNG cho nút Đăng ký */
+.register-btn {
+  background-color: #529246;
+  color: #fff;
+  border-color: #529246;
+}
+
+.register-btn:hover {
+  background-color: #0E6552;
+  /* Màu xanh đậm hơn khi hover */
+}

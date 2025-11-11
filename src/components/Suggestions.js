@@ -1,10 +1,14 @@
 import React from 'react';
+import styles from './Suggestions.module.css';
+import angkorWatImg from '../Assets/angko_wat.png';
+import milanImg from '../Assets/milan.png';
+import louvreImg from '../Assets/lourve.png';
 
 // Bạn có thể đặt dữ liệu này ở ngoài hoặc trong component
 const suggestionsData = [
   {
     id: 1,
-    image: '/Assets/angkor-wat.png', // Thay bằng đường dẫn ảnh của bạn
+    image: angkorWatImg,
     title: 'Angkor Wat',
     location: 'Xiêm Riệp, Campuchia',
     tags: ['Tâm linh', 'Kiến trúc'],
@@ -13,7 +17,7 @@ const suggestionsData = [
   },
   {
     id: 2,
-    image: '/Assets/milan.png', // Thay bằng đường dẫn ảnh của bạn
+    image: milanImg,
     title: 'Thánh đường Milan',
     location: 'Lombardy, Ý',
     tags: ['Tâm linh', 'Kiến trúc'],
@@ -22,7 +26,7 @@ const suggestionsData = [
   },
   {
     id: 3,
-    image: '/Assets/louvre.png', // Thay bằng đường dẫn ảnh của bạn
+    image: louvreImg,
     title: 'Bảo tàng Louvre',
     location: 'Paris, Pháp',
     tags: ['Văn hóa', 'Kiến trúc'],
@@ -33,23 +37,23 @@ const suggestionsData = [
 
 function Suggestions() {
   return (
-    <section className="suggestions-section">
-      <h2 className="suggestions-title">Có thể bạn quan tâm:</h2>
-      <div className="suggestions-grid">
+    <section className={styles['suggestions-section']}>
+      <h2 className={styles['suggestions-title']}>Có thể bạn quan tâm:</h2>
+      <div className={styles['suggestions-grid']}>
         {/* Dùng .map() để tự động tạo 3 thẻ */}
         {suggestionsData.map((item) => (
-          <div className="suggestion-card" key={item.id}>
-            <img src={item.image} alt={item.title} className="suggestion-image" />
-            <div className="suggestion-content">
-              <h3 className="suggestion-title-card">{item.title}</h3>
-              <p className="suggestion-location">{item.location}</p>
-              <div className="suggestion-tags">
+          <div className={styles['suggestion-card']} key={item.id}>
+            <img src={item.image} alt={item.title} className={styles['suggestion-image']} />
+            <div className={styles['suggestion-content']}>
+              <h3 className={styles['suggestion-title-card']}>{item.title}</h3>
+              <p className={styles['suggestion-location']}>{item.location}</p>
+              <div className={styles['suggestion-tags']}>
                 {item.tags.map((tag) => (
-                  <span className="tag" key={tag}>{tag}</span>
+                  <span className={styles['tag']} key={tag}>{tag}</span>
                 ))}
               </div>
-              <div className="suggestion-rating">
-                <span className="star-icon">⭐</span> {/* Sử dụng emoji sao */}
+              <div className={styles['suggestion-rating']}>
+                <span className="styles.star-icon">⭐</span> {/* Sử dụng emoji sao */}
                 <span>{item.rating} {item.ratingCount}</span>
               </div>
             </div>

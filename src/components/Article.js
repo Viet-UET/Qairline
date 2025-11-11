@@ -6,13 +6,13 @@ import img4 from '../Assets/sagrada_familia_4.png';
 import img5 from '../Assets/sagrada_familia_5.png';
 import img6 from '../Assets/sagrada_familia_6.png';
 import img7 from '../Assets/sagrada_familia_7.png';
-
+import styles from './Article.module.css';
 function Article() {
     return (
         <main>
-            <article className="article-container">
-                <h1>Sagrada Familia:</h1>
-                <h1>Kiệt tác vĩnh cửu giữa lòng Barcelona</h1>
+            <article className={styles['article-container']}>
+                <h1>Sagrada Familia:<br />
+                    Kiệt tác vĩnh cửu giữa lòng Barcelona</h1>
                 <p>
                     Giữa những con phố rộn rã của Barcelona, một công trình kiến trúc phi
                     thường đang vươn cao như một bản giao hưởng bằng đá được chơi suốt hơn
@@ -224,12 +224,15 @@ function Article() {
                 <h3>Ăn uống gần đó</h3>
                 <p>
                     Tránh các nhà hàng bẫy khách du lịch ngay xung quanh Sagrada Familia.
-                    Một số gợi ý tốt cách đi bộ 2-10 phút:
                 </p>
                 <h3>Điểm tham quan gần đó</h3>
                 <p>
                     Sau khi tham quan Sagrada Familia, bạn có thể khám phá các điểm tham
-                    quan nổi tiếng khác trong khu vực như
+                    quan nổi tiếng khác trong khu vực như Công viên Güell, Casa Milà
+                    (La Pedrera), Casa Batlló, và Passeig de Gràcia - đại lộ mua sắm sang
+                    trọng với nhiều cửa hàng thiết kế và kiến trúc hiện đại. Tất cả đều
+                    nằm trong khoảng cách đi bộ hoặc một chuyến tàu điện ngầm ngắn từ Sagrada
+                    Familia.
                 </p>
                 <img
                     src={img6}
@@ -257,8 +260,8 @@ function Article() {
                     Bạn có hứng thú với một chuyến du lịch trải nghiệm tại Sagrada Familia
                     không? Hãy nhanh tay đặt vé nhé!
                 </h2>
-                <div className="button">
-                    <button className="book-now-button">Đến trang đặt vé</button>
+                <div className={styles['button']}>
+                    <button className={styles['book-now-button']}>Đến trang đặt vé</button>
                 </div>
                 <img
                     src={img7}

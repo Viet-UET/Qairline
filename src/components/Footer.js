@@ -1,14 +1,14 @@
 import React from 'react';
 import logo from '../Assets/white-logo.png';
+import styles from './Footer.module.css';
 
 function Footer() {
   return (
-    <footer className="site-footer-main">
-      <div className="footer-content">
-        <div className="footer-logo-links">
-          {/* Đảm bảo logo này nhìn rõ trên nền xanh */}
-          <img src={logo} alt="QAirlineLogo" className="footer-logo" />
-          <div className="footer-links">
+    <footer className={styles['site-footer-main']}>
+      <div className={styles['footer-content']}>
+        <div className={styles['footer-logo-links']}>
+          <img src={logo} alt="QAirlineLogo" className={styles['footer-logo']} />
+          <div className={styles['footer-links']}>
             <a href="#">Liên hệ</a>
             <a href="#">Về chúng tôi</a>
             <a href="#">Cam kết với khách hàng</a>
@@ -17,7 +17,7 @@ function Footer() {
             <a href="#">Bản đồ sân bay</a>
           </div>
         </div>
-        <div className="footer-legal">
+        <div className={styles['footer-legal']}>
           <p>© 2025 QAirline, Inc.</p>
           <p>Trường Đại học Công nghệ - ĐHQGHN, 144 Xuân Thủy, Cầu Giấy, Hà Nội.</p>
           <p>Điện thoại: 0914181519 | Email: contact.qairline@gmail.com | Hotline: 1900 123 456</p>
