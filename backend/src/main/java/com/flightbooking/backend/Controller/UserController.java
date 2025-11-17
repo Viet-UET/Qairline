@@ -1,16 +1,22 @@
 package com.flightbooking.backend.Controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.flightbooking.backend.DTO.LoginRequestDTO;
 import com.flightbooking.backend.DTO.RegisterRequestDTO;
+import com.flightbooking.backend.Service.LoginService;
 import com.flightbooking.backend.Service.RegisterService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping
@@ -18,11 +24,27 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
     private final RegisterService registerService;
+    private final LoginService loginService;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody @Valid RegisterRequestDTO request) {
         registerService.register(request);
         return ResponseEntity.ok("Register success");
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequestDTO) {
+        try {
+            String jwt = loginService.Login(loginRequestDTO);
+            return ResponseEntity.ok(jwt);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sai tên đăng nhập hoặc mật khẩu");
+        }
+
+    }
+
+    // @GetMapping("/profile")
+    // public ResponseEntity<?> getProfile() {
+    // }
 
 }
