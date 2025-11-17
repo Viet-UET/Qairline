@@ -96,7 +96,7 @@ export default function Login() {
           {/* QUÊN MẬT KHẨU */}
           <a
             href="/forgot-password"
-            className="text-qa-green font-semibold underline text-[18px] hover:text-green-800"
+            className="text-qa-green font-semibold hover:underline text-[18px] hover:text-green-800"
           >
             Quý khách quên mật khẩu?
           </a>
@@ -127,15 +127,16 @@ export default function Login() {
 
 
           {/* CHƯA CÓ TÀI KHOẢN? */}
-          <p className="text-center text-gray-700 text-[18px]">
-            Quý khách chưa có tài khoản?{" "}
-            <a
-              href="/register"
-              className="text-qa-green font-semibold underline hover:text-green-800"
-            >
-              Tạo tài khoản
-            </a>
-          </p>
+<p className="text-center text-gray-700 text-[18px]">
+  Quý khách chưa có tài khoản?{" "}
+  <a
+    href="/register"
+    className="text-qa-green font-semibold hover:underline"
+  >
+    Tạo tài khoản
+  </a>
+</p>
+
 
 
           {/* TRANG CHỦ */}

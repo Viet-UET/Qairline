@@ -6,7 +6,7 @@ màn default là login, uncomment để test từng màn
 */ 
 
 
-import StepEmail from "./pages/Auth/Login/Login";
+// import StepEmail from "./pages/Auth/Login/Login";
 
 // import StepEmail from "./pages/Auth/Register/StepEmail";
 // import StepEmail from "./pages/Auth/Register/StepVerifyEmail";
@@ -15,6 +15,8 @@ import StepEmail from "./pages/Auth/Login/Login";
 // import StepEmail from "./pages/Auth/ForgotPassword/ForgotPassword";
 // import StepEmail from "./pages/Auth/ForgotPassword/VerifyEmail";
 // import StepEmail from "./pages/Auth/ForgotPassword/ResetPassword";
+
+import StepEmail from "./pages/Error/Error404";
 
 export default function App() {
   const [email, setEmail] = useState("");
