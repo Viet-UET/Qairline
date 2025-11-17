@@ -1,6 +1,6 @@
 import { useState } from "react";
 import logo from "../../../assets/logo.svg";
-import bg from "../../../assets/bg-beach.jpg"; 
+import bg from "../../../assets/bg-beach.webp";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -108,6 +108,23 @@ export default function Login() {
           >
             Đăng nhập
           </button>
+
+          {/* ĐĂNG NHẬP BẰNG GOOGLE */}
+          <div className="relative w-[451px]">
+            <button
+              type="button"
+              onClick={() => alert("Google Login (demo)")}
+              className="w-full h-[54px] border border-gray-300 bg-white text-gray-700 text-[20px] rounded-xl hover:bg-gray-100 transition flex items-center justify-center gap-3 font-medium"
+            >
+              <img
+                src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                alt="Google"
+                className="w-6 h-6"
+              />
+              Đăng nhập bằng Google
+            </button>
+          </div>
+
 
           {/* TẠO TÀI KHOẢN */}
           <p className="text-center text-gray-700 text-[20px]">
