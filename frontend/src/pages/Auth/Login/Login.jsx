@@ -126,16 +126,17 @@ export default function Login() {
           </div>
 
 
-          {/* TẠO TÀI KHOẢN */}
-          <p className="text-center text-gray-700 text-[20px]">
+          {/* CHƯA CÓ TÀI KHOẢN? */}
+          <p className="text-center text-gray-700 text-[18px]">
             Quý khách chưa có tài khoản?{" "}
+            <a
+              href="/register"
+              className="text-qa-green font-semibold underline hover:text-green-800"
+            >
+              Tạo tài khoản
+            </a>
           </p>
-          <a
-            href="/register"
-            className="w-[451px] h-[54px] bg-qa-green text-white text-[24px] rounded-xl hover:bg-green-700 transition font-semibold flex items-center justify-center"
-          >
-            Tạo tài khoản mới
-          </a>
+
 
           {/* TRANG CHỦ */}
           <a
