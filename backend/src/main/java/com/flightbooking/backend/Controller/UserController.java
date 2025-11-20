@@ -17,6 +17,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.security.access.prepost.PreAuthorize;
+
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping
@@ -43,8 +46,16 @@ public class UserController {
 
     }
 
-    // @GetMapping("/profile")
-    // public ResponseEntity<?> getProfile() {
-    // }
+    @GetMapping("/demo")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<String> demo() {
+        return ResponseEntity.ok("Hello! Bạn đã xác thực thành công.");
+    }
 
+    @GetMapping("/admin")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<String> admin() {
+        return ResponseEntity.ok("Hello Admin! Bạn có quyền truy cập endpoint này.");
+    }
 }
