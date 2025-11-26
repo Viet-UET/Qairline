@@ -1,5 +1,7 @@
 package com.flightbooking.backend.Service;
 
+import com.flightbooking.backend.DTO.LoginResponseDTO;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,11 +19,15 @@ public class LoginService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
-    public String Login(LoginRequestDTO loginRequestDTO) {
+    public LoginResponseDTO Login(LoginRequestDTO loginRequestDTO) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequestDTO.getUsername(), loginRequestDTO.getPassword()));
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return jwtService.generateToken(userDetails);
+
+        String token = jwtService.generateToken(userDetails);
+        String refreshToken = jwtService.generateRefreshToken(userDetails);
+
+        return new LoginResponseDTO(token,refreshToken);
     }
 
 }

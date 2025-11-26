@@ -1,5 +1,6 @@
 package com.flightbooking.backend.Controller;
 
+import com.flightbooking.backend.DTO.LoginResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -38,8 +39,7 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequestDTO) {
         try {
-            String jwt = loginService.Login(loginRequestDTO);
-            return ResponseEntity.ok(jwt);
+            return ResponseEntity.ok(loginService.Login(loginRequestDTO));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sai tên đăng nhập hoặc mật khẩu");
         }
