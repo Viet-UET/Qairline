@@ -2,8 +2,13 @@ package com.flightbooking.backend.Service;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 
+import com.flightbooking.backend.Model.RedisToken;
+import com.flightbooking.backend.Repository.RedisTokenRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -14,8 +19,10 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
+@RequiredArgsConstructor
 @Service
 public class JwtService {
+    private final RedisTokenRepository redisTokenRepository;
     @Value("${jwt.secret-key}")
     private String secretKey;
 
@@ -35,6 +42,7 @@ public class JwtService {
     private String createRefreshToken(String subject, String role) {
         return Jwts.builder()
                 .setSubject(subject)
+                .setId(UUID.randomUUID().toString())
                 .claim("role", role)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 2592000000L))
@@ -54,9 +62,11 @@ public class JwtService {
     private String createToken(String subject, String role) {
         return Jwts.builder()
                 .setSubject(subject)
+                .setId(java.util.UUID.randomUUID().toString())
                 .claim("role", role)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
+
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -68,6 +78,10 @@ public class JwtService {
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    public String extractJwtId(String token) {
+        return extractClaim(token, Claims::getId);
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -85,6 +99,13 @@ public class JwtService {
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
+        String jwtId = extractJwtId(token);
+        Optional<RedisToken> redisToken = redisTokenRepository.findById(jwtId);
+        if (redisToken.isPresent()) {
+            throw new RuntimeException("invalid token");
+        }
+
+
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
@@ -93,7 +114,11 @@ public class JwtService {
         return extractExpiration(token).before(new Date());
     }
 
-    private Date extractExpiration(String token) {
+    public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
+    }
+
+    public Date extractIssuedAt(String token) {
+        return extractClaim(token, Claims::getIssuedAt);
     }
 }

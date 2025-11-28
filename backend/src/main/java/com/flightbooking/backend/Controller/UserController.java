@@ -4,10 +4,7 @@ import com.flightbooking.backend.DTO.LoginResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.flightbooking.backend.DTO.LoginRequestDTO;
 import com.flightbooking.backend.DTO.RegisterRequestDTO;
@@ -16,8 +13,6 @@ import com.flightbooking.backend.Service.RegisterService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -44,6 +39,21 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Sai tên đăng nhập hoặc mật khẩu");
         }
 
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@RequestHeader("Authorization") String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Authorization header");
+        }
+
+        try {
+            String token = authHeader.substring(7);
+            loginService.Logout(token);
+            return ResponseEntity.ok("Logout success");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Logout failed");
+        }
     }
 
     @GetMapping("/demo")
