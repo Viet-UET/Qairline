@@ -1,6 +1,8 @@
 package com.flightbooking.backend.Controller;
 
 import com.flightbooking.backend.DTO.LoginResponseDTO;
+import com.flightbooking.backend.DTO.RefreshTokenRequestDTO;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -53,6 +55,24 @@ public class UserController {
             return ResponseEntity.ok("Logout success");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Logout failed");
+        }
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequestDTO request) {
+        if (request.getRefreshToken() == null || request.getRefreshToken().trim().isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Refresh token is required");
+        }
+
+        try {
+            LoginResponseDTO response = loginService.refreshToken(request.getRefreshToken());
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body("Invalid or expired refresh token");
         }
     }
 

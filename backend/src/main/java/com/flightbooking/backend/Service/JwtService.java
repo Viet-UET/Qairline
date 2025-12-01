@@ -7,7 +7,9 @@ import java.util.UUID;
 import java.util.function.Function;
 
 import com.flightbooking.backend.Model.RedisToken;
+import com.flightbooking.backend.Model.RefreshTokenInfo;
 import com.flightbooking.backend.Repository.RedisTokenRepository;
+import com.flightbooking.backend.Repository.RefreshTokenInfoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,6 +25,8 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtService {
     private final RedisTokenRepository redisTokenRepository;
+    private final RefreshTokenInfoRepository refreshTokenInfoRepository;
+
     @Value("${jwt.secret-key}")
     private String secretKey;
 
@@ -44,6 +48,7 @@ public class JwtService {
                 .setSubject(subject)
                 .setId(UUID.randomUUID().toString())
                 .claim("role", role)
+                .claim("type", "refresh")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 2592000000L))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
@@ -64,6 +69,7 @@ public class JwtService {
                 .setSubject(subject)
                 .setId(java.util.UUID.randomUUID().toString())
                 .claim("role", role)
+                .claim("type", "access")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
 
@@ -84,6 +90,10 @@ public class JwtService {
         return extractClaim(token, Claims::getId);
     }
 
+    public String extractTokenType(String token) {
+        return extractClaim(token, claims -> claims.get("type", String.class));
+    }
+
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
@@ -99,15 +109,46 @@ public class JwtService {
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
-        String jwtId = extractJwtId(token);
-        Optional<RedisToken> redisToken = redisTokenRepository.findById(jwtId);
-        if (redisToken.isPresent()) {
-            throw new RuntimeException("invalid token");
+        String tokenType = extractTokenType(token);
+        if (!"access".equals(tokenType)) {
+            return false;
         }
 
+        String jwtId = extractJwtId(token);
+        if (jwtId != null) {
+            Optional<RedisToken> redisToken = redisTokenRepository.findById(jwtId);
+            if (redisToken.isPresent()) {
+                throw new RuntimeException("invalid token");
+            }
+        }
 
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    }
+
+    public boolean isRefreshTokenValid(String refreshToken) {
+        try {
+            String tokenType = extractTokenType(refreshToken);
+            if (!"refresh".equals(tokenType)) {
+                return false;
+            }
+
+            if (isTokenExpired(refreshToken)) {
+                return false;
+            }
+
+            String jwtId = extractJwtId(refreshToken);
+            if (jwtId == null) {
+                return false;
+            }
+
+            Optional<RefreshTokenInfo> tokenInfo = refreshTokenInfoRepository.findById(jwtId);
+
+            return tokenInfo.isPresent();
+
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private boolean isTokenExpired(String token) {
