@@ -2,16 +2,20 @@ package com.flightbooking.backend.Controller;
 
 import com.flightbooking.backend.DTO.LoginResponseDTO;
 import com.flightbooking.backend.DTO.RefreshTokenRequestDTO;
+import com.flightbooking.backend.DTO.UserInfoDTO;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import com.flightbooking.backend.DTO.LoginRequestDTO;
 import com.flightbooking.backend.DTO.RegisterRequestDTO;
 import com.flightbooking.backend.Service.LoginService;
 import com.flightbooking.backend.Service.RegisterService;
+import com.flightbooking.backend.Service.UserService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +30,7 @@ public class UserController {
 
     private final RegisterService registerService;
     private final LoginService loginService;
+    private final UserService userService;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody @Valid RegisterRequestDTO request) {
@@ -87,5 +92,16 @@ public class UserController {
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<String> admin() {
         return ResponseEntity.ok("Hello Admin! Bạn có quyền truy cập endpoint này.");
+    }
+
+    @GetMapping("/me")
+    @SecurityRequirement(name = "bearerAuth")
+    public ResponseEntity<?> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            UserInfoDTO userInfo = userService.getUserInfo(userDetails.getUsername());
+            return ResponseEntity.ok(userInfo);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
     }
 }
