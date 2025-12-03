@@ -1,3 +1,6 @@
+# Copy this file to application.properties and fill in your actual values
+# DO NOT commit application.properties with real secrets!
+
 spring.application.name=backend
 
 
@@ -47,3 +50,11 @@ app.frontend.url=http://localhost:3000
 
 # Health Check Configuration
 management.health.mail.enabled=false
+
+# ========================================
+# ENVIRONMENT VARIABLES REQUIRED:
+# ========================================
+# DB_PASSWORD - Your PostgreSQL password
+# JWT_SECRET_KEY - A secure random string for JWT signing (base64 encoded)
+# SENDGRID_API_KEY - Your SendGrid API key
+# MAIL_FROM_ADDRESS - Your verified sender email address

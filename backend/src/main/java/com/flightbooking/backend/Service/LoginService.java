@@ -21,6 +21,7 @@ import com.flightbooking.backend.DTO.LoginRequestDTO;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -66,7 +67,10 @@ public class LoginService {
 
         // Xóa tất cả refresh tokens của user
         String username = jwtService.extractUsername(token);
-        refreshTokenInfoRepository.deleteByUsername(username);
+        List<RefreshTokenInfo> userTokens = refreshTokenInfoRepository.findByUsername(username);
+        for (RefreshTokenInfo tokenInfo : userTokens) {
+            refreshTokenInfoRepository.deleteById(tokenInfo.getJwtId());
+        }
     }
 
     public LoginResponseDTO refreshToken(String refreshToken) {
