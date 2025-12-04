@@ -1,5 +1,6 @@
 package com.flightbooking.backend.Controller;
 
+import com.flightbooking.backend.DTO.ChangePasswordRequestDTO;
 import com.flightbooking.backend.DTO.ForgotPasswordRequestDTO;
 import com.flightbooking.backend.DTO.LoginResponseDTO;
 import com.flightbooking.backend.DTO.RefreshTokenRequestDTO;
@@ -180,6 +181,20 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Có lỗi xảy ra khi đặt lại mật khẩu");
+        }
+    }
+
+    @PutMapping("/change-password")
+    @SecurityRequirement(name = "bearerAuth")
+
+    public ResponseEntity<?> changePassword(@AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody @Valid ChangePasswordRequestDTO changePasswordRequestDTO) {
+
+        try {
+            userService.changePassword(userDetails.getUsername(), changePasswordRequestDTO);
+            return ResponseEntity.ok("đổi mật khẩu thành công");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 

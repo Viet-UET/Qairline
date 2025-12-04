@@ -11,6 +11,5 @@ import java.util.List;
 public interface RefreshTokenInfoRepository extends CrudRepository<RefreshTokenInfo, String> {
     List<RefreshTokenInfo> findByUsername(String username);
 
-    @Transactional
-    void deleteByUsername(String username);
+
 }
