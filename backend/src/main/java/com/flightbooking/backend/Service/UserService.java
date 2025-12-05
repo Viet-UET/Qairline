@@ -65,6 +65,10 @@ public class UserService {
                 User user = userRepository.findByUsername(username)
                                 .orElseThrow(() -> new RuntimeException("User not found"));
 
+                if ("GOOGLE".equalsIgnoreCase(user.getProvider())) {
+                        throw new RuntimeException("Cannot change password for Google accounts.");
+                }
+
                 if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
                         throw new IllegalArgumentException("Mật khẩu hiện tại không đúng");
                 }

@@ -35,7 +35,7 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true, length = 50)
     private String username;
 
-    @Column(length = 255, nullable = false)
+    @Column(length = 255)
     private String password;
 
     @Column(unique = true, length = 100)
@@ -50,6 +50,12 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @Column(name = "provider", length = 20)
+    private String provider; // "LOCAL" hoặc "GOOGLE"
+
+    @Column(name = "google_id", length = 255)
+    private String googleId;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
