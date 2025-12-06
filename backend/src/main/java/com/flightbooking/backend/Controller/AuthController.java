@@ -3,8 +3,13 @@ package com.flightbooking.backend.Controller;
 import com.flightbooking.backend.DTO.*;
 import com.flightbooking.backend.Service.*;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,17 +17,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.io.IOException;
 import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "Authentication", description = "API xác thực người dùng")
 public class AuthController {
     private final RegisterService registerService;
     private final LoginService loginService;
     private final PasswordResetService passwordResetService;
 
+    @Operation(summary = "Đăng ký tài khoản mới", description = "Đăng ký người dùng mới bằng email và password")
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody @Valid RegisterRequestDTO request) {
         registerService.register(request);
