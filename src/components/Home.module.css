@@ -1,0 +1,432 @@
+.homeWrapper {
+    width: 100%;
+    background-color: #fcfcfc;
+    font-family: 'Afacad', sans-serif;
+    padding-bottom: 40px;
+    position: relative;
+}
+
+/* --- 1. HERO SLIDER SECTION --- */
+/* --- 1. HERO SLIDER SECTION (Đã sửa lại để giới hạn trong khung) --- */
+.heroSection {
+    position: relative;
+    width: 100%;
+    max-width: 1200px; /* Giới hạn chiều rộng tối đa giống các section khác */
+    height: 500px;    /* Chiều cao cố định cho khung */
+    margin: 40px auto; /* Căn giữa và tạo khoảng cách trên dưới */
+    border-radius: 20px; /* Bo tròn góc cho cả khung */
+    overflow: hidden;  /* Ẩn phần thừa của ảnh */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1); /* Thêm bóng đổ nhẹ cho đẹp */
+}
+
+.slide {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    transition: opacity 0.5s ease-in-out;
+    border-radius: 20px; /* Bo tròn ảnh nền */
+}
+
+/* Mũi tên điều hướng (Đã chỉnh lại vị trí) */
+.navArrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.3); /* Nền trắng mờ để dễ nhìn hơn */
+    color: #006D5B;
+    border: none;
+    font-size: 3rem; /* Giảm kích thước một chút */
+    cursor: pointer;
+    z-index: 10;
+    padding: 10px;
+    border-radius: 50%; /* Nút tròn */
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+}
+
+.navArrow:hover {
+    background: rgba(255, 255, 255, 0.8);
+    color: #004D40;
+}
+
+.prevBtn { left: 20px; }  /* Cách lề trái 20px */
+.nextBtn { right: 20px; } /* Cách lề phải 20px */
+
+/* Hộp nội dung màu xanh (Giữ nguyên, chỉ chỉnh lại vị trí một chút) */
+.heroOverlay {
+    position: absolute;
+    top: 50%; /* Căn giữa theo chiều dọc */
+    transform: translateY(-50%); /* Căn giữa theo chiều dọc */
+    left: 60px; /* Cách lề trái nhiều hơn để tránh mũi tên */
+    width: 350px;
+    background-color: #529246;
+    color: white;
+    padding: 30px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    z-index: 2;
+    border-top-right-radius: 50px;
+    border-bottom-left-radius: 50px;
+    border-top-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+/* (Các class bên trong heroOverlay như .heroTitleLabel, .heroLocation... giữ nguyên không đổi) */
+.heroTitleLabel { font-size: 1rem; margin-bottom: 5px; font-weight: 600; }
+.heroLocation { font-size: 2.8rem; font-weight: 800; text-transform: uppercase; margin-bottom: 15px; line-height: 1.1; }
+.heroDesc { font-size: 0.95rem; line-height: 1.5; margin-bottom: 25px; }
+.heroBtn { background: transparent; border: 2px solid white; color: white; padding: 8px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.9rem; transition: all 0.3s; }
+.heroBtn:hover { background: white; color: #529246; }
+
+/* --- 2. SEARCH BOX SECTION --- */
+.searchContainer {
+    position: relative;
+    max-width: 1000px;
+    margin: -100px auto 60px auto; /* Kéo lên 100px để đè lên banner */
+    background: white;
+    padding: 20px 30px;
+    border-radius: 20px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+    z-index: 20;
+}
+
+.searchHeader {
+    text-align: center;
+    color: #006D5B;
+    font-weight: bold;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    display: inline-block;
+    width: 100%;
+}
+
+.searchFormGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 50px; /* 3 cột input + 1 cột nút tìm */
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.inputGroup {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 8px 12px;
+    position: relative;
+}
+
+.label {
+    font-size: 0.75rem;
+    color: #888;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.inputVal {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+.searchBtnCircle {
+    width: 50px;
+    height: 50px;
+    background-color: #529246;
+    border-radius: 50%;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+}
+
+.searchBtnCircle:hover {
+    background-color: #0E6552;
+}
+
+.searchOptions {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
+}
+
+.optionSelect {
+    border: 1px solid #ddd;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    color: #555;
+    background: #f9f9f9;
+    flex: 1;
+}
+
+.alerts {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.alertBox {
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: start;
+    gap: 10px;
+}
+
+.alertGreen {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
+}
+
+.alertYellow {
+    background-color: #fffde7;
+    color: #f9a825;
+    border: 1px solid #fff9c4;
+}
+
+/* --- 3. PROMOTIONS SECTION --- */
+.sectionWrapper {
+    max-width: 1100px;
+    margin: 0 auto 60px auto;
+    padding: 0 20px;
+}
+
+.sectionTitle {
+    font-size: 1.8rem;
+    color: #006D5B;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.sectionSub {
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 0.95rem;
+}
+
+.promoGrid {
+    display: grid;
+    grid-template-columns: 1.2fr 1.2fr 1fr; /* 2 vé + 1 thẻ xanh */
+    gap: 20px;
+}
+
+.ticketCard {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    padding: 20px;
+    border: 1px solid #eee;
+}
+
+.route {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.destination {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.price {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #e53935; /* Màu đỏ giá */
+    margin-bottom: 15px;
+    display: block;
+}
+
+.dateInfo {
+    font-size: 0.8rem;
+    color: #888;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.status {
+    font-size: 0.8rem;
+    color: #006D5B;
+    font-style: italic;
+}
+
+/* Thẻ xanh bên phải (CTA) */
+.ctaCard {
+    background-color: #004D40;
+    border-radius: 12px;
+    padding: 30px 20px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.ctaCard::after {
+    content: "";
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 80px;
+    height: 80px;
+    background: #cddc39; /* Màu nõn chuối góc */
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.ctaText {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    z-index: 2;
+}
+
+.ctaBtn {
+    background: transparent;
+    border: 1px solid white;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 2;
+}
+
+/* --- 4. SPECIAL OFFERS --- */
+.offersGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.offerCard {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+.offerImg {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.offerTitle {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #004D40;
+    margin: 15px 0 10px 0;
+}
+
+.offerDesc {
+    font-size: 0.85rem;
+    color: #666;
+    padding: 0 15px;
+    margin-bottom: 15px;
+    font-style: italic;
+}
+
+.offerLink {
+    color: #006D5B;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 0.85rem;
+}
+
+/* --- 5. NEWSLETTER --- */
+.newsletterSection {
+    background-color: #f9f9f9;
+    padding: 40px 0;
+    text-align: center;
+}
+
+.newsletterBox {
+    background: white;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.newsTitle {
+    color: #004D40;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.newsSub {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.formRow {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.newsInput {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: #f5f5f5;
+}
+
+.checkboxRow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.subscribeBtn {
+    background: transparent;
+    border: 1px solid #529246;
+    color: #529246;
+    padding: 8px 30px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.subscribeBtn:hover {
+    background: #529246;
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .searchFormGrid { grid-template-columns: 1fr; }
+    .searchOptions { flex-direction: column; }
+    .promoGrid { grid-template-columns: 1fr; }
+    .offersGrid { grid-template-columns: 1fr; }
+    .formRow { flex-direction: column; }
+    .heroOverlay { top: 10%; left: 5%; width: 90%; }
+}

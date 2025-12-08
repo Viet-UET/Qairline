@@ -17,10 +17,14 @@
   background-color: #0E6552;
 }
 /* --- Nội dung bài viết --- */
-main {
+/* Đổi tên thành class .articleMain */
+.articleMain {
   display: flex;
   justify-content: center;
-  padding-top: 120px;
+  padding-top: 120px; /* Khoảng cách để tránh Header */
+  width: 100%;        /* Đảm bảo chiếm hết chiều rộng */
+  min-height: 100vh;
+  box-sizing: border-box;
 }
 
 .article-container h1 {

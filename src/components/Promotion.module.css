@@ -1,0 +1,302 @@
+.container {
+    width: 100%;
+    background-color: #fcfcfc;
+    font-family: 'Afacad', sans-serif;
+    color: #1b5e20;
+}
+
+.wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 20px 60px 20px; /* Padding top để tránh Header fixed */
+}
+
+/* --- 1. HERO SECTION --- */
+/* --- HERO SECTION (Layout mới: Text + Ảnh nhỏ trái | Ảnh lớn phải) --- */
+.hero {
+    display: flex;
+    gap: 40px; /* Khoảng cách giữa cột trái và cột phải */
+    margin-bottom: 80px;
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 24px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.05);
+    align-items: stretch; /* Để 2 cột cao bằng nhau */
+}
+
+/* --- CỘT TRÁI (Chứa Text và Ảnh nhỏ) --- */
+.heroLeft {
+    flex: 1; /* Chiếm 50% chiều rộng */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Đẩy text lên trên, ảnh xuống dưới */
+    gap: 30px; /* Khoảng cách giữa Text và Ảnh nhỏ */
+}
+
+.heroContent {
+    /* Phần chứa text */
+}
+
+.heroTitle {
+    font-size: 2.5rem;
+    color: #004D40;
+    font-weight: 800;
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
+
+.heroDesc {
+    font-size: 1rem;
+    color: #555;
+    line-height: 1.6;
+}
+
+.heroSmallImg {
+    width: 100%;
+    height: 250px; /* Chiều cao cố định cho ảnh nhỏ */
+    object-fit: cover;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* --- CỘT PHẢI (Chứa Ảnh lớn) --- */
+.heroRight {
+    flex: 1; /* Chiếm 50% chiều rộng */
+    position: relative;
+}
+
+.heroLargeImg {
+    width: 100%;
+    height: 100%; /* Chiếm hết chiều cao container */
+    min-height: 300px; /* Đảm bảo độ cao tối thiểu */
+    object-fit: cover;
+    border-radius: 20px;
+    /* Bo góc nghệ thuật cho ảnh lớn */
+    border-top-right-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+    .hero {
+        flex-direction: column; /* Xếp chồng lên nhau trên mobile */
+    }
+    .heroSmallImg {
+        height: 200px;
+    }
+    .heroLargeImg {
+        min-height: 300px;
+        border-top-right-radius: 20px;
+    }
+}
+
+/* --- FILTER BAR (Thanh tìm kiếm nhỏ) --- */
+.filterBar {
+    display: flex;
+    background: white;
+    padding: 10px 20px;
+    border-radius: 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
+    margin-bottom: 30px;
+    gap: 15px;
+    align-items: center;
+}
+
+.filterInput {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 8px;
+    font-size: 0.9rem;
+    border-right: 1px solid #eee;
+}
+
+.filterInput:last-child {
+    border-right: none;
+}
+
+.searchIcon {
+    background: #529246;
+    color: white;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* --- SECTION TITLES --- */
+.sectionTitle {
+    font-size: 2rem;
+    color: #004D40;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+/* --- 2. DOMESTIC SECTION (Layout 2 cột vé + 1 cột sidebar) --- */
+.domesticSection {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* 2 phần vé, 1 phần sidebar */
+    gap: 30px;
+    margin-bottom: 80px;
+}
+
+.ticketGridTwo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* --- 3. INTERNATIONAL SECTION (Layout 3 cột vé) --- */
+.internationalSection {
+    margin-bottom: 60px;
+}
+
+.ticketGridThree {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+/* --- TICKET CARD STYLE --- */
+.ticketCard {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    border: 1px solid #f0f0f0;
+    transition: transform 0.2s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.ticketCard:hover {
+    transform: translateY(-3px);
+    border-color: #529246;
+}
+
+.routeInfo {
+    font-size: 0.85rem;
+    color: #1b5e20;
+    margin-bottom: 5px;
+}
+
+.destination {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #004D40;
+    margin-bottom: 10px;
+}
+
+.tag {
+    display: inline-block;
+    background-color: #FFF3E0;
+    color: #F57C00;
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.priceRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.price {
+    font-size: 1.3rem;
+    color: #D32F2F; /* Màu đỏ giá */
+    font-weight: bold;
+}
+
+.dateRange {
+    font-size: 0.8rem;
+    color: #1b5e20;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.deadline {
+    font-size: 0.75rem;
+    color: #006D5B;
+    font-style: italic;
+    border-top: 1px dashed #eee;
+    padding-top: 10px;
+}
+
+/* --- SIDEBAR (NEWSLETTER) --- */
+.sidebar {
+    background-color: #1b5e20; /* Xanh đậm */
+    background-image: linear-gradient(to bottom right, #4caf50, #1b5e20);
+    border-radius: 16px;
+    padding: 30px;
+    color: white;
+    text-align: center;
+    height: fit-content;
+}
+
+.sidebarTitle {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.sidebarDesc {
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+    opacity: 0.9;
+}
+
+.sidebarInput {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    box-sizing: border-box;
+}
+
+.sidebarCheckbox {
+    display: flex;
+    align-items: start;
+    gap: 10px;
+    text-align: left;
+    font-size: 0.8rem;
+    margin-bottom: 20px;
+}
+
+.sidebarBtn {
+    background: transparent;
+    border: 1px solid white;
+    color: white;
+    padding: 10px 30px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.sidebarBtn:hover {
+    background: white;
+    color: #1b5e20;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .domesticSection { grid-template-columns: 1fr; }
+    .ticketGridThree { grid-template-columns: repeat(2, 1fr); }
+    .hero { flex-direction: column-reverse; }
+    .heroImg { width: 100%; height: 300px; }
+}
+
+@media (max-width: 768px) {
+    .ticketGridTwo, .ticketGridThree { grid-template-columns: 1fr; }
+}
