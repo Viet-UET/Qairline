@@ -159,8 +159,6 @@ function Promotion() {
                 </div>
 
             </main>
-
-            <Footer />
         </div>
     );
 }

@@ -8,7 +8,7 @@
 .wrapper {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 100px 20px 60px 20px; /* Padding top để tránh Header fixed */
+    padding: 20px 20px 60px 20px; /* Padding top để tránh Header fixed */
 }
 
 /* --- 1. HERO SECTION --- */
@@ -16,12 +16,12 @@
 .hero {
     display: flex;
     gap: 40px; /* Khoảng cách giữa cột trái và cột phải */
-    margin-bottom: 80px;
+    /*margin-bottom: 80px;*/
     background-color: #fff;
     padding: 30px;
-    border-radius: 24px;
+    border-radius: 20px;
     box-shadow: 0 5px 25px rgba(0,0,0,0.05);
-    align-items: stretch; /* Để 2 cột cao bằng nhau */
+    align-items: flex-start; 
 }
 
 /* --- CỘT TRÁI (Chứa Text và Ảnh nhỏ) --- */
@@ -29,7 +29,7 @@
     flex: 1; /* Chiếm 50% chiều rộng */
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Đẩy text lên trên, ảnh xuống dưới */
+    justify-content: center; /* Đẩy text lên trên, ảnh xuống dưới */
     gap: 30px; /* Khoảng cách giữa Text và Ảnh nhỏ */
 }
 
@@ -38,7 +38,7 @@
 }
 
 .heroTitle {
-    font-size: 2.5rem;
+    font-size: 3.5rem;
     color: #004D40;
     font-weight: 800;
     margin-bottom: 20px;
@@ -47,7 +47,7 @@
 
 .heroDesc {
     font-size: 1rem;
-    color: #555;
+    color: #529246;
     line-height: 1.6;
 }
 
@@ -61,18 +61,15 @@
 
 /* --- CỘT PHẢI (Chứa Ảnh lớn) --- */
 .heroRight {
-    flex: 1; /* Chiếm 50% chiều rộng */
+    flex: 0.6;
     position: relative;
+    height: auto;
 }
 
 .heroLargeImg {
     width: 100%;
-    height: 100%; /* Chiếm hết chiều cao container */
-    min-height: 300px; /* Đảm bảo độ cao tối thiểu */
     object-fit: cover;
     border-radius: 20px;
-    /* Bo góc nghệ thuật cho ảnh lớn */
-    border-top-right-radius: 20px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 

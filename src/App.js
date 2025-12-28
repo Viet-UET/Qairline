@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // Im
 import './styles.css'; 
 import Header from './components/Header';
 import Footer from './components/Footer';
+import ScrollToTop from './components/ScrollToTop';
 
 import Home from './components/Home';
 import Promotion from './components/Promotion';

@@ -1,4 +1,5 @@
 .homeWrapper {
+    padding-top: 100px;
     width: 100%;
     background-color: #fcfcfc;
     font-family: 'Afacad', sans-serif;
@@ -10,23 +11,31 @@
 /* --- 1. HERO SLIDER SECTION (Đã sửa lại để giới hạn trong khung) --- */
 .heroSection {
     position: relative;
-    width: 100%;
-    max-width: 1200px; /* Giới hạn chiều rộng tối đa giống các section khác */
-    height: 500px;    /* Chiều cao cố định cho khung */
-    margin: 40px auto; /* Căn giữa và tạo khoảng cách trên dưới */
-    border-radius: 20px; /* Bo tròn góc cho cả khung */
-    overflow: hidden;  /* Ẩn phần thừa của ảnh */
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1); /* Thêm bóng đổ nhẹ cho đẹp */
+    width: 1265px;
+   /* max-width: 1200px;*/
+    height: 430px;
+    margin: 40px auto 0 auto;
+    margin-top: 60px;
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+.heroSection:hover {
+    opacity: 100; /* Hiện mũi tên khi hover vào toàn bộ khung */
+    transform: translateY(-3px);
+    border-color: #529246;
 }
 
 .slide {
-    width: 100%;
-    height: 100%;
+    width: 1265px;
+    height: 430px;
     position: relative;
     background-size: cover;
     background-position: center;
     transition: opacity 0.5s ease-in-out;
-    border-radius: 20px; /* Bo tròn ảnh nền */
+    border-radius: 30px; /* Bo tròn ảnh nền */
+    cursor: pointer;
 }
 
 /* Mũi tên điều hướng (Đã chỉnh lại vị trí) */
@@ -62,13 +71,13 @@
 .heroOverlay {
     position: absolute;
     top: 50%; /* Căn giữa theo chiều dọc */
-    transform: translateY(-50%); /* Căn giữa theo chiều dọc */
+    transform: translateY(100%); /* Căn giữa theo chiều dọc */
     left: 60px; /* Cách lề trái nhiều hơn để tránh mũi tên */
     width: 350px;
-    background-color: #529246;
+    
     color: white;
     padding: 30px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    
     z-index: 2;
     border-top-right-radius: 50px;
     border-bottom-left-radius: 50px;
@@ -81,13 +90,13 @@
 .heroLocation { font-size: 2.8rem; font-weight: 800; text-transform: uppercase; margin-bottom: 15px; line-height: 1.1; }
 .heroDesc { font-size: 0.95rem; line-height: 1.5; margin-bottom: 25px; }
 .heroBtn { background: transparent; border: 2px solid white; color: white; padding: 8px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.9rem; transition: all 0.3s; }
-.heroBtn:hover { background: white; color: #529246; }
+.heroBtn:hover { background: white; color: #529246; border-color: #529246; }
 
 /* --- 2. SEARCH BOX SECTION --- */
 .searchContainer {
     position: relative;
     max-width: 1000px;
-    margin: -100px auto 60px auto; /* Kéo lên 100px để đè lên banner */
+    margin: 100px auto 60px auto; /* Kéo lên 100px để đè lên banner */
     background: white;
     padding: 20px 30px;
     border-radius: 20px;
@@ -151,6 +160,7 @@
 
 .searchBtnCircle:hover {
     background-color: #0E6552;
+    border-color: #529246;
 }
 
 .searchOptions {
@@ -204,16 +214,16 @@
 }
 
 .sectionTitle {
-    font-size: 1.8rem;
+    font-size: 3rem;
     color: #006D5B;
     font-weight: 700;
     margin-bottom: 10px;
 }
 
 .sectionSub {
-    color: #666;
+    color: #529246;
     margin-bottom: 30px;
-    font-size: 0.95rem;
+    font-size: 1rem;
 }
 
 .promoGrid {
@@ -228,6 +238,10 @@
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     padding: 20px;
     border: 1px solid #eee;
+}
+.ticketCard:hover {
+    transform: translateY(-3px);
+    border-color: #529246;
 }
 
 .route {
@@ -291,6 +305,11 @@
     z-index: 1;
 }
 
+.ctaCard:hover {
+    transform: translateY(-3px);
+    border-color: #529246;
+}
+
 .ctaText {
     font-size: 1.1rem;
     font-weight: bold;
@@ -324,26 +343,31 @@
     text-align: center;
     padding-bottom: 20px;
 }
+.offerCard:hover {
+    transform: translateY(-3px);
+    border-color: #529246;
+}
 
 .offerImg {
     width: 100%;
-    height: 180px;
+    height: 100%px;
     object-fit: cover;
 }
 
 .offerTitle {
-    font-size: 1.1rem;
+    font-size: 2rem;
     font-weight: bold;
     color: #004D40;
     margin: 15px 0 10px 0;
 }
 
 .offerDesc {
-    font-size: 0.85rem;
-    color: #666;
+    font-size: 1rem;
+    color: #529246;
     padding: 0 15px;
-    margin-bottom: 15px;
+    margin: 0 auto 15px auto;
     font-style: italic;
+    text-align: center;
 }
 
 .offerLink {

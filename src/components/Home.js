@@ -4,12 +4,19 @@ import Header from './Header';
 import Footer from './Footer';
 
 // IMPORT HÌNH ẢNH (Thay bằng ảnh thật trong Assets)
-import imgAdelaide from '../Assets/milan.png'; // Ảnh Adelaide
-import imgTuscany from '../Assets/sagrada_familia_1.png'; // Ảnh Tuscany
-import imgMali from '../Assets/angko_wat.png'; // Ảnh Mali
-import imgStudent from '../Assets/lourve.png'; // Ảnh ưu đãi sinh viên
-import imgMember from '../Assets/sagrada_familia_2.png'; // Ảnh gói hội viên
-import imgSponsor from '../Assets/angko_wat.png'; // Ảnh nhà tài trợ
+import imgAdelaide from '../Assets/Adelaide.png'; // Ảnh Adelaide
+import imgTuscany from '../Assets/Tuscany.png'; // Ảnh Tuscany
+import imgMali from '../Assets/Mali.png'; // Ảnh Mali
+import imgSarajero from '../Assets/Sarajevo.png'; // Ảnh Sarajevo
+import imgCamogli from '../Assets/Camogli.png'; // Ảnh Camogli
+import imgSagradaFamilia from '../Assets/Sagrada_Familia.png'; // Ảnh Sagrada Familia
+
+
+
+
+import imgStudent from '../Assets/student_discount.png'; // Ảnh ưu đãi sinh viên
+import imgMember from '../Assets/membership.png'; // Ảnh gói hội viên
+import imgSponsor from '../Assets/sponsors.png'; // Ảnh nhà tài trợ
 
 function Home() {
     // State quản lý slide hiện tại
@@ -19,24 +26,33 @@ function Home() {
     const slides = [
         {
             id: 1,
-            label: "Hành trình khám phá",
-            location: "ADELAIDE",
-            desc: "Hãy bắt đầu lên kế hoạch cho danh sách những điều cần làm hàng đầu ở Adelaide để sẵn sàng lên đường...",
-            img: imgAdelaide
+            img: imgAdelaide,
+            link: '/adelaide'
         },
         {
             id: 2,
-            label: "Điểm đến được yêu thích",
-            location: "TUSCANY",
-            desc: "Bên cạnh những công trình kiến trúc độc đáo, du lịch Tuscany còn mang đến cơ hội khám phá thiên nhiên...",
-            img: imgTuscany
+            img: imgTuscany,
+            link: '/tuscany'
         },
         {
             id: 3,
-            label: "Di sản thế giới tại",
-            location: "MALI",
-            desc: "Là một trong những kỳ quan của Châu Phi và là một trong những công trình tôn giáo độc đáo nhất...",
-            img: imgMali
+            img: imgMali,
+            link: '/mali'
+        },
+        {
+            id: 4,
+            img: imgSarajero,
+            link: '/sarajevo'
+        },
+        {
+            id: 5,
+            img: imgCamogli,
+            link: '/camogli'
+        },
+        {
+            id: 6,
+            img: imgSagradaFamilia,
+            link: '/article/sagrada-familia' 
         }
     ];
 
@@ -63,13 +79,13 @@ function Home() {
                 <div 
                     className={styles.slide} 
                     style={{backgroundImage: `url(${slides[currentSlide].img})`}}
+                    onClick={() => window.location.href = slides[currentSlide].link} // Chuyển trang khi click vào ảnh
                 >
+                    
                     {/* Hộp nội dung xanh bên trái */}
                     <div className={styles.heroOverlay}>
-                        <div className={styles.heroTitleLabel}>{slides[currentSlide].label}</div>
-                        <div className={styles.heroLocation}>{slides[currentSlide].location}</div>
-                        <p className={styles.heroDesc}>{slides[currentSlide].desc}</p>
-                        <button className={styles.heroBtn}>Tìm hiểu thêm</button>
+                      <button className={styles.heroBtn}>Tìm hiểu thêm</button>
+                        
                     </div>
                 </div>
             </section>
@@ -174,7 +190,7 @@ function Home() {
                     <div className={styles.offerCard}>
                         <img src={imgStudent} alt="Sinh viên" className={styles.offerImg} />
                         <h3 className={styles.offerTitle}>Ưu đãi dành cho sinh viên</h3>
-                        <p className={styles.offerDesc}>Giá vé giảm đến 20%. Nâng niu hành lý. Wifi miễn phí và hơn thế nữa.</p>
+                        <p className={styles.offerDesc}>Giá vé giảm đến 20%, tăng giới hạn hành lý, WiFi miễn phí và hơn thế nữa.</p>
                         <a href="#" className={styles.offerLink}>&gt;&gt; Tìm hiểu thêm</a>
                     </div>
                     {/* Offer 2 */}
@@ -196,7 +212,7 @@ function Home() {
 
             {/* --- 5. NEWSLETTER --- */}
             <section className={styles.newsletterSection}>
-                <h2 className={styles.newsTitle}>Đăng ký Q-eflight News</h2>
+                <h2 className={styles.sectionTitle}>Đăng ký Q-eflight News</h2>
                 
                 <div className={styles.newsletterBox}>
                     <p className={styles.newsTitle} style={{fontSize:'1rem'}}>Đăng ký Q-eflight News để cập nhật các thông tin, ưu đãi mới nhất từ QAirline.</p>
@@ -217,7 +233,6 @@ function Home() {
                 </div>
             </section>
 
-            <Footer />
         </div>
     );
 }
