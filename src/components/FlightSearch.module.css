@@ -1,0 +1,275 @@
+/* Container chính */
+.searchWrapper {
+    max-width: 889px;
+    margin: 30px auto 0 auto;
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 20;
+    transition: all 0.3s ease;
+}
+
+/* Header Style */
+.headerContainer {
+    position: relative;
+    width: 100%;
+    text-align: center;
+    border-bottom: 1.5px solid #eee; 
+    margin-bottom: 25px;
+}
+
+.headerTitle {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    
+    /* --- [THAM SỐ ĐIỀU CHỈNH KÍCH THƯỚC] --- */
+    font-size: 1.4rem;       /* Chỉnh cỡ chữ ở đây (Mặc định cũ là 1.5rem) */
+    padding-bottom: 10px;    /* Khoảng cách từ chữ xuống dòng kẻ */
+    border-bottom: 2.5px solid #006D5B; /* Độ dày dòng kẻ xanh */
+    /* --------------------------------------- */
+
+    color: #006D5B;
+    font-weight: bold;
+    margin-bottom: -1.5px; 
+    position: relative;
+    z-index: 1;
+}
+
+/* --- ROW 1: INPUTS --- */
+.topRow {
+    display: grid;
+    /* Cột cuối cùng (nút tìm kiếm) chỉnh về 54px để vuông vắn */
+    grid-template-columns: 1.2fr 1.2fr 1fr 54px; 
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* Style chung cho TẤT CẢ các ô */
+.boxStyle {
+    position: relative;
+    border: 1.5px solid #ccc;
+    border-radius: 8px;
+    padding: 0 15px; /* Bỏ padding top/bottom, dùng flex center */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 54px; /* [YÊU CẦU] Chiều cao cố định 54px */
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.boxStyle:focus-within {
+    border-color: #006D5B;
+}
+
+.label {
+    font-size: 0.75rem;
+    color: #666;
+    margin-bottom: 2px;
+}
+
+.inputValue {
+    border: none;
+    outline: none;
+    background: transparent;
+    width: 100%;
+    color: #006D5B;
+    font-weight: 700;
+    font-size: 1rem;
+    
+    /* Xử lý text quá dài (cho phần chi tiết hành khách) */
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Style riêng cho phần chi tiết hành khách (nhạt và nhỏ hơn) */
+.passengerDetail {
+    font-size: 0.85rem;
+    color: #888;
+    font-weight: normal;
+    margin-left: 5px;
+}
+
+.iconRight {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #529246;
+    font-size: 1.2rem;
+    pointer-events: none;
+}
+
+.arrowIcon {
+    position: absolute;
+    right: 15px;
+    top: 60%;
+    transform: translateY(-50%);
+    font-size: 0.7rem;
+    color: #999;
+}
+
+/* --- MENU DROPDOWN --- */
+.dropdownMenu {
+    position: absolute;
+    top: 110%;
+    left: 0;
+    width: 100%;
+    background: white;
+    border: 1px solid #006D5B;
+    border-radius: 12px;
+    padding: 5px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    z-index: 100;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.menuItem {
+    padding: 10px 15px;
+    border-radius: 8px;
+    color: #006D5B;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 2px;
+    font-size: 0.95rem;
+    transition: background-color 0.2s;
+}
+
+.menuItem:hover {
+    background-color: #f0f0f0; /* [YÊU CẦU] Màu xám nhẹ khi hover */
+}
+
+.menuItem.active {
+    background-color: #529246;
+    color: white;
+}
+
+/* --- PASSENGER MENU --- */
+.passengerMenu {
+    width: 320px; /* Rộng hơn chút để chứa đủ text */
+    cursor: default;
+    padding: 0; /* Reset padding để item fill đầy */
+}
+
+.passengerItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    border-bottom: 1px solid #f5f5f5;
+    transition: background-color 0.2s;
+}
+.passengerItem:last-child { border-bottom: none; }
+
+/* [YÊU CẦU] Hover vào dòng hành khách đổi màu */
+.passengerItem:hover {
+    background-color: #f9f9f9; 
+}
+
+.pType { font-weight: bold; font-size: 0.9rem; color: #006D5B; }
+.pSub { font-size: 0.7rem; color: #888; display: block; }
+
+.counterControl { display: flex; align-items: center; gap: 10px; }
+
+.counterBtn {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 1.5px solid #d32f2f; color: #d32f2f;
+    background: white; cursor: pointer; 
+    display: flex; align-items: center; justify-content: center; font-weight: bold;
+    transition: all 0.2s;
+}
+
+/* [YÊU CẦU] Hiệu ứng nút bấm */
+.counterBtn:hover {
+    background-color: #ffebee; /* Đỏ nhạt khi hover nút trừ */
+    transform: scale(1.1);
+}
+
+.counterBtn:active {
+    transform: scale(0.95);
+}
+
+.counterBtn.plus { border-color: #006D5B; color: #006D5B; }
+
+.counterBtn.plus:hover {
+    background-color: #e8f5e9; /* Xanh nhạt khi hover nút cộng */
+}
+
+.counterVal { font-weight: bold; width: 20px; text-align: center; color: #333; }
+
+/* Nút tìm kiếm */
+.searchBtn {
+    width: 54px; height: 54px; /* [YÊU CẦU] Vuông 54x54 */
+    background-color: #529246;
+    border-radius: 12px;
+    border: none; color: white;
+    font-size: 1.5rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.3s;
+}
+.searchBtn:hover { background-color: #0E6552; }
+
+/* --- ROW 2 --- */
+.bottomRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.5fr 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* ... (Các phần Warning giữ nguyên) ... */
+.warningSection {
+    margin-top: 20px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    animation: fadeIn 0.3s ease;
+}
+.alertBox {
+    padding: 12px 15px; border-radius: 8px; font-size: 0.85rem;
+    display: flex; align-items: flex-start; gap: 10px; line-height: 1.4;
+}
+.greenAlert { background-color: #e8f5e9; border: 1.5px solid #c8e6c9; color: #2e7d32; }
+.yellowAlert { background-color: #fffde7; border: 1.5px solid #fff9c4; color: #f9a825; }
+.redAlert { background-color: #ffebee; border: 1.5px solid #ffcdd2; color: #c62828; }
+.dateInput { font-family: inherit; }
+.dateInput::-webkit-calendar-picker-indicator { position: absolute; top:0; left:0; width:100%; height:100%; opacity:0; cursor:pointer; }
+.dateError { position: absolute; bottom: -20px; left: 0; font-size: 0.75rem; color: #c62828; font-weight: bold; }
+.boxStyle.error { border-color: #c62828; background-color: #fff8f8; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 768px) { .topRow, .bottomRow { grid-template-columns: 1fr; } .searchBtn { width: 100%; } }
+
+
+.dateInput {
+    /* Đặt font chữ cho lịch đồng bộ với web */
+    font-family: 'Afacad', sans-serif; 
+    
+    /* [QUAN TRỌNG] Đổi màu nền xanh của ngày được chọn trong lịch */
+    accent-color: #529246; 
+    
+    /* Màu chữ hiển thị */
+    color: #006D5B; 
+    font-weight: 700;
+
+    /* Ẩn icon lịch mặc định của trình duyệt */
+    &::-webkit-calendar-picker-indicator {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0; 
+        cursor: pointer;
+    }
+}

@@ -23,7 +23,7 @@
 }
 .heroSection:hover {
     opacity: 100; /* Hiện mũi tên khi hover vào toàn bộ khung */
-    transform: translateY(-3px);
+  /*  transform: translateY(-3px); */
     border-color: #529246;
 }
 
@@ -71,7 +71,7 @@
 .heroOverlay {
     position: absolute;
     top: 50%; /* Căn giữa theo chiều dọc */
-    transform: translateY(100%); /* Căn giữa theo chiều dọc */
+    transform: translateY(70%); /* Căn giữa theo chiều dọc */
     left: 60px; /* Cách lề trái nhiều hơn để tránh mũi tên */
     width: 350px;
     
@@ -79,16 +79,14 @@
     padding: 30px;
     
     z-index: 2;
-    border-top-right-radius: 50px;
+    border-top-right-radius: 5px;
     border-bottom-left-radius: 50px;
     border-top-left-radius: 20px;
     border-bottom-right-radius: 20px;
 }
 
 /* (Các class bên trong heroOverlay như .heroTitleLabel, .heroLocation... giữ nguyên không đổi) */
-.heroTitleLabel { font-size: 1rem; margin-bottom: 5px; font-weight: 600; }
-.heroLocation { font-size: 2.8rem; font-weight: 800; text-transform: uppercase; margin-bottom: 15px; line-height: 1.1; }
-.heroDesc { font-size: 0.95rem; line-height: 1.5; margin-bottom: 25px; }
+
 .heroBtn { background: transparent; border: 2px solid white; color: white; padding: 8px 20px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.9rem; transition: all 0.3s; }
 .heroBtn:hover { background: white; color: #529246; border-color: #529246; }
 
@@ -454,3 +452,67 @@
     .formRow { flex-direction: column; }
     .heroOverlay { top: 10%; left: 5%; width: 90%; }
 }
+
+
+
+
+
+/* --- CUSTOM DROPDOWN (Thay thế thẻ select mặc định) --- */
+
+/* Phần hiển thị giá trị (giống thẻ input) */
+.customSelectDisplay {
+    border: none;
+    outline: none;
+    font-weight: 600;
+    color: #006D5B;
+    width: 100%;
+    background: transparent;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.95rem;
+}
+
+/* Khung chứa danh sách xổ xuống */
+.customOptionsList {
+    position: absolute;
+    top: 105%; /* Nằm ngay dưới ô input */
+    left: 0;
+    width: 100%;
+    background: white;
+    border: 1px solid #006D5B; /* Viền xanh bao quanh menu */
+    border-radius: 12px; /* Bo góc menu */
+    padding: 5px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    z-index: 102; /* Cao hơn các thành phần khác */
+    overflow: hidden;
+}
+
+/* Từng dòng lựa chọn (Option) */
+.customOption {
+    padding: 10px 15px;
+    border-radius: 8px; /* Bo góc cho từng dòng bên trong */
+    color: #006D5B;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 2px;
+    text-align: center; /* Căn giữa chữ giống thiết kế */
+}
+
+/* Hiệu ứng khi di chuột vào */
+.customOption:hover {
+    background-color: #f0f0f0;
+}
+
+/* --- TRẠNG THÁI ACTIVE (Quan trọng) --- */
+/* Khi dòng này được chọn: Nền xanh, chữ trắng */
+.customOption.active {
+    background-color: #529246; 
+    color: white;
+}
+
+
+
+
+
