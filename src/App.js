@@ -8,6 +8,13 @@ import ScrollToTop from './components/ScrollToTop';
 
 import Home from './components/Home';
 import Promotion from './components/Promotion';
+import Terms from './components/Terms'; // Import trang mới
+import CustomerCommitment from './components/CustomerCommitment';
+import AboutUs from './components/AboutUs';
+import PrivacyPolicy from './components/PrivacyPolicy';
+import AirportMap from './components/AirportMap';
+
+
 
 import PopularDestinations from './components/PopularDestinations'; // Import trang đích
 import ArticleLouvre from './components/ArticleLouvre';
@@ -23,11 +30,12 @@ import StorySantorini from './components/StorySantorini';
 // Import các trang
 
 import Discover from './components/Discover';
-// import Home from './components/Home'; // Nếu bạn có trang chủ
+
 
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <div className="App">
         <Header />
         <Routes>
@@ -54,6 +62,11 @@ function App() {
 
           <Route path="/article/angkor-wat" element={<ArticleAngkorWat />} />
           {/* 4. Trang Những câu chuyện kỳ thú */}
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/commitment" element={<CustomerCommitment />} />
+          <Route path="/about-us" element={<AboutUs />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/airport-map" element={<AirportMap />} />
 
 
 
