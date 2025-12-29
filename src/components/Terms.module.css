@@ -1,0 +1,227 @@
+.container {
+    width: 100%;
+    background-color: #fff;
+    font-family: 'Afacad', sans-serif;
+    color: #333;
+    /* Bỏ padding-top cũ vì ta sẽ dùng Hero Banner full màn hình phía trên */
+    padding-bottom: 80px; 
+}
+
+/* --- HERO BANNER (MỚI) --- */
+/* ... (Giữ nguyên .container) ... */
+
+/* --- HERO BANNER (ĐÃ SỬA) --- */
+.heroBanner {
+    position: relative;
+    width: 100%;
+    /* [SỬA LỖI 1]: Dùng min-height thay vì height cố định */
+    /* Để banner tự động giãn ra nếu nội dung bên trong dài */
+    min-height: 450px; 
+    height: auto; 
+    
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    
+    /* Tăng khoảng cách margin bottom để đẩy nội dung bên dưới ra xa */
+    margin-bottom: 80px; 
+    margin-top: 60px; /* Chừa chỗ cho Header fixed */
+    
+    /* Thêm padding để nội dung không bị dính sát mép trên/dưới */
+    padding: 60px 20px; 
+    box-sizing: border-box;
+}
+
+/* --- LỚP PHỦ (ĐÃ SỬA MÀU) --- */
+.heroOverlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    
+    /* [SỬA LỖI 2]: Loại bỏ ám xanh */
+    /* Cách 1: Nếu muốn ảnh gốc hoàn toàn (Sáng trưng) */
+    /* background: transparent; */
+    
+    /* Cách 2 (Khuyên dùng): Phủ màu đen nhẹ để chữ Trắng dễ đọc hơn, không bị ám xanh */
+    background: rgba(0, 0, 0, 0.3); 
+    
+    z-index: 1;
+}
+
+.heroContent {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    padding: 0 20px;
+    transform: translateY(-100px);
+}
+
+/* Tiêu đề banner */
+.mainTitle {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    /* Thêm bóng đổ chữ để dễ đọc trên nền ảnh */
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5); 
+    line-height: 1.2;
+}
+
+/* Phụ đề banner */
+.subTitle {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #ffffff;
+    opacity: 1; /* Để 1 cho rõ nét */
+    font-weight: 500;
+    text-shadow: 0 1px 5px rgba(0,0,0,0.5);
+}
+
+/* --- WRAPPER (NỘI DUNG CHÍNH) --- */
+.wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+    
+    /* Đảm bảo nền trắng và nằm trên mọi thứ (nếu cần) */
+    position: relative; 
+    background-color: #fff;
+}
+
+/* ... (Giữ nguyên các phần section, sectionTitle, content bên dưới...) */
+
+/* --- CÁC SECTION --- */
+.section {
+    margin-bottom: 80px;
+    scroll-margin-top: 100px; /* Tránh Header che khuất khi link tới */
+}
+
+.sectionTitle {
+    font-size: 3rem; /* Yêu cầu kích thước 3rem */
+    color: #004D40;
+    font-weight: 700;
+    margin-bottom: 30px;
+    border-left: 6px solid #529246;
+    padding-left: 20px;
+    line-height: 1.2;
+}
+
+.content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #444;
+}
+
+.content p {
+    margin-bottom: 20px;
+    text-align: justify; /* Căn đều 2 bên cho đẹp */
+}
+
+/* --- BOX LỜI KHUYÊN --- */
+.adviceBox {
+    background-color: #f1f8e9; /* Xanh rất nhạt */
+    border: 1px solid #c5e1a5;
+    border-radius: 16px;
+    padding: 30px;
+    margin-top: 20px;
+}
+
+.adviceTitle {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #2e7d32;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.adviceList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.adviceList li {
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 12px;
+}
+
+.adviceList li::before {
+    content: "✔";
+    position: absolute;
+    left: 0; top: 0;
+    color: #529246;
+    font-weight: bold;
+}
+
+/* --- ẢNH MINH HỌA --- */
+.sectionImage {
+    width: 100%;
+    height: 450px;
+    object-fit: cover;
+    border-radius: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+/* --- PHẦN FAQ (CÂU HỎI THƯỜNG GẶP) --- */
+.faqSection {
+    background-color: #fafafa;
+    padding: 60px 40px;
+    border-radius: 20px;
+    border: 1px solid #eee;
+    margin-top: 60px;
+}
+
+.faqHeader {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #004D40;
+    font-weight: 800;
+    margin-bottom: 40px;
+}
+
+.faqItem {
+    margin-bottom: 25px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+.faqQuestion {
+    padding: 20px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #006D5B;
+    cursor: pointer;
+    background-color: #fff;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.faqQuestion:hover {
+    background-color: #f9f9f9;
+}
+
+.faqAnswer {
+    padding: 20px;
+    color: #555;
+    line-height: 1.6;
+    background-color: #fff;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .mainTitle { font-size: 2.2rem; }
+    .sectionTitle { font-size: 2rem; }
+    .heroBanner { height: 300px; }
+}

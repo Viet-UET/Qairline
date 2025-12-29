@@ -10,11 +10,11 @@ function Footer() {
           <img src={logo} alt="QAirlineLogo" className={styles['footer-logo']} />
           <div className={styles['footer-links']}>
             <a href="#">Liên hệ</a>
-            <a href="#">Về chúng tôi</a>
-            <a href="#">Cam kết với khách hàng</a>
-            <a href="#">Chính sách bảo mật</a>
-            <a href="#">Các điều khoản và điều kiện</a>
-            <a href="#">Bản đồ sân bay</a>
+            <a href="/about-us">Về chúng tôi</a>
+            <a href="/commitment">Cam kết với khách hàng</a>
+            <a href="/privacy">Chính sách bảo mật</a>
+            <a href="/terms">Các điều khoản và điều kiện</a>
+            <a href="/airport-map">Bản đồ sân bay</a>
           </div>
         </div>
         <div className={styles['footer-legal']}>

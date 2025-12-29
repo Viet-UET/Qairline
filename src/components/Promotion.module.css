@@ -3,297 +3,277 @@
     background-color: #fcfcfc;
     font-family: 'Afacad', sans-serif;
     color: #1b5e20;
+    margin-top: -350px;
 }
 
 .wrapper {
-    max-width: 1200px;
+    max-width: 1300px; 
     margin: 0 auto;
-    padding: 20px 20px 60px 20px; /* Padding top để tránh Header fixed */
+    padding: 0px 20px 60px 20px;
 }
 
-/* --- 1. HERO SECTION --- */
-/* --- HERO SECTION (Layout mới: Text + Ảnh nhỏ trái | Ảnh lớn phải) --- */
+/* --- HERO SECTION (GIỮ NGUYÊN TUYỆT ĐỐI) --- */
 .hero {
     display: flex;
-    gap: 40px; /* Khoảng cách giữa cột trái và cột phải */
-    /*margin-bottom: 80px;*/
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: 0 5px 25px rgba(0,0,0,0.05);
-    align-items: flex-start; 
+    gap: 40px;
+    justify-content: center;
+    align-items: flex-end;
+    margin-bottom: 80px;
 }
 
-/* --- CỘT TRÁI (Chứa Text và Ảnh nhỏ) --- */
 .heroLeft {
-    flex: 1; /* Chiếm 50% chiều rộng */
+    width: 737px;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Đẩy text lên trên, ảnh xuống dưới */
-    gap: 30px; /* Khoảng cách giữa Text và Ảnh nhỏ */
-}
-
-.heroContent {
-    /* Phần chứa text */
+    justify-content: space-between;
+    gap: 30px;
 }
 
 .heroTitle {
-    font-size: 3.5rem;
+    font-size: 3.6rem;
     color: #004D40;
     font-weight: 800;
     margin-bottom: 20px;
-    line-height: 1.2;
+    line-height: 1.1;
+    text-align: left;
 }
 
 .heroDesc {
-    font-size: 1rem;
+    font-size: 1.1rem;
     color: #529246;
     line-height: 1.6;
+    max-width: 90%;
 }
 
 .heroSmallImg {
     width: 100%;
-    height: 250px; /* Chiều cao cố định cho ảnh nhỏ */
+    height: 365px;
     object-fit: cover;
-    border-radius: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border-radius: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }
 
-/* --- CỘT PHẢI (Chứa Ảnh lớn) --- */
 .heroRight {
-    flex: 0.6;
-    position: relative;
-    height: auto;
+    width: 488px;
+    height: 635px;
+    flex-shrink: 1;
 }
 
 .heroLargeImg {
     width: 100%;
+    height: 100%;
     object-fit: cover;
-    border-radius: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border-radius: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }
+/* --- END HERO SECTION --- */
 
-/* --- RESPONSIVE --- */
-@media (max-width: 768px) {
-    .hero {
-        flex-direction: column; /* Xếp chồng lên nhau trên mobile */
-    }
-    .heroSmallImg {
-        height: 200px;
-    }
-    .heroLargeImg {
-        min-height: 300px;
-        border-top-right-radius: 20px;
-    }
-}
 
-/* --- FILTER BAR (Thanh tìm kiếm nhỏ) --- */
-.filterBar {
-    display: flex;
-    background: white;
-    padding: 10px 20px;
-    border-radius: 30px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    border: 1px solid #eee;
-    margin-bottom: 30px;
+/* --- FILTER BAR (GIỮ NGUYÊN) --- */
+.filterBarContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 54px; 
     gap: 15px;
-    align-items: center;
+    margin-bottom: 40px;
+    align-items: flex-start;
+    position: relative;
+    z-index: 10;
 }
-
-.filterInput {
-    flex: 1;
-    border: none;
-    outline: none;
-    padding: 8px;
-    font-size: 0.9rem;
-    border-right: 1px solid #eee;
-}
-
-.filterInput:last-child {
-    border-right: none;
-}
-
-.searchIcon {
-    background: #529246;
-    color: white;
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-}
-
-/* --- SECTION TITLES --- */
-.sectionTitle {
-    font-size: 2rem;
-    color: #004D40;
-    font-weight: 700;
-    margin-bottom: 20px;
-}
-
-/* --- 2. DOMESTIC SECTION (Layout 2 cột vé + 1 cột sidebar) --- */
-.domesticSection {
-    display: grid;
-    grid-template-columns: 2fr 1fr; /* 2 phần vé, 1 phần sidebar */
-    gap: 30px;
-    margin-bottom: 80px;
-}
-
-.ticketGridTwo {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-}
-
-/* --- 3. INTERNATIONAL SECTION (Layout 3 cột vé) --- */
-.internationalSection {
-    margin-bottom: 60px;
-}
-
-.ticketGridThree {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-}
-
-/* --- TICKET CARD STYLE --- */
-.ticketCard {
-    background: white;
+.filterBox {
+    position: relative;
+    border: 1.5px solid #ccc;
     border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-    border: 1px solid #f0f0f0;
-    transition: transform 0.2s;
+    padding: 0 15px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
+    height: 54px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.filterBox:focus-within { border-color: #006D5B; background: #fff; }
+.filterBox.error { border-color: #d32f2f; background-color: #fff8f8; }
+.filterLabel { font-size: 0.75rem; color: #006D5B; margin-bottom: 2px; }
+.filterValue {
+    border: none; outline: none; background: transparent; width: 100%;
+    color: #006D5B; font-weight: 700; font-size: 1rem;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.filterValue::placeholder { color: #aaa; font-weight: normal; }
+.filterIcon { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #529246; pointer-events: none; }
+.arrowIcon { position: absolute; right: 15px; top: 65%; transform: translateY(-50%); font-size: 0.7rem; color: #999; }
+.dropdownMenu {
+    position: absolute; top: 110%; left: 0; width: 100%; background: white;
+    border: 1px solid #006D5B; border-radius: 12px; padding: 5px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15); z-index: 100; max-height: 280px; overflow-y: auto;
+}
+.dropdownItem {
+    padding: 10px 15px; border-radius: 8px; color: #006D5B; font-weight: 600; cursor: pointer; margin-bottom: 2px; font-size: 0.95rem; transition: background 0.2s;
+}
+.dropdownItem:hover { background-color: #f0f0f0; }
+.dropdownItem.active { background-color: #529246; color: white; }
+.searchBtn {
+    width: 54px; height: 54px; background-color: #529246; border-radius: 12px; border: none;
+    color: white; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: background 0.3s; box-shadow: 0 4px 10px rgba(82, 146, 70, 0.2);
+}
+.searchBtn:hover { background-color: #0E6552; }
+.errorMessage {
+    position: absolute; bottom: -25px; left: 0; font-size: 0.75rem; color: #d32f2f; font-weight: bold; display: flex; align-items: center; gap: 5px; white-space: nowrap;
+}
+
+
+/* --- GRID LAYOUT (MỚI - 3 CỘT) --- */
+.sectionTitle { font-size: 3rem; color: #004D40; font-weight: 700; margin-bottom: 30px; margin-top: 60px; }
+
+/* Grid chung cho cả 2 mục (đã bỏ sidebar) */
+.ticketGrid {
+    display: grid;
+    /* 3 cột đều nhau */
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+/* --- TICKET CARD (DESIGN MỚI) --- */
+.ticketCard {
+    width: 418px; /* [YÊU CẦU] Width cố định */
+    height: 216px; /* [YÊU CẦU] Height cố định */
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    box-sizing: border-box; /* Để padding không làm to khung */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    border: 1px solid #e0e0e0;
+    transition: transform 0.2s, border-color 0.2s;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Phân bố nội dung trên dưới */
 }
 
 .ticketCard:hover {
-    transform: translateY(-3px);
+    transform: translateY(-5px);
     border-color: #529246;
+    box-shadow: 0 10px 25px rgba(82, 146, 70, 0.15);
 }
 
-.routeInfo {
-    font-size: 0.85rem;
-    color: #1b5e20;
-    margin-bottom: 5px;
-}
-
-.destination {
-    font-size: 1.1rem;
-    font-weight: bold;
-    color: #004D40;
+/* Phần trên của Card (Chứa Địa điểm + Giá tiền ngang hàng) */
+.cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
     margin-bottom: 10px;
 }
 
+/* Khối thông tin địa điểm (Bên trái) */
+.routeInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.fromText {
+    font-size: 0.85rem;
+    color: #004D40;
+    font-weight: 500;
+}
+
+.toText {
+    font-size: 1.4rem;
+    color: #004D40;
+    font-weight: 800; /* Đậm hơn */
+    line-height: 1.2;
+}
+
+/* Khối giá tiền (Bên phải - [YÊU CẦU] Đặt phía bên phải) */
+.priceTag {
+    font-size: 1.5rem;
+    color: #D32F2F; /* Màu đỏ nổi bật */
+    font-weight: 800;
+    text-align: right;
+    line-height: 1;
+}
+
+.currency {
+    font-size: 0.9rem;
+    vertical-align: super;
+    margin-left: 2px;
+    color: #D32F2F;
+}
+
+/* Tag "Chỗ ngồi có hạn" */
 .tag {
     display: inline-block;
     background-color: #FFF3E0;
+    border: 1px solid #FFE0B2;
     color: #F57C00;
     font-size: 0.75rem;
-    padding: 4px 8px;
-    border-radius: 4px;
+    padding: 4px 10px;
+    border-radius: 6px;
     font-weight: bold;
-    margin-bottom: 15px;
+    width: fit-content;
 }
 
-.priceRow {
+/* Phần dưới (Ngày bay + Hạn chót) */
+.cardFooter {
+    border-top: 1px dashed #eee;
+    padding-top: 15px;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.price {
-    font-size: 1.3rem;
-    color: #D32F2F; /* Màu đỏ giá */
-    font-weight: bold;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .dateRange {
-    font-size: 0.8rem;
-    color: #1b5e20;
-    margin-bottom: 10px;
-    font-weight: 600;
+    font-size: 0.9rem;
+    color: #006D5B;
+    font-weight: 700;
 }
 
 .deadline {
     font-size: 0.75rem;
-    color: #006D5B;
+    color: #666;
     font-style: italic;
-    border-top: 1px dashed #eee;
-    padding-top: 10px;
 }
 
-/* --- SIDEBAR (NEWSLETTER) --- */
-.sidebar {
-    background-color: #1b5e20; /* Xanh đậm */
-    background-image: linear-gradient(to bottom right, #4caf50, #1b5e20);
-    border-radius: 16px;
-    padding: 30px;
-    color: white;
-    text-align: center;
-    height: fit-content;
-}
-
-.sidebarTitle {
-    font-size: 1.1rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-    line-height: 1.4;
-}
-
-.sidebarDesc {
-    font-size: 0.9rem;
-    margin-bottom: 20px;
-    opacity: 0.9;
-}
-
-.sidebarInput {
-    width: 100%;
-    padding: 12px;
-    border-radius: 8px;
-    border: none;
-    margin-bottom: 10px;
-    font-size: 0.9rem;
-    box-sizing: border-box;
-}
-
-.sidebarCheckbox {
+/* --- LOAD MORE BUTTON --- */
+.loadMoreContainer {
     display: flex;
-    align-items: start;
-    gap: 10px;
-    text-align: left;
-    font-size: 0.8rem;
-    margin-bottom: 20px;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 60px;
 }
 
-.sidebarBtn {
-    background: transparent;
-    border: 1px solid white;
-    color: white;
-    padding: 10px 30px;
-    border-radius: 20px;
+.loadMoreBtn {
+    background-color: white;
+    border: 1.5px solid #006D5B;
+    color: #006D5B;
+    padding: 10px 40px;
+    border-radius: 30px;
     font-weight: bold;
+    font-size: 1rem;
     cursor: pointer;
+    transition: all 0.3s;
 }
 
-.sidebarBtn:hover {
-    background: white;
-    color: #1b5e20;
+.loadMoreBtn:hover {
+    background-color: #006D5B;
+    color: white;
 }
 
 /* Responsive */
-@media (max-width: 1024px) {
-    .domesticSection { grid-template-columns: 1fr; }
-    .ticketGridThree { grid-template-columns: repeat(2, 1fr); }
-    .hero { flex-direction: column-reverse; }
-    .heroImg { width: 100%; height: 300px; }
+@media (max-width: 1300px) {
+    .ticketGrid {
+        grid-template-columns: repeat(2, 1fr); /* Xuống 2 cột */
+        justify-items: center;
+    }
+    .hero { flex-direction: column; align-items: center; }
+    .heroLeft, .heroRight { width: 100%; height: auto; }
 }
 
 @media (max-width: 768px) {
-    .ticketGridTwo, .ticketGridThree { grid-template-columns: 1fr; }
+    .ticketGrid { grid-template-columns: 1fr; } /* Xuống 1 cột */
+    .filterBarContainer { grid-template-columns: 1fr; }
+    .searchBtn { width: 100%; }
 }

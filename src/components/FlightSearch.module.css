@@ -1,9 +1,9 @@
 /* Container chính */
 .searchWrapper {
     max-width: 889px;
-    margin: 30px auto 0 auto;
+    margin: 20px auto 0 auto;
     background: white;
-    padding: 30px;
+    padding: 20px;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     position: relative;

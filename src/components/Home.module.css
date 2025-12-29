@@ -12,8 +12,7 @@
 .heroSection {
     position: relative;
     width: 1265px;
-   /* max-width: 1200px;*/
-    height: 430px;
+    height: relative;
     margin: 40px auto 0 auto;
     margin-top: 60px;
     border-radius: 30px;

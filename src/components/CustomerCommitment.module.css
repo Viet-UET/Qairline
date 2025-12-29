@@ -1,0 +1,175 @@
+.container {
+    width: 100%;
+    background-color: #fff;
+    font-family: 'Afacad', sans-serif;
+    color: #333;
+    padding-bottom: 80px;
+}
+
+/* --- HERO BANNER --- */
+.heroBanner {
+    position: relative;
+    width: 100%;
+    min-height: 400px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    margin-top: 60px; /* Chừa chỗ cho Header */
+    padding: 20px;
+}
+
+.heroOverlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 77, 64, 0.25); /* Phủ xanh đen mờ */
+    z-index: 1;
+}
+
+.heroContent {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+}
+
+.mainTitle {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.subTitle {
+    color: white;
+    font-size: 1.3rem;
+    font-weight: 500;
+    opacity: 0.95;
+    line-height: 1.6;
+}
+
+/* --- WRAPPER CHUNG --- */
+.wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 60px 20px;
+}
+
+/* --- GIỚI THIỆU --- */
+.introSection {
+    text-align: center;
+    margin-bottom: 60px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.introText {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #555;
+}
+
+/* --- GRID CAM KẾT --- */
+.commitmentGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 cột */
+    gap: 30px;
+    margin-bottom: 80px;
+}
+
+.card {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 16px;
+    padding: 40px 30px;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    border-color: #529246;
+    box-shadow: 0 15px 30px rgba(0, 77, 64, 0.1);
+}
+
+.iconCircle {
+    width: 80px;
+    height: 80px;
+    background-color: #e8f5e9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 25px auto;
+    color: #2e7d32;
+    font-size: 2rem; /* Kích thước icon */
+}
+
+.cardTitle {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #004D40;
+    margin-bottom: 15px;
+}
+
+.cardDesc {
+    font-size: 1rem;
+    color: #666;
+    line-height: 1.6;
+}
+
+/* --- QUOTE KẾT THÚC --- */
+.quoteSection {
+    background-color: #f1f8e9;
+    border-radius: 20px;
+    padding: 60px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.quoteText {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #004D40;
+    font-style: italic;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.quoteAuthor {
+    font-size: 1.1rem;
+    color: #529246;
+    font-weight: 600;
+    position: relative;
+    z-index: 2;
+}
+
+/* Dấu ngoặc kép trang trí nền */
+.quoteSection::before {
+    content: "“";
+    font-size: 10rem;
+    position: absolute;
+    top: -20px;
+    left: 20px;
+    color: rgba(82, 146, 70, 0.1);
+    font-family: serif;
+    z-index: 1;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .commitmentGrid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+    .commitmentGrid { grid-template-columns: 1fr; }
+    .mainTitle { font-size: 2.5rem; }
+}

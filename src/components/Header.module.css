@@ -1,8 +1,8 @@
 /* --- Header --- */
 .site-header {
   color: #0e6552;
-  font-size: 24px;
-  padding: 1rem 2rem;
+  font-size: 20px;
+  padding: 10px 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   position: fixed;
   /* Giữ header cố định */
@@ -19,10 +19,9 @@
 .logo-image {
   width: 200px;
   margin-left: 81px;
-  margin-top: 30px;
+  margin-top: 20px;
+  display: block;
 }
-
-
 
 .active {
   font-weight: bold;

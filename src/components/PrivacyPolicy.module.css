@@ -1,0 +1,155 @@
+.container {
+    width: 100%;
+    background-color: #fff;
+    font-family: 'Afacad', sans-serif;
+    color: #333;
+    padding-bottom: 80px;
+}
+
+/* --- HERO BANNER (Đồng bộ với trang Cam kết) --- */
+.heroBanner {
+    position: relative;
+    width: 100%;
+    min-height: 400px; /* Chiều cao tối thiểu giống trang Cam kết */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    margin-top: 60px; /* Chừa chỗ cho Header fixed */
+    padding: 20px;
+}
+
+.heroOverlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    /* Dùng lớp phủ xanh đen mờ giống trang Cam kết */
+    background: rgba(0, 77, 64, 0.25); 
+    z-index: 1;
+}
+
+.heroContent {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+}
+
+.mainTitle {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 15px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.subTitle {
+    color: white;
+    font-size: 1.3rem;
+    font-weight: 500;
+    opacity: 0.95;
+    line-height: 1.6;
+}
+
+/* --- WRAPPER NỘI DUNG --- */
+.wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 60px 20px;
+}
+
+/* --- SECTIONS (Nội dung chính sách) --- */
+.section {
+    margin-bottom: 60px;
+}
+
+.sectionTitle {
+    font-size: 2.2rem;
+    color: #004D40;
+    font-weight: 700;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Icon trang trí cạnh tiêu đề mục */
+.iconBox {
+    width: 50px;
+    height: 50px;
+    background-color: #e8f5e9;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #529246;
+}
+
+.content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #444;
+    text-align: justify;
+}
+
+.content p {
+    margin-bottom: 15px;
+}
+
+.list {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+}
+
+.list li {
+    position: relative;
+    padding-left: 25px;
+    margin-bottom: 10px;
+}
+
+.list li::before {
+    content: "•";
+    color: #529246;
+    font-weight: bold;
+    font-size: 1.5rem;
+    position: absolute;
+    left: 5px;
+    top: -5px;
+}
+
+/* --- BOX LIÊN HỆ BẢO MẬT --- */
+.contactBox {
+    background-color: #f9fcf9;
+    border: 1px solid #c8e6c9;
+    border-radius: 16px;
+    padding: 40px;
+    text-align: center;
+    margin-top: 40px;
+}
+
+.contactTitle {
+    font-size: 1.5rem;
+    color: #004D40;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.contactLink {
+    color: #529246;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 1.2rem;
+}
+
+.contactLink:hover {
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .mainTitle { font-size: 2.5rem; }
+    .heroBanner { min-height: 300px; }
+}

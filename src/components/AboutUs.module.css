@@ -1,0 +1,422 @@
+.container {
+    width: 100%;
+    background-color: #fff;
+    font-family: 'Afacad', sans-serif;
+    color: #333;
+    padding-bottom: 80px;
+}
+
+/* --- HERO BANNER --- */
+.heroBanner {
+    position: relative;
+    width: 100%;
+    height: 450px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    margin-top: 60px;
+    margin-bottom: 60px;
+}
+
+.heroOverlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.4); /* Đen mờ để nổi chữ */
+    z-index: 1;
+}
+
+.heroContent {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    padding: 0 20px;
+}
+
+.mainTitle {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.subTitle {
+    font-size: 1.2rem;
+    font-weight: 500;
+    line-height: 1.6;
+}
+
+/* --- WRAPPER --- */
+.wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* --- GIỚI THIỆU --- */
+.introSection {
+    text-align: center;
+    margin-bottom: 80px;
+    max-width: 850px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.sectionTitle {
+    font-size: 2.5rem;
+    color: #004D40;
+    font-weight: 700;
+    margin-bottom: 30px;
+    position: relative;
+    display: inline-block;
+}
+
+.sectionTitle::after {
+    content: "";
+    display: block;
+    width: 60px;
+    height: 4px;
+    background: #529246;
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+
+.introText {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #555;
+    text-align: justify;
+}
+
+/* --- TIMELINE TƯƠNG TÁC --- */
+.timelineContainer {
+    display: flex;
+    gap: 50px;
+    margin-bottom: 100px;
+    background: #f9fcf9; /* Nền xanh rất nhạt */
+    padding: 40px;
+    border-radius: 20px;
+    border: 1px solid #e0f2f1;
+}
+
+/* Cột trái: Danh sách các năm (Navigation) */
+.timelineNav {
+    flex: 0 0 150px; /* Cố định chiều rộng */
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+    border-right: 3px solid #ddd; /* Đường kẻ dọc */
+}
+
+.yearItem {
+    padding: 20px 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    text-align: right;
+    padding-right: 30px; /* Cách đường kẻ một chút */
+}
+
+.yearItem:hover {
+    color: #529246;
+}
+
+.yearItem.active {
+    color: #004D40;
+    font-size: 2rem; /* Phóng to năm đang chọn */
+}
+
+/* Chấm tròn trên đường kẻ */
+.yearItem::after {
+    content: "";
+    position: absolute;
+    right: -11px; /* Căn chỉnh để nằm đè lên đường kẻ dọc */
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    background: white;
+    border: 3px solid #ddd;
+    border-radius: 50%;
+    transition: all 0.3s;
+}
+
+.yearItem.active::after {
+    background: #529246;
+    border-color: #529246;
+    width: 20px;
+    height: 20px;
+    right: -13px;
+}
+
+/* Cột phải: Nội dung hiển thị (Display) */
+.timelineDisplay {
+    flex: 1;
+    position: relative;
+    min-height: 400px; /* Chiều cao tối thiểu để không bị giật layout */
+}
+
+.displayCard {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.displayImage {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    margin-bottom: 25px;
+}
+
+.displayText h3 {
+    font-size: 2rem;
+    color: #004D40;
+    margin-bottom: 15px;
+}
+
+.displayText p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #555;
+}
+
+/* --- KẾT THÚC --- */
+.thankYouSection {
+    text-align: center;
+    padding: 60px 20px;
+    background: linear-gradient(to right, #004D40, #006D5B);
+    color: white;
+    border-radius: 20px;
+}
+
+.thankYouTitle {
+    font-size: 2.2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.thankYouDesc {
+    font-size: 1.2rem;
+    max-width: 700px;
+    margin: 0 auto 30px;
+    opacity: 0.9;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .timelineContainer {
+        flex-direction: column;
+    }
+    .timelineNav {
+        flex-direction: row; /* Chuyển thành hàng ngang trên mobile */
+        overflow-x: auto;
+        border-right: none;
+        border-bottom: 3px solid #ddd;
+        padding-bottom: 10px;
+    }
+    .yearItem {
+        text-align: center;
+        padding: 10px 20px;
+        padding-right: 20px;
+    }
+    .yearItem::after {
+        right: 50%;
+        top: 100%; /* Chấm tròn nằm dưới */
+        margin-right: -10px;
+        margin-top: 2px;
+    }
+    .displayImage {
+        height: 250px;
+    }
+}
+
+/* ... (Các phần Hero, Timeline cũ giữ nguyên) ... */
+
+/* ... (Giữ nguyên phần Hero, Intro, Timeline cũ) ... */
+
+/* --- SECTION CHỨA POSTCARD --- */
+.postcardSection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 20px;
+    background-color: #f0f7f4; 
+    perspective: 1500px; /* Tăng chiều sâu 3D */
+    flex-direction: column;
+}
+
+/* Tiêu đề mục (Đã tách ra khỏi postcard) */
+.postcardSectionTitle {
+    font-size: 3rem;
+    color: #004D40;
+    font-weight: 700;
+    margin-bottom: 40px;
+    text-align: center;
+
+}
+
+.instructionText {
+    margin-top: 30px;
+    color: #004D40;
+    font-size: 0.9rem;
+    font-style: italic;
+    opacity: 0.7;
+    animation: bounce 2s infinite;
+}
+
+/* --- KHUNG POSTCARD --- */
+.postcardWrapper {
+    width: 700px; /* Tăng chiều rộng để bố cục 2 cột mặt sau đẹp hơn */
+    height: 450px;
+    position: relative;
+    cursor: pointer;
+    background-color: transparent;
+}
+
+.postcardInner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-style: preserve-3d;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+    border-radius: 12px;
+}
+
+.postcardWrapper.flipped .postcardInner {
+    transform: rotateY(180deg);
+}
+
+/* --- ĐỊNH DẠNG CHUNG 2 MẶT --- */
+.postcardFront {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius: 0px;
+    overflow: hidden;
+    background-color: #fff;
+    border: 10px solid #fff; /* Viền trắng giống ảnh polaroid */
+    
+}
+
+.postcardBack {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius: 0px;
+    overflow: hidden;
+    background-color: #fff;
+    border: 10px solid #fff; /* Viền trắng giống ảnh polaroid */
+}
+
+/* --- MẶT TRƯỚC (CHỈ HÌNH ẢNH) --- */
+.postcardFront {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.frontImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Đảm bảo ảnh phủ kín khung */
+    border-radius: 4px;
+}
+
+/* --- MẶT SAU (CỘT ẢNH - CỘT CHỮ) --- */
+.postcardBack {
+    transform: rotateY(180deg);
+    display: flex;
+
+}
+
+/* Cột trái: Hình ảnh */
+.backLeftImg {
+    flex: 1; /* Chiếm 50% hoặc 40% tùy chỉnh */
+    overflow: hidden;
+    position: relative;
+}
+
+.backSideImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-right: 1px solid #ddd;
+}
+
+/* Cột phải: Lời chúc */
+.backRightText {
+    transform: translateY(30px);
+    flex: 1.2; /* Rộng hơn ảnh một chút để chứa chữ */
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: left;
+
+}
+
+.greeting {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #004D40;
+    margin-bottom: 20px;
+    margin-top: 0;
+}
+
+.messageBody {
+    font-size: 1.05rem;
+    line-height: 30px; /* Trùng với background-size để chữ nằm trên dòng kẻ */
+    color: #333;
+    font-family: 'Afacad', sans-serif;
+    margin-bottom: 20px;
+}
+
+.signature {
+    margin-top: auto;
+
+    color: #529246;
+    font-size: 1.4rem;
+    text-align: right;
+    font-weight: bold;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+    40% {transform: translateY(-5px);}
+    60% {transform: translateY(-3px);}
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .postcardWrapper {
+        width: 100%;
+        height: 600px; /* Cao lên để xếp dọc */
+    }
+    .postcardBack {
+        flex-direction: column; /* Xếp dọc trên mobile */
+    }
+    .backLeftImg { flex: 1; border-right: none; border-bottom: 1px solid #ddd; }
+    .backRightText { flex: 1.5; }
+    .postcardSectionTitle { font-size: 2rem; }
+}

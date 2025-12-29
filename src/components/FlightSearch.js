@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import styles from "./FlightSearch.module.css";
+import { Link } from 'react-router-dom';
 
 // ICON COMPONENTS (Giữ nguyên)
 const PlaneIcon = () => (
@@ -512,7 +513,10 @@ function FlightSearch() {
                 <strong>Bay cùng gia đình?</strong> Hãy chắc chắn rằng quý khách
                 đã chuẩn bị một cách có tổ chức và sẵn sàng đi cùng con cái của
                 mình — hãy đọc lời khuyên và hướng dẫn của chúng tôi tại mục{" "}
-                <strong>Đi cùng gia đình</strong>.
+                {/* LINK ĐẾN MỤC GIA ĐÌNH */}
+            <Link to="/terms#family" style={{color: 'inherit', textDecoration: 'underline', fontWeight: 'bold'}}>
+                Đi cùng gia đình
+            </Link>.
               </div>
             </div>
           )}
@@ -524,7 +528,10 @@ function FlightSearch() {
                   <strong>Thông tin trẻ sơ sinh:</strong> Trước khi quý khách
                   đặt chỗ, vui lòng đọc hướng dẫn về đặt chỗ cho trẻ sơ sinh,
                   hạn mức hành lý ký gửi, phí cho trẻ sơ sinh và nhiều thông tin
-                  khác tại mục <strong>Đi cùng trẻ sơ sinh</strong>.
+                  khác tại mục {/* LINK ĐẾN MỤC SƠ SINH */}
+                <Link to="/terms#infant" style={{color: 'inherit', textDecoration: 'underline', fontWeight: 'bold'}}>
+                    Đi cùng trẻ sơ sinh
+                </Link>.
                 </div>
               </div>
               <div className={`${styles.alertBox} ${styles.yellowAlert}`}>

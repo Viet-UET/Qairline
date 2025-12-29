@@ -40,7 +40,7 @@ function Home() {
     {
       id: 4,
       img: imgSarajero,
-      link: "/sarajevo",
+      link: "/discover/stories/sarajevo",
     },
     {
       id: 5,
@@ -169,7 +169,8 @@ function Home() {
           </div>
 
           {/* Card CTA */}
-          <div className={styles.ctaCard}>
+          <div className={styles.ctaCard} >
+            <a href="/promo" className={styles.offerLink}></a>
             <span style={{ fontSize: "2rem", marginBottom: "10px" }}>✈️</span>
             <div className={styles.ctaText}>Bạn muốn xem thêm ưu đãi?</div>
             <button className={styles.ctaBtn}>Xem tất cả các khuyến mãi</button>
@@ -226,7 +227,7 @@ function Home() {
       </section>
 
       {/* --- 5. NEWSLETTER --- */}
-      <section className={styles.newsletterSection}>
+      <section className={styles.sectionWrapper}>
         <h2 className={styles.sectionTitle}>Đăng ký Q-eflight News</h2>
 
         <div className={styles.newsletterBox}>
