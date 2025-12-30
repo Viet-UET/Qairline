@@ -49,11 +49,13 @@ function InterestingStories() {
   ];
 
   return (
+    
     <div className="page-wrapper">
       <Header />
 
       <main className={styles.container}>
         {/* Breadcrumb */}
+        
         <div className={styles.breadcrumb}>
           <Link to="/discover">Khám phá</Link>
           <span>&gt;</span>

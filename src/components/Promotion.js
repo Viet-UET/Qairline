@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import styles from "./Promotion.module.css";
 import Header from "./Header";
 import Footer from "./Footer";
+import FlightSearchModal from './FlightSearchModal'; // Import Modal
 
 // IMPORT ẢNH & ICONS
 import imgPromo_1 from "../Assets/Promo_1.png";
@@ -51,7 +52,6 @@ const INTERNATIONAL_PRICE_RANGES = [
 
 // --- HÀM HỖ TRỢ LỌC GIÁ ---
 const parsePrice = (priceStr) => {
-    // Chuyển "1,290,000" thành 1290000
     if(!priceStr) return 0;
     return parseInt(priceStr.toString().replace(/[^0-9]/g, ''), 10);
 };
@@ -59,21 +59,16 @@ const parsePrice = (priceStr) => {
 const isPriceInRange = (flightPriceStr, rangeLabel) => {
     if (!rangeLabel) return true;
     const price = parsePrice(flightPriceStr);
-
-    // Logic vé Nội địa
     if (rangeLabel === "Dưới 500.000đ") return price < 500000;
     if (rangeLabel === "Từ 500.000đ - 1.000.000đ") return price >= 500000 && price <= 1000000;
     if (rangeLabel === "1 - 2 triệu") return price >= 1000000 && price <= 2000000;
     if (rangeLabel === "2 - 3 triệu") return price >= 2000000 && price <= 3000000;
     if (rangeLabel === "Trên 3 triệu") return price > 3000000;
-
-    // Logic vé Quốc tế
     if (rangeLabel === "Dưới 1.000.000đ") return price < 1000000;
     if (rangeLabel === "Từ 1.000.000đ - 5.000.000đ") return price >= 1000000 && price <= 5000000;
     if (rangeLabel === "5 - 7 triệu") return price >= 5000000 && price <= 7000000;
     if (rangeLabel === "7 - 10 triệu") return price >= 7000000 && price <= 10000000;
     if (rangeLabel === "Trên 10 triệu") return price > 10000000;
-
     return true;
 };
 
@@ -83,11 +78,9 @@ const PromoSearchBar = ({ locations, priceRanges, onSearch }) => {
   const [dest, setDest] = useState("");
   const [price, setPrice] = useState("");
   const [error, setError] = useState("");
-  
   const [showOriginMenu, setShowOriginMenu] = useState(false);
   const [showDestMenu, setShowDestMenu] = useState(false);
   const [showPriceMenu, setShowPriceMenu] = useState(false);
-  
   const originRef = useRef(null);
   const destRef = useRef(null);
   const priceRef = useRef(null);
@@ -119,7 +112,6 @@ const PromoSearchBar = ({ locations, priceRanges, onSearch }) => {
 
   return (
     <div className={styles.filterBarContainer}>
-      {/* 1. Điểm đi */}
       <div className={`${styles.filterBox} ${error ? styles.error : ""}`} ref={originRef}>
         <div className={styles.filterLabel}>Điểm khởi hành</div>
         <input
@@ -142,7 +134,6 @@ const PromoSearchBar = ({ locations, priceRanges, onSearch }) => {
         {error && <div className={styles.errorMessage}>⚠️ {error}</div>}
       </div>
 
-      {/* 2. Điểm đến */}
       <div className={`${styles.filterBox} ${error ? styles.error : ""}`} ref={destRef}>
         <div className={styles.filterLabel}>Điểm đến</div>
         <input
@@ -164,7 +155,6 @@ const PromoSearchBar = ({ locations, priceRanges, onSearch }) => {
         )}
       </div>
 
-      {/* 3. Giá vé */}
       <div className={styles.filterBox} ref={priceRef} onClick={() => setShowPriceMenu(!showPriceMenu)}>
         <div className={styles.filterLabel}>Giá vé mong muốn</div>
         <div className={styles.filterValue} style={{ fontWeight: price ? 700 : 400, color: price ? "#006D5B" : "#aaa" }}>
@@ -198,6 +188,10 @@ function Promotion() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // --- STATE MODAL ---
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedFlight, setSelectedFlight] = useState({ origin: '', dest: '' });
 
   const [visibleDomestic, setVisibleDomestic] = useState(9);
   const [visibleIntl, setVisibleIntl] = useState(9);
@@ -241,42 +235,48 @@ function Promotion() {
     { id: 15, from: "Thành phố Hà Nội đến", to: "New York (Mỹ)", price: "29,990,000", date: "01/05/2026 - 30/08/2026" },
   ];
 
-  // --- HÀM LỌC (Đã sửa logic để xử lý "Hà Nội (HAN)" vs "Thành phố Hà Nội...") ---
+  // Logic lọc và làm sạch từ khóa
   const filterFlights = (flights, criteria) => {
     return flights.filter(flight => {
-        // Hàm làm sạch từ khóa: "Hà Nội (HAN)" -> "hà nội"
         const cleanTerm = (term) => {
             if (!term) return "";
-            // Tách dấu mở ngoặc (, lấy phần đầu, chuyển thường, bỏ khoảng trắng thừa
             return term.split(" (")[0].toLowerCase().trim();
         };
 
         const searchOrigin = cleanTerm(criteria.origin);
         const searchDest = cleanTerm(criteria.dest);
 
-        // Lọc Điểm đi
         const matchOrigin = criteria.origin 
             ? flight.from.toLowerCase().includes(searchOrigin)
             : true;
         
-        // Lọc Điểm đến
         const matchDest = criteria.dest 
             ? flight.to.toLowerCase().includes(searchDest)
             : true;
             
-        // Lọc Giá
         const matchPrice = isPriceInRange(flight.price, criteria.price);
 
         return matchOrigin && matchDest && matchPrice;
     });
   };
 
-  // Tạo danh sách đã lọc
   const filteredDomesticFlights = filterFlights(domesticFlights, domesticFilter);
   const filteredIntlFlights = filterFlights(intlFlights, intlFilter);
 
+  // Xử lý khi click vào vé -> Mở Modal
+  const handleTicketClick = (item) => {
+    const origin = item.from.replace("Thành phố ", "").replace(" đến", "");
+    const dest = item.to;
+    setSelectedFlight({ origin, dest });
+    setIsModalOpen(true);
+  };
+
   const TicketCard = ({ item }) => (
-    <div className={styles.ticketCard}>
+    <div 
+        className={styles.ticketCard}
+        onClick={() => handleTicketClick(item)}
+        style={{cursor: 'pointer'}}
+    >
       <div>
         <div className={styles.cardHeader}>
           <div className={styles.routeInfo}>
@@ -302,6 +302,14 @@ function Promotion() {
     <div className={styles.container}>
       <Header />
       <main className={styles.wrapper}>
+        
+        {/* MODAL */}
+        <FlightSearchModal 
+            isOpen={isModalOpen} 
+            onClose={() => setIsModalOpen(false)} 
+            initialData={selectedFlight}
+        />
+
         <section className={styles.hero}>
           <div className={styles.heroLeft}>
             <div className={styles.heroContent}>
@@ -386,7 +394,7 @@ function Promotion() {
           </div>
         )}
       </main>
-
+      <Footer />
     </div>
   );
 }

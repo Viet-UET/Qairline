@@ -7,7 +7,7 @@
 }
 
 .container {
-    max-width: 1200px;
+    max-width: 1265px;
     margin: 0 auto;
     /* Tăng padding-top từ 40px lên 120px để tránh Header (Fixed) */
     padding: 120px 20px 40px 20px; 
@@ -23,113 +23,105 @@
     object-fit: cover;
 }
 
-/* --- PHẦN 1: HERO SECTION (Lưới 12 cột) --- */
-.heroSection {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr); /* Chia màn hình thành 12 cột */
-    gap: 30px;
-    margin-bottom: 80px;
-    align-items: start;
+.container {
+    width: 100%;
+    background-color: #fcfcfc;
+    font-family: 'Afacad', sans-serif;
+    color: #1b5e20;
+    margin-top: -400px;
 }
 
-/* Cột trái: Chiếm 5/12 cột */
+.wrapper {
+    max-width: 1300px; 
+    margin: 0 auto;
+    padding: 0px 20px 60px 20px;
+}
+
+/* --- HERO SECTION (GIỮ NGUYÊN TUYỆT ĐỐI) --- */
+.hero {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    align-items: flex-end;
+    margin-bottom: 80px;
+}
+
 .heroLeft {
-    grid-column: span 5; 
+    width: 737px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 100%;
+    gap: 30px;
 }
 
 .heroTitle {
-    font-size: 2.5rem; /* 40px */
+    margin-top: 400px;
+    font-size: 3.6rem;
+    color: #004D40;
     font-weight: 800;
-    color: #004D40; /* Xanh đậm */
-    line-height: 1.2;
     margin-bottom: 20px;
+    line-height: 1.1;
+    text-align: left;
 }
 
 .heroDesc {
-    font-size: 0.95rem;
-    color: #555;
+    font-size: 1.1rem;
+    color: #529246;
     line-height: 1.6;
-    margin-bottom: 30px;
-    text-align: justify;
+    max-width: 90%;
 }
 
-.heroLeftImg {
+.heroSmallImg {
     width: 100%;
-    height: 220px; /* Cố định chiều cao */
-    border-radius: 16px;
+    height: 365px;
+    object-fit: cover;
+    border-radius: 24px;
+    
 }
 
-
-/* CỘT PHẢI: Chứa cụm 3 ảnh */
 .heroRight {
-    grid-column: span 7;
-    display: grid;
-    /* Chia đôi không gian cho ảnh Cao và ảnh Nhỏ */
-    grid-template-columns: 1fr 1fr; 
-    grid-template-rows: 200px 220px; /* Chiều cao 2 hàng */
-    gap: 15px;
-}
-/* Ảnh cao bên phải (Angkor Wat) */
-.heroTallImg {
-    grid-column: 1 / 2; /* Cột 1 */
-    grid-row: 1 / 3;    /* Chạy dọc từ hàng 1 đến hết hàng 2 */
-    width: 100%;
-    height: 100%;
-    border-radius: 16px;
-    object-fit: cover;
+    width: 488px;
+    height: auto;
+    flex-shrink: 1;
+    
 }
 
-/* Ảnh nhỏ trên (Chùa) */
-.heroSmallTop {
-    grid-column: 2 / 3; /* Cột 2 */
-    grid-row: 1 / 2;    /* Hàng 1 */
+.heroLargeImg {
     width: 100%;
     height: 100%;
-    border-radius: 16px;
     object-fit: cover;
-}
+    border-radius: 24px;
 
-/* SỬA 3: Ảnh nhỏ dưới (Núi) chuyển sang cột 2 (Góc dưới phải) */
-.heroSmallBottom {
-    grid-column: 2 / 3; /* Cột 2 */
-    grid-row: 2 / 3;    /* Hàng 2 */
-    width: 100%;
-    height: 100%;
-    border-radius: 16px;
-    object-fit: cover;
 }
-
-/* --- HEADERS CỦA CÁC SECTION --- */
+/* --- HEADERS (ĐỒNG BỘ STYLE 3REM) --- */
 .sectionHeader {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
     margin-bottom: 40px;
-    border-bottom: 1px solid #eee; /* Đường kẻ mờ trang trí */
-    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+    margin-top: 60px;
 }
 
 .headerTitle h2 {
-    font-size: 2rem;
+    font-size: 3rem; /* Yêu cầu 3rem */
     color: #004D40;
     margin: 0 0 10px 0;
     font-weight: 700;
 }
 
 .headerTitle p {
-    font-size: 0.9rem;
-    color: #666;
+    font-size: 1.1rem;
+    color: #529246;
     margin: 0;
-    max-width: 600px;
+    max-width: 700px;
 }
 
 .headerActions {
     display: flex;
     gap: 10px;
+    align-items: center;
 }
 
 .btnMore {
@@ -142,11 +134,17 @@
     cursor: pointer;
     font-size: 0.9rem;
     white-space: nowrap;
+    transition: all 0.2s;
+}
+
+.btnMore:hover {
+    background: #004D40;
+    color: white;
 }
 
 .btnNav {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     border: 1px solid #ccc;
     background: white;
@@ -154,125 +152,223 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: #666;
+    color: #004D40;
+    font-size: 1.2rem;
+    transition: all 0.2s;
 }
 
-/* --- PHẦN 2: POPULAR PLACES (Lưới 4 cột đều) --- */
-.placesGrid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); /* Bắt buộc 4 cột */
-    gap: 20px;
-    margin-bottom: 80px;
+.btnNav:hover {
+    background: #004D40;
+    color: white;
+    border-color: #004D40;
 }
 
+.btnNav:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* --- 2. POPULAR PLACES (SLIDER) --- */
+.placesSliderWindow {
+    overflow: hidden; /* Che các phần tử tràn ra ngoài */
+    width: 100%;
+}
+
+.placesSliderTrack {
+    display: flex;
+    gap: 20px; /* Khoảng cách giữa các thẻ */
+    transition: transform 0.5s ease-in-out; /* Hiệu ứng trượt mượt */
+}
+
+/* THẺ ĐỊA DANH (STYLE MỚI) */
 .placeCard {
+    /* Kích thước tổng thể: 302x513px */
+    width: 302px;
+    height: 513px;
+    flex-shrink: 0; /* Không bị co lại trong flex */
+    
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    overflow: hidden;
-    transition: transform 0.3s ease;
+    border-radius: 16px; /* Bo góc tròn */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08); /* Bóng nhẹ */
+    border: 1px solid #eee;
+    padding: 10px; /* Padding để ảnh cách viền 1 chút (hoặc bỏ nếu muốn ảnh sát lề) */
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
+    cursor: pointer;
+    transition: transform 0.2s;
 }
 
 .placeCard:hover {
     transform: translateY(-5px);
+    border-color: #529246;
 }
 
+/* Ảnh địa danh */
 .placeImg {
-    width: 100%;
-    height: 250px; /* Chiều cao cố định cho ảnh */
+    /* Kích thước ảnh: 282x371px */
+    width: 280px; /* 302px - 2*10px padding = 282px */
+    height: 371px;
     object-fit: cover;
+    border-radius: 12px; /* Bo góc ảnh */
+    margin-bottom: 15px;
 }
 
+/* Nội dung chữ bên dưới */
 .placeContent {
-    padding: 15px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Tên & Địa chỉ (Căn giữa) */
+.placeInfoCenter {
     text-align: center;
 }
 
 .placeTitle {
-    font-size: 1.1rem;
+    font-size: 1.5rem;
+    font-weight: 800; /* Chữ đậm */
     color: #004D40;
-    font-weight: 700;
-    margin: 10px 0 5px 0;
+    margin: 0 0 0 0;
 }
 
 .placeSub {
-    font-size: 0.85rem;
-    color: #555;
-    margin-bottom: 15px;
+    text-align: center;
+    font-size: 1rem;
+    color: #529246;
+    margin: 0;
 }
 
+/* Footer: Tag (Trái) & Rating (Phải) */
 .placeFooter {
     display: flex;
-    justify-content: center;
+    justify-content: space-between; /* Đẩy sang 2 bên */
     align-items: center;
-    gap: 10px;
-    font-size: 0.8rem;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed #eee;
+}
+
+.tagsWrapper {
+    display: flex;
+    gap: 5px;
 }
 
 .tag {
-    background-color: #FFF3E0; /* Màu cam nhạt */
-    color: #E65100;
-    padding: 3px 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #F57F17; /* Chữ vàng đậm */
+    background-color: #FFF9C4; /* Nền vàng nhạt */
+    border: 1px solid #FBC02D; /* Viền vàng đậm */
+    padding: 2px 8px;
     border-radius: 4px;
 }
 
 .rating {
-    color: #F9A825; /* Vàng sao */
+    font-size: 0.85rem;
     font-weight: bold;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 3px;
 }
 
-/* --- PHẦN 3: STORIES (Lưới 2 cột đều) --- */
+.starIcon {
+    color: #FBC02D; /* Màu sao vàng */
+}
+
+/* --- 3. STORIES SECTION (STYLE MỚI) --- */
 .storiesGrid {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Chia đôi màn hình */
+    grid-template-columns: 1.2fr 0.8fr; /* Cột trái lớn hơn chút */
     gap: 40px;
-    margin-bottom: 60px;
+    margin-bottom: 80px;
 }
 
-/* Story lớn bên trái */
+/* Story Lớn */
 .storyLarge {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    height: 400px;
 }
 
 .storyLargeImg {
     width: 100%;
-    height: 300px;
-    border-radius: 12px;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+}
+
+.storyLarge:hover .storyLargeImg {
+    transform: scale(1.05); /* Zoom nhẹ khi hover */
+}
+
+.storyLargeOverlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 30px;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    color: white;
+    box-sizing: border-box;
 }
 
 .storyLargeTitle {
-    font-size: 1.5rem;
-    color: #004D40;
-    font-weight: 700;
-    margin: 5px 0;
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    color: white;
 }
 
-/* List story nhỏ bên phải */
+.storyLargeDesc {
+    color: white;
+    font-size: 1rem;
+    opacity: 0.9;
+    margin-bottom: 15px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Cắt dòng */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* List Story Nhỏ */
 .storyList {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    justify-content: space-between;
 }
 
 .storyItem {
     display: flex;
-    align-items: center; /* Căn giữa theo trục dọc */
+    align-items: center;
     gap: 20px;
-    background: #fff;
-    padding: 10px;
+    background: white;
+    padding: 15px;
     border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+}
+
+.storyItem:hover {
+    border-color: #529246;
+    transform: translateX(5px);
 }
 
 .storyItemImg {
-    width: 140px; /* Cố định chiều rộng */
+    width: 90px;
     height: 90px;
+    object-fit: cover;
     border-radius: 8px;
-    flex-shrink: 0; /* Không cho ảnh co lại */
+    flex-shrink: 0;
 }
 
 .storyInfo {
@@ -281,56 +377,32 @@
 
 .author {
     font-size: 0.8rem;
-    color: #888;
-    margin-bottom: 4px;
+    color: #006D5B; /* Màu xanh thương hiệu */
+    font-weight: 600;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .storyItemTitle {
-    font-size: 1rem;
-    color: #004D40;
+    font-size: 1.1rem;
     font-weight: 700;
-    margin: 0 0 8px 0;
+    color: #333;
+    margin: 0 0 5px 0;
+    line-height: 1.3;
 }
 
-.readLink {
-    font-size: 0.8rem;
-    color: #004D40;
-    font-weight: 700;
-    text-decoration: none;
-    display: inline-block;
+.readMoreBtn {
+    font-size: 0.85rem;
+    color: #529246;
+    font-weight: bold;
+    text-decoration: underline;
 }
 
-/* --- RESPONSIVE (TỰ ĐIỀU CHỈNH) --- */
+/* Responsive */
 @media (max-width: 1024px) {
-    /* Tablet: Hero đổi layout, Places thành 2 cột */
-    .heroSection {
-        display: flex;
-        flex-direction: column;
-    }
-    .heroRight {
-        width: 100%;
-        grid-template-rows: 250px; /* Giảm chiều cao */
-    }
-    .placesGrid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 768px) {
-    /* Mobile: Tất cả về 1 cột */
-    .heroRight {
-        display: flex;
-        flex-direction: column;
-    }
-    .placesGrid {
-        grid-template-columns: 1fr;
-    }
-    .storiesGrid {
-        grid-template-columns: 1fr;
-    }
-    .sectionHeader {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-    }
+    .storiesGrid { grid-template-columns: 1fr; }
+    .storyLarge { height: 300px; }
+    .hero { flex-direction: column; align-items: center; }
+    .heroRight { margin-top: 0; }
 }

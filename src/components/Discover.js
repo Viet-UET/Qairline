@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./Discover.module.css";
 import { useNavigate } from "react-router-dom";
 
@@ -6,45 +6,142 @@ import { useNavigate } from "react-router-dom";
 import Header from "./Header";
 import Footer from "./Footer";
 
-// IMPORT HÌNH ẢNH (Thay thế bằng file thật của bạn)
-// Lưu ý: Dùng đúng tên file trong folder Assets của bạn
+// IMPORT HÌNH ẢNH
 import imgSagrada from "../Assets/sagrada_familia_1.png";
 import imgLouvre from "../Assets/lourve.png";
 import imgAngkor from "../Assets/angko_wat.png";
 import imgMilan from "../Assets/milan.png";
+import imgSarajevo from "../Assets/sarajevo.jpg";
+import imgPisa from "../Assets/Leaning-tower-of-pisa.jpg";
+import imgKyoto from "../Assets/kinkakuji-pagoda.jpg";
+import imgIstanbul from "../Assets/Istanbul_0.png";
+import imgGreatWall from "../Assets/great_wall.png";
+import imgLatinBridge from "../Assets/latin_bridge.jpg";
 
-// Ảnh minh họa cho Hero (Dùng tạm ảnh có sẵn nếu thiếu)
-const imgHeroLeft = imgSagrada; // Ảnh Amsterdam (Góc dưới trái)
-const imgHeroTall = imgAngkor; // Ảnh Angkor Wat (Dọc phải)
-const imgHeroTop = imgMilan; // Ảnh Chùa (Trên phải)
-const imgHeroBot = imgLouvre; // Ảnh Núi (Dưới phải)
+import leftImage from "../Assets/interesting_place_left.png";
+import rightImage from "../Assets/interesting_place_right.png";
 
 function Discover() {
-  const navigate = useNavigate(); // 2. Khởi tạo hook điều hướng
+  const navigate = useNavigate();
 
-  // Hàm xử lý khi bấm nút
-  const handleViewMore = () => {
-    navigate("/discover/popular"); // Chuyển hướng đến đường dẫn đã khai báo ở Bước 1
+  // --- DỮ LIỆU ĐỊA ĐIỂM (7 ITEMS) ---
+  const places = [
+    {
+      id: 1,
+      img: imgSagrada,
+      name: "Sagrada Familia",
+      address: "Barcelona, Tây Ban Nha",
+      tags: ["Kiến trúc"],
+      rating: "4.8",
+      reviews: "1.2k",
+      link: "/article/sagrada-familia",
+    },
+    {
+      id: 2,
+      img: imgLouvre,
+      name: "Bảo tàng Louvre",
+      address: "Paris, Pháp",
+      tags: ["Văn hóa", "Nghệ thuật"],
+      rating: "4.9",
+      reviews: "2k",
+      link: "/place/louvre",
+    },
+    {
+      id: 3,
+      img: imgAngkor,
+      name: "Angkor Wat",
+      address: "Xiêm Riệp, Campuchia",
+      tags: ["Tâm linh"],
+      rating: "4.6",
+      reviews: "950",
+      link: "/place/angkor-wat",
+    },
+    {
+      id: 4,
+      img: imgGreatWall,
+      name: "Vạn Lý Trường Thành",
+      address: "Bắc Kinh, Trung Quốc",
+      tags: ["Lịch sử", "Di sản"],
+      rating: "4.7",
+      reviews: "1.7k",
+      link: "/place/great-wall",
+    },
+    {
+      id: 5,
+      img: imgPisa,
+      name: "Tháp nghiêng Pisa",
+      address: "Tuscany, Ý",
+      tags: ["Kiến trúc"],
+      rating: "4.5",
+      reviews: "3k",
+      link: "/place/pisa",
+    },
+    {
+      id: 6,
+      img: imgLatinBridge,
+      name: "Cầu Latin",
+      address: "Sarajevo, Bosnia",
+      tags: ["Lịch sử"],
+      rating: "4.4",
+      reviews: "500",
+      link: "/discover/stories/sarajevo",
+    },
+    {
+      id: 7,
+      img: imgKyoto,
+      name: "Chùa Vàng Kinkaku-ji",
+      address: "Kyoto, Nhật Bản",
+      tags: ["Văn hóa"],
+      rating: "4.9",
+      reviews: "1.5k",
+      link: "/place/kyoto",
+    },
+    {
+      id: 8,
+      img: imgMilan,
+      name: "Nhà thờ Đức Bà Milan",
+      address: "Milan, Ý",
+      tags: ["Kiến trúc", "Tôn giáo"],
+      rating: "4.8",
+      reviews: "2.3k",
+      link: "/place/milan",
+    },
+  ];
+
+  // --- LOGIC SLIDER (ĐÃ SỬA XOAY VÒNG) ---
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const itemsToShow = 4; // Hiển thị 4 thẻ cùng lúc
+  const cardWidth = 322; // 302px width + 20px gap
+  const maxIndex = places.length - itemsToShow;
+
+  // Tiến: Nếu đến cuối thì quay về đầu (0)
+  const nextSlide = () => {
+    setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
   };
 
-  const handleViewStories = () => {
-    navigate("/discover/stories");
+  // Lùi: Nếu đang ở đầu (0) thì nhảy xuống cuối
+  const prevSlide = () => {
+    setCurrentIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
   };
 
-  const handleViewSarajevo = () => {
-    navigate("/discover/stories/sarajevo");
-  }
+  // --- NAVIGATION HANDLERS ---
+  const handleViewMore = () => navigate("/discover/popular");
+  const handleViewStories = () => navigate("/discover/stories");
+
+  const goToLink = (link) => {
+    // navigate(link);
+    console.log("Navigating to:", link);
+  };
 
   return (
     <div className={styles.discoverWrapper}>
       <Header />
 
       <main className={styles.container}>
-        {/* --- 1. HERO SECTION --- */}
-        <section className={styles.heroSection}>
-          {/* CỘT TRÁI */}
+        {/* --- 1. HERO SECTION (Giữ nguyên) --- */}
+        <section className={styles.hero}>
           <div className={styles.heroLeft}>
-            <div>
+            <div className={styles.heroContent}>
               <h1 className={styles.heroTitle}>
                 Khám phá <br />
                 những địa điểm du lịch <br />
@@ -52,119 +149,105 @@ function Discover() {
               </h1>
               <p className={styles.heroDesc}>
                 Từ những bãi biển trắng muốt trải dài tại vùng Tuscany, cho đến
-                những ngọn tháp cổ kính của thành phố Sarajevo; từ những cung
-                đường đi bộ ngoạn mục của Trung Khánh... Hãy cùng khám phá!
+                những ngọn tháp cổ kính của thành phố Sarajevo. Hãy cùng
+                chúng tôi khám phá những địa điểm du lịch nổi tiếng được đông
+                đảo du khách và chuyên gia đánh giá cao nhé.
               </p>
             </div>
             <img
-              src={imgHeroLeft}
-              alt="Amsterdam"
-              className={styles.heroLeftImg}
+              src={leftImage}
+              alt="Promo Left"
+              className={styles.heroSmallImg}
             />
           </div>
-
-          {/* CỘT PHẢI (Grid ảnh) */}
           <div className={styles.heroRight}>
-            {/* 2 Ảnh nhỏ bên trái của cụm phải */}
             <img
-              src={imgHeroTop}
-              alt="Pagoda"
-              className={styles.heroSmallTop}
-            />
-            <img
-              src={imgHeroBot}
-              alt="Mountain"
-              className={styles.heroSmallBottom}
-            />
-
-            {/* Ảnh dọc bên phải của cụm phải */}
-            <img
-              src={imgHeroTall}
-              alt="Angkor"
-              className={styles.heroTallImg}
+              src={rightImage}
+              alt="Promo Right"
+              className={styles.heroLargeImg}
             />
           </div>
         </section>
 
-        {/* --- 2. POPULAR PLACES --- */}
+        {/* --- 2. POPULAR PLACES (SLIDER 4 THẺ) --- */}
         <section className={styles.popularSection}>
           <div className={styles.sectionHeader}>
             <div className={styles.headerTitle}>
               <h2>Những địa điểm được yêu thích nhất</h2>
               <p>
                 Từ những góc phố quen thuộc mà ai cũng muốn quay lại, đến những
-                miền đất khiến du khách lỡ một lần là nhớ mãi.
+                miền đất khiến du khách lỡ một lần là nhớ mãi - đây là những
+                điểm đến chiếm trọn trái tim của hàng triệu người yêu du lịch
+                trên khắp thế giới.
               </p>
             </div>
             <div className={styles.headerActions}>
-              <button
-                button
-                className={styles.btnMore}
-                onClick={handleViewMore}
-              >
+              <button className={styles.btnMore} onClick={handleViewMore}>
                 Tìm hiểu thêm
               </button>
-              <button className={styles.btnNav}>&lt;</button>
-              <button className={styles.btnNav}>&gt;</button>
+              {/* Nút điều hướng Slider */}
+              <button
+                className={styles.btnNav}
+                onClick={prevSlide}
+                disabled={currentIndex === 0}
+              >
+                &lt;
+              </button>
+              <button
+                className={styles.btnNav}
+                onClick={nextSlide}
+                disabled={currentIndex >= places.length - itemsToShow}
+              >
+                &gt;
+              </button>
             </div>
           </div>
 
-          <div className={styles.placesGrid}>
-            {/* Card 1 */}
-            <div className={styles.placeCard}>
-              <img src={imgSagrada} alt="Sagrada" className={styles.placeImg} />
-              <div className={styles.placeContent}>
-                <h3 className={styles.placeTitle}>Sagrada Familia</h3>
-                <p className={styles.placeSub}>Barcelona, Tây Ban Nha</p>
-                <div className={styles.placeFooter}>
-                  <span className={styles.tag}>Kiến trúc</span>
-                  <span className={styles.rating}>⭐ 4.8 (1.2k)</span>
+          {/* Cửa sổ hiển thị Slider */}
+          <div className={styles.placesSliderWindow}>
+            <div
+              className={styles.placesSliderTrack}
+              style={{
+                transform: `translateX(-${currentIndex * cardWidth}px)`,
+              }}
+            >
+              {places.map((place) => (
+                <div
+                  key={place.id}
+                  className={styles.placeCard}
+                  onClick={() => goToLink(place.link)}
+                >
+                  <img
+                    src={place.img}
+                    alt={place.name}
+                    className={styles.placeImg}
+                  />
+                  <div className={styles.placeContent}>
+                    <div className={styles.placeInfoCenter}>
+                      <h3 className={styles.placeTitle}>{place.name}</h3>
+                      <p className={styles.placeSub}>{place.address}</p>
+                    </div>
+                    <div className={styles.placeFooter}>
+                      <div className={styles.tagsWrapper}>
+                        {place.tags.map((tag, idx) => (
+                          <span key={idx} className={styles.tag}>
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                      <div className={styles.rating}>
+                        <span className={styles.starIcon}>★</span>
+                        {place.rating} ({place.reviews})
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-
-            {/* Card 2 */}
-            <div className={styles.placeCard}>
-              <img src={imgLouvre} alt="Louvre" className={styles.placeImg} />
-              <div className={styles.placeContent}>
-                <h3 className={styles.placeTitle}>Bảo tàng Louvre</h3>
-                <p className={styles.placeSub}>Paris, Pháp</p>
-                <div className={styles.placeFooter}>
-                  <span className={styles.tag}>Văn hóa</span>
-                  <span className={styles.rating}>⭐ 4.9 (2k)</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Card 3 */}
-            <div className={styles.placeCard}>
-              <img src={imgAngkor} alt="Angkor" className={styles.placeImg} />
-              <div className={styles.placeContent}>
-                <h3 className={styles.placeTitle}>Angkor Wat</h3>
-                <p className={styles.placeSub}>Xiêm Riệp, Campuchia</p>
-                <div className={styles.placeFooter}>
-                  <span className={styles.tag}>Tâm linh</span>
-                  <span className={styles.rating}>⭐ 4.6 (950)</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Card 4 */}
-            <div className={styles.placeCard}>
-              <img src={imgMilan} alt="China" className={styles.placeImg} />
-              <div className={styles.placeContent}>
-                <h3 className={styles.placeTitle}>Vạn Lý Trường Thành</h3>
-                <p className={styles.placeSub}>Bắc Kinh, Trung Quốc</p>
-                <div className={styles.placeFooter}>
-                  <span className={styles.tag}>Lịch sử</span>
-                  <span className={styles.rating}>⭐ 4.7 (1.7k)</span>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* --- 3. STORIES SECTION --- */}
+        {/* --- 3. STORIES SECTION (BỐ CỤC MỚI) --- */}
         <section className={styles.storiesSection}>
           <div className={styles.sectionHeader}>
             <div className={styles.headerTitle}>
@@ -182,39 +265,42 @@ function Discover() {
           </div>
 
           <div className={styles.storiesGrid}>
-            {/* Bài lớn bên trái */}
-            <div className={styles.storyLarge}>
+            {/* Bài lớn bên trái (Card style) */}
+            <div
+              className={styles.storyLarge}
+              onClick={() => goToLink("/discover/stories/sarajevo")}
+            >
               <img
-                src={imgHeroLeft}
+                src={imgSarajevo}
                 alt="Sarajevo"
                 className={styles.storyLargeImg}
               />
-              <div>
-                <p className={styles.author}>Annia Norwood</p>
+              <div className={styles.storyLargeOverlay}>
+                <p className={styles.author} style={{ color: "white" }}>
+                  Annia Norwood
+                </p>
                 <h3 className={styles.storyLargeTitle}>
                   10 ngày dạo bước ở Sarajevo
                 </h3>
-                <p
-                  style={{
-                    fontSize: "0.9rem",
-                    color: "#666",
-                    marginBottom: "10px",
-                  }}
-                >
+                <p className={styles.storyLargeDesc}>
                   Cùng theo chân nữ blogger nổi tiếng Annia Norwood trên hành
-                  trình khám phá những địa điểm không thể bỏ lỡ tại Sarajevo...
+                  trình khám phá những địa điểm không thể bỏ lỡ tại Sarajevo,
+                  nơi giao thoa của các nền văn hóa Đông Tây.
                 </p>
-                <a href="#" className={styles.readLink} onClick={handleViewSarajevo}>
-                  &gt;&gt; Đọc tiếp
-                </a>
+                <span className={styles.readMoreBtn} style={{ color: "white" }}>
+                  Đọc tiếp &rarr;
+                </span>
               </div>
             </div>
 
             {/* List bài nhỏ bên phải */}
             <div className={styles.storyList}>
-              <div className={styles.storyItem}>
+              <div
+                className={styles.storyItem}
+                onClick={() => goToLink("/discover/stories/istanbul")}
+              >
                 <img
-                  src={imgMilan}
+                  src={imgIstanbul}
                   alt="Istanbul"
                   className={styles.storyItemImg}
                 />
@@ -223,13 +309,14 @@ function Discover() {
                   <h4 className={styles.storyItemTitle}>
                     Lang thang giữa linh hồn Istanbul
                   </h4>
-                  <a href="#" className={styles.readLink}>
-                    &gt;&gt; Đọc tiếp
-                  </a>
+                  <span className={styles.readMoreBtn}>Đọc tiếp &rarr;</span>
                 </div>
               </div>
 
-              <div className={styles.storyItem}>
+              <div
+                className={styles.storyItem}
+                onClick={() => goToLink("/discover/stories/santorini")}
+              >
                 <img
                   src={imgSagrada}
                   alt="Santorini"
@@ -238,15 +325,16 @@ function Discover() {
                 <div className={styles.storyInfo}>
                   <p className={styles.author}>Annia Norwood</p>
                   <h4 className={styles.storyItemTitle}>
-                    Một mùa hè ở Santorini
+                    Một mùa hè rực rỡ ở Santorini
                   </h4>
-                  <a href="#" className={styles.readLink}>
-                    &gt;&gt; Đọc tiếp
-                  </a>
+                  <span className={styles.readMoreBtn}>Đọc tiếp &rarr;</span>
                 </div>
               </div>
 
-              <div className={styles.storyItem}>
+              <div
+                className={styles.storyItem}
+                onClick={() => goToLink("/discover/stories/kyoto")}
+              >
                 <img
                   src={imgAngkor}
                   alt="Kyoto"
@@ -255,18 +343,15 @@ function Discover() {
                 <div className={styles.storyInfo}>
                   <p className={styles.author}>Annia Norwood</p>
                   <h4 className={styles.storyItemTitle}>
-                    Kyoto: Giữa hương trà và tiếng chuông
+                    Kyoto: Giữa hương trà và tiếng chuông chùa
                   </h4>
-                  <a href="#" className={styles.readLink}>
-                    &gt;&gt; Đọc tiếp
-                  </a>
+                  <span className={styles.readMoreBtn}>Đọc tiếp &rarr;</span>
                 </div>
               </div>
             </div>
           </div>
         </section>
       </main>
-      <Footer />
     </div>
   );
 }

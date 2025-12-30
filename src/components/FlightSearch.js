@@ -118,10 +118,13 @@ const LOCATIONS = [
 
 const TICKET_CLASSES = ["Phổ thông", "Thương gia", "Đặc biệt"];
 
-function FlightSearch() {
+// [CHỈNH SỬA] Nhận props initialOrigin và initialDest
+function FlightSearch({ initialOrigin, initialDest }) {
   // STATE
-  const [origin, setOrigin] = useState("");
-  const [destination, setDestination] = useState("");
+  // [CHỈNH SỬA] Khởi tạo state với giá trị từ props (nếu có)
+  const [origin, setOrigin] = useState(initialOrigin || "");
+  const [destination, setDestination] = useState(initialDest || "");
+  
   const [dateVal, setDateVal] = useState("");
   const [dateError, setDateError] = useState("");
   const [ticketType, setTicketType] = useState("Khứ hồi");
@@ -146,6 +149,13 @@ function FlightSearch() {
   const ticketTypeRef = useRef(null);
   const ticketClassRef = useRef(null);
   const passengerRef = useRef(null);
+
+  // [THÊM MỚI] useEffect để cập nhật state khi props thay đổi
+  // Giúp điền tự động khi người dùng click vào các thẻ vé khác nhau
+  useEffect(() => {
+    if (initialOrigin !== undefined) setOrigin(initialOrigin);
+    if (initialDest !== undefined) setDestination(initialDest);
+  }, [initialOrigin, initialDest]);
 
   // CLICK OUTSIDE
   useEffect(() => {
@@ -514,9 +524,9 @@ function FlightSearch() {
                 đã chuẩn bị một cách có tổ chức và sẵn sàng đi cùng con cái của
                 mình — hãy đọc lời khuyên và hướng dẫn của chúng tôi tại mục{" "}
                 {/* LINK ĐẾN MỤC GIA ĐÌNH */}
-            <Link to="/terms#family" style={{color: 'inherit', textDecoration: 'underline', fontWeight: 'bold'}}>
-                Đi cùng gia đình
-            </Link>.
+                <Link to="/terms#family" style={{color: 'inherit', textDecoration: 'underline', fontWeight: 'bold'}}>
+                    Đi cùng gia đình
+                </Link>.
               </div>
             </div>
           )}
