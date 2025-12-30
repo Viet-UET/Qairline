@@ -1,5 +1,14 @@
 /* --- Cài đặt chung --- */
+
+
 body {
+  /* Thu nhỏ toàn bộ trang web xuống còn 80% */
+    zoom: 0.98; 
+    
+    /* Đảm bảo hiển thị tốt trên các trình duyệt khác nhau */
+  -moz-transform: scale(0.98);
+  -moz-transform-origin: 0 0;
+  transform-origin: 0 0;
   margin: 0;
   font-family: "Afacad", sans-serif;
   line-height: 1.6;
