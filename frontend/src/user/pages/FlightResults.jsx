@@ -2,11 +2,11 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { MapPin, Calendar, Users } from "lucide-react";
 
-import logo from "../../assets/logo.svg";
-import bg from "../../assets/bg-city-modern.jpg";
+import logo from "../../shared/assets/logo.svg";
+import bg from "../../shared/assets/bg-city-modern.jpg";
 
-import FlightCard from "../../components/bookings/flight/FlightCard";
-import SeatModal from "../../components/bookings/seat/SeatModal";
+import FlightCard from "../../shared/components/bookings/flight/FlightCard";
+import SeatModal from "../../shared/components/bookings/seat/SeatModal";
 
 /* =========================
    SEARCH SUMMARY

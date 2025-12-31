@@ -1,6 +1,6 @@
 import { useState } from "react";
-import logo from "../../../assets/logo.svg";
-import bg from "../../../assets/bg-city-modern.jpg";
+import logo from "../../../shared/assets/logo.svg";
+import bg from "../../../shared/assets/bg-city-modern.jpg";
 
 export default function StepVerify({ email, code, setCode, next, back }) {
   const [error, setError] = useState("");

@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom"; 
-import FlightSearch from "../../components/common/FlightSearch";
+import FlightSearch from "../../shared/components/common/FlightSearch";
 
 // TODO: Move images to this path
-import imgAdelaide from "../../assets/images/home/Adelaide.png";
-import imgTuscany from "../../assets/images/home/Tuscany.png";
-import imgMali from "../../assets/images/home/Mali.png";
-import imgSarajero from "../../assets/images/home/Sarajevo.png";
-import imgCamogli from "../../assets/images/home/Camogli.png";
-import imgSagradaFamilia from "../../assets/images/home/Sagrada_Familia.png";
+import imgAdelaide from "../../shared/assets/images/home/Adelaide.png";
+import imgTuscany from "../../shared/assets/images/home/Tuscany.png";
+import imgMali from "../../shared/assets/images/home/Mali.png";
+import imgSarajero from "../../shared/assets/images/home/Sarajevo.png";
+import imgCamogli from "../../shared/assets/images/home/Camogli.png";
+import imgSagradaFamilia from "../../shared/assets/images/home/Sagrada_Familia.png";
 
-import imgStudent from "../../assets/images/home/student_discount.png";
-import imgMember from "../../assets/images/home/membership.png";
-import imgSponsor from "../../assets/images/home/sponsors.png";
+import imgStudent from "../../shared/assets/images/home/student_discount.png";
+import imgMember from "../../shared/assets/images/home/membership.png";
+import imgSponsor from "../../shared/assets/images/home/sponsors.png";
 
 function Home() {
   const [currentSlide, setCurrentSlide] = useState(0);
