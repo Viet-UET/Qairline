@@ -9,7 +9,7 @@ function Footer() {
         <div className={styles['footer-logo-links']}>
           <img src={logo} alt="QAirlineLogo" className={styles['footer-logo']} />
           <div className={styles['footer-links']}>
-            <a href="#">Liên hệ</a>
+            <a href="/special-offers">Ưu đãi đặc biệt</a>
             <a href="/about-us">Về chúng tôi</a>
             <a href="/commitment">Cam kết với khách hàng</a>
             <a href="/privacy">Chính sách bảo mật</a>

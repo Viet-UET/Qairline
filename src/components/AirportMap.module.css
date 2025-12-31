@@ -1,16 +1,16 @@
 .container {
     width: 100%;
-    background-color: #fff;
+    background-color: #fcfcfc;
     font-family: 'Afacad', sans-serif;
     color: #333;
-    padding-bottom: 80px;
+    padding-bottom: 0; /* Footer lo phần này */
 }
 
-/* --- HERO BANNER (Đồng bộ chuẩn với CustomerCommitment) --- */
+/* --- HERO BANNER --- */
 .heroBanner {
     position: relative;
     width: 100%;
-    min-height: 400px; /* Dùng min-height để tránh lỗi chồng chéo */
+    height: 650px;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -20,14 +20,13 @@
     justify-content: center;
     text-align: center;
     color: white;
-    margin-top: 60px; /* Chừa chỗ cho Header fixed */
-    padding: 20px;
+    margin-top: 0; /* Header xử lý */
 }
 
 .heroOverlay {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 77, 64, 0.5); /* Phủ xanh đen mờ */
+    background: linear-gradient(to bottom, rgba(0, 77, 64, 0.7), rgba(0, 77, 64, 0.4));
     z-index: 1;
 }
 
@@ -35,114 +34,225 @@
     position: relative;
     z-index: 2;
     max-width: 800px;
+    padding: 0 20px;
 }
 
 .mainTitle {
     font-size: 3.5rem;
     font-weight: 800;
     margin-bottom: 15px;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .subTitle {
-    font-size: 1.3rem;
-    font-weight: 500;
-    opacity: 0.95;
-    line-height: 1.6;
-    color: white;
+    font-size: 1.2rem;
+    font-weight: 400;
+    margin-bottom: 0;
+    opacity: 0.9;
 }
 
-/* --- DIAGRAM SECTION (Sơ đồ thay thế bản đồ) --- */
-.diagramWrapper {
-    max-width: 1200px;
-    margin: 60px auto 40px auto;
-    padding: 0 20px;
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* Chia 2 cột cho 2 sơ đồ */
-    gap: 40px;
-}
-
-.diagramCard {
-    background: #f9fcf9;
-    border: 1px solid #e0f2f1;
-    border-radius: 20px;
-    padding: 30px;
-    text-align: center;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-}
-
-/* Hiệu ứng tương tác khi hover vào sơ đồ */
-.diagramCard:hover {
-    transform: translateY(-5px);
-    border-color: #529246;
-    box-shadow: 0 15px 30px rgba(82, 146, 70, 0.15);
-}
-
-.diagramTitle {
-    font-size: 1.8rem;
-    color: #004D40;
-    font-weight: 700;
-    margin-bottom: 20px;
-}
-
-/* Placeholder cho ảnh sơ đồ */
-.diagramImage {
-    width: 100%;
-    height: 300px;
-    object-fit: contain; /* Hiển thị trọn vẹn sơ đồ */
-    border-radius: 12px;
-    background-color: #fff; /* Nền trắng cho sơ đồ */
-    border: 1px dashed #ccc;
-}
-
-/* --- DANH SÁCH SÂN BAY (Giữ nguyên) --- */
-.listWrapper {
+/* --- SECTION CHUNG --- */
+.sectionWrapper {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 80px 20px;
+}
+
+.bgGray {
+    background-color: #f4f6f8;
+}
+
+.bgWhite {
+    background-color: #fff;
+}
+
+.sectionHeader {
+    text-align: center;
+    margin-bottom: 50px;
 }
 
 .sectionTitle {
-    font-size: 2.2rem;
+    font-size: 2.5rem;
     color: #004D40;
     font-weight: 700;
-    margin-bottom: 30px;
-    border-left: 6px solid #529246;
-    padding-left: 20px;
-    margin-top: 60px;
+    margin-bottom: 15px;
+    position: relative;
+    display: inline-block;
 }
 
+.sectionTitle::after {
+    content: "";
+    display: block;
+    width: 60px;
+    height: 4px;
+    background: #529246;
+    margin: 10px auto 0;
+    border-radius: 2px;
+}
+
+.sectionDesc {
+    font-size: 1.1rem;
+    color: #666;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* --- STATS (CON SỐ ẤN TƯỢNG) --- */
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+    text-align: center;
+    margin-top: -50px; /* Đẩy lên đè vào Hero */
+    position: relative;
+    z-index: 5;
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.statItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.statItem h3 {
+    font-size: 2.5rem;
+    color: #529246;
+    font-weight: 800;
+    margin: 0;
+}
+
+.statItem p {
+    font-size: 1rem;
+    color: #555;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-top: 5px;
+}
+
+/* --- ROUTE LIST (DANH SÁCH ĐƯỜNG BAY) --- */
+.routeContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+}
+
+.routeColumn h3 {
+    font-size: 1.8rem;
+    color: #004D40;
+    margin-bottom: 25px;
+    border-left: 5px solid #529246;
+    padding-left: 15px;
+}
+
+.routeList {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 cột nhỏ trong 1 cột lớn */
+    gap: 15px;
+}
+
+.routeItem {
+    font-size: 1rem;
+    color: #444;
+    padding: 10px 15px;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s;
+}
+
+.routeItem:hover {
+    border-color: #529246;
+    transform: translateX(5px);
+    color: #006D5B;
+    background: #f9fff9;
+}
+
+.planeIconSmall {
+    color: #529246;
+    font-size: 0.8rem;
+}
+
+/* --- MAP IMAGES --- */
+.mapImageContainer {
+    margin-top: 60px;
+    text-align: center;
+}
+
+.mapImg {
+    width: 100%;
+    max-width: 900px;
+    height: auto;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    margin-bottom: 40px;
+    border: 5px solid #fff;
+}
+
+.mapCaption {
+    font-style: italic;
+    color: #777;
+    margin-bottom: 20px;
+}
+
+/* --- AIRPORT CARDS --- */
 .airportGrid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    margin-bottom: 40px;
+    grid-template-columns: repeat(4, 1fr); /* 4 cột cho đẹp */
+    gap: 25px;
 }
 
 .airportCard {
     background: #fff;
-    border: 1px solid #eee;
-    border-radius: 12px;
-    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 16px;
+    padding: 25px;
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.airportCard::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 4px; height: 100%;
+    background: #ccc;
+    transition: background 0.3s;
 }
 
 .airportCard:hover {
-    transform: translateY(-5px);
-    border-color: #529246;
-    box-shadow: 0 5px 15px rgba(0, 77, 64, 0.1);
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 77, 64, 0.1);
+    border-color: transparent;
+}
+
+.airportCard:hover::before {
+    background: #529246;
 }
 
 .code {
-    font-size: 2rem;
+    font-size: 2.2rem;
     font-weight: 800;
     color: #004D40;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
+    letter-spacing: -1px;
 }
 
 .name {
@@ -150,42 +260,126 @@
     font-weight: bold;
     color: #333;
     margin-bottom: 5px;
+    line-height: 1.4;
 }
 
 .location {
     font-size: 0.9rem;
     color: #666;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     display: flex;
     align-items: center;
-    gap: 5px;
+
 }
 
 .visitBtn {
-    text-align: center;
-    display: block;
-    background: white;
-    color: #004D40;
-    border: 1px solid #004D40;
-    padding: 8px;
-    border-radius: 6px;
     text-decoration: none;
-    font-weight: bold;
-    font-size: 0.9rem;
-    transition: all 0.2s;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #529246;
+    border: 1px solid #529246;
+    padding: 8px 15px;
+    border-radius: 20px;
+    text-align: center;
+    transition: all 0.3s;
+    align-self: flex-start;
 }
 
 .visitBtn:hover {
-    background: #004D40;
+    background: #529246;
     color: white;
+}
+
+/* --- HUBS (TRẠM TRUNG CHUYỂN) --- */
+.hubsGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+}
+
+.hubCard {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: #f0f7f4;
+    padding: 40px;
+    border-radius: 20px;
+    border: 1px dashed #529246;
+}
+
+.hubIcon {
+    width: 60px;
+    height: 60px;
+    background: #529246;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.hubInfo h4 {
+    font-size: 1.3rem;
+    color: #004D40;
+    margin: 0 0 5px 0;
+}
+
+.hubInfo p {
+    margin: 0;
+    color: #555;
+}
+
+/* --- CTA SECTION --- */
+.ctaSection {
+    
+    text-align: center;
+    padding: 80px 20px;
+    color: #004D40;
+}
+
+.ctaTitle {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.ctaDesc {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin-bottom: 30px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.ctaBtn {
+    background: #fff;
+    color: #004D40;
+    padding: 15px 40px;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    transition: transform 0.3s;
+}
+
+.ctaBtn:hover {
+    transform: scale(1.05);
+    background: #f2f2f2;
 }
 
 /* Responsive */
 @media (max-width: 1024px) {
-    .diagramWrapper { grid-template-columns: 1fr; } /* Sơ đồ xếp dọc trên tablet */
-    .airportGrid { grid-template-columns: repeat(2, 1fr); }
+    .airportGrid, .statsGrid { grid-template-columns: repeat(2, 1fr); }
+    .routeContainer, .hubsGrid { grid-template-columns: 1fr; }
 }
-@media (max-width: 768px) {
+
+@media (max-width: 600px) {
     .airportGrid { grid-template-columns: 1fr; }
-    .heroBanner { min-height: 300px; }
+    .mainTitle { font-size: 2.5rem; }
+    .routeList { grid-template-columns: 1fr; }
 }

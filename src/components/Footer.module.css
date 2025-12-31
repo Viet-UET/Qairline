@@ -1,6 +1,6 @@
 /* --- CSS CHO FOOTER --- */
   .site-footer-main {
-    height: 424px;
+    height: 300px;
     background-color: #0e6552;
     /* Đây là mấu chốt để tạo nền xanh */
     color: #ffffff;
@@ -44,7 +44,7 @@
   .footer-links a {
     color: #ffffff;
     text-decoration: none;
-    font-size: 1rem;
+    font-size: 1.2rem;
   }
 
   .footer-links a:hover {
@@ -54,9 +54,9 @@
   .footer-legal {
     border-top: 1px solid #4a8a7a;
     /* Đường kẻ mờ */
-    padding-top: 2rem;
-    font-size: 1rem;
-    line-height: 1.5;
+    padding-top: 1rem;
+    font-size: 0.5rem;
+
     color: #c0dcd7;
     /* Màu chữ nhạt hơn */
   }
@@ -64,6 +64,7 @@
   .footer-legal p {
     margin: 0.5rem 0;
     color: #c0dcd7;
+    font-size: 1rem;
     /* Ghi đè màu chữ <p> mặc định */
   }
 

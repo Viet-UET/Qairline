@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 
 // Component layout chung
 import Header from "./Header";
-import Footer from "./Footer";
 
 // IMPORT HÌNH ẢNH
 import imgSagrada from "../Assets/sagrada_familia_1.png";
@@ -44,7 +43,7 @@ function Discover() {
       tags: ["Văn hóa", "Nghệ thuật"],
       rating: "4.9",
       reviews: "2k",
-      link: "/place/louvre",
+      link: "/article/louvre",
     },
     {
       id: 3,
@@ -54,7 +53,7 @@ function Discover() {
       tags: ["Tâm linh"],
       rating: "4.6",
       reviews: "950",
-      link: "/place/angkor-wat",
+      link: "/article/angkor-wat",
     },
     {
       id: 4,
@@ -64,7 +63,7 @@ function Discover() {
       tags: ["Lịch sử", "Di sản"],
       rating: "4.7",
       reviews: "1.7k",
-      link: "/place/great-wall",
+      link: "/article/great-wall",
     },
     {
       id: 5,
@@ -74,7 +73,7 @@ function Discover() {
       tags: ["Kiến trúc"],
       rating: "4.5",
       reviews: "3k",
-      link: "/place/pisa",
+      link: "/article/pisa",
     },
     {
       id: 6,
@@ -94,7 +93,7 @@ function Discover() {
       tags: ["Văn hóa"],
       rating: "4.9",
       reviews: "1.5k",
-      link: "/place/kyoto",
+      link: "/discover/stories/kyoto",
     },
     {
       id: 8,
@@ -104,7 +103,7 @@ function Discover() {
       tags: ["Kiến trúc", "Tôn giáo"],
       rating: "4.8",
       reviews: "2.3k",
-      link: "/place/milan",
+      link: "/discover/stories/milan",
     },
   ];
 

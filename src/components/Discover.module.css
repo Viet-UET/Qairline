@@ -200,7 +200,7 @@
 }
 
 .placeCard:hover {
-    transform: translateY(-5px);
+    
     border-color: #529246;
 }
 

@@ -1,151 +1,187 @@
+/* --- CẤU TRÚC CHUNG (Giống InterestingStories) --- */
 .container {
-    max-width: 1200px;
+    max-width: 1300px; /* Độ rộng khớp với Grid 4 thẻ 302px */
     margin: 0 auto;
-    padding: 20px;
-    font-family: 'Arial', sans-serif;
+    padding: 120px 20px 60px 20px;
+    font-family: 'Afacad', sans-serif;
     color: #333;
 }
 
-/* Breadcrumb (Đường dẫn phía trên) */
+/* Breadcrumb */
 .breadcrumb {
-    font-size: 0.9rem;
-    color: #666;
-    margin-bottom: 30px;
+    font-size: 1rem;
+    color: #529246;
+    margin-bottom: 40px;
 }
-
-.breadcrumb a {
+.breadcrumbLink {
     text-decoration: none;
-    color: #666;
-}
-
-.breadcrumb span {
-    margin: 0 5px;
-}
-
-.active-crumb {
-    color: #006D5B; /* Màu xanh thương hiệu */
-    font-weight: 600;
-}
-
-/* Phần tiêu đề chính */
-.header-section {
-    text-align: center;
-    margin-bottom: 50px;
-}
-
-.main-title {
-    font-size: 2.5rem;
     color: #006D5B;
-    font-weight: 700;
-    margin-bottom: 15px;
+    font-weight: 500;
+}
+.breadcrumbLink:hover {
+    text-decoration: underline;
+}
+.breadcrumb span {
+    margin: 0 8px;
+    color: #999;
 }
 
-.sub-description {
-    max-width: 700px;
+/* Header Trang (Giống InterestingStories) */
+.pageHeader {
+    text-align: center;
+    margin-bottom: 60px;
+    margin-top: -450px;
+}
+.pageTitle {
+    font-size: 3.6rem;
+    color: #004D40;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+.pageDesc {
+    max-width: 800px;
     margin: 0 auto;
     color: #555;
     line-height: 1.6;
-    font-size: 0.95rem;
-}
-
-/* Tiêu đề section phụ */
-.section-heading {
-    text-align: center;
-    font-size: 2rem;
-    color: #006D5B;
-    margin-bottom: 40px;
-    font-weight: 700;
-}
-
-/* GRID hiển thị các thẻ (Card) */
-.grid-container {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 cột */
-    gap: 25px;
-    margin-bottom: 60px;
-}
-
-/* Style cho từng thẻ Card */
-.card {
-    background: #fff;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    transition: transform 0.3s, box-shadow 0.3s;
-    text-decoration: none; /* Vì card sẽ là thẻ Link */
-    color: inherit;
-    display: block;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-}
-
-.card-image {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-}
-
-.card-content {
-    padding: 15px;
-    text-align: center;
-}
-
-.card-title {
     font-size: 1.1rem;
-    color: #006D5B;
-    font-weight: 700;
-    margin-bottom: 5px;
 }
 
-.card-location {
-    font-size: 0.9rem;
-    color: #006D5B;
-    margin-bottom: 12px;
+/* --- GRID LAYOUT (4 CỘT) --- */
+.placesGrid {
+    display: grid;
+    /* Grid 4 cột để chứa thẻ 302px */
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 20px;
+    margin-bottom: 60px;
+    justify-items: center; /* Căn giữa thẻ trong cột */
 }
 
-.card-footer {
+/* --- CARD STYLE (Sao chép từ Discover.module.css) --- */
+.placeCard {
+    /* Kích thước tổng thể: 302x513px */
+    width: 302px;
+    height: 513px;
+    flex-shrink: 0;
+    
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    border: 1px solid #eee;
+    padding: 10px;
+    box-sizing: border-box;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    cursor: pointer;
+    transition: transform 0.2s;
+    text-decoration: none; /* Vì dùng thẻ Link */
+    color: inherit;
+}
+
+.placeCard:hover {
+    transform: translateY(-5px);
+    border-color: #529246;
+}
+
+/* Ảnh địa danh */
+.placeImg {
+    /* Kích thước ảnh: 282x371px */
+    width: 280px; /* 302px - 20px padding */
+    height: 371px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+
+/* Nội dung chữ */
+.placeContent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.placeInfoCenter {
+    text-align: center;
+}
+
+.placeTitle {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #004D40;
+    margin: 0 0 5px 0;
+}
+
+.placeSub {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0;
+}
+
+/* Footer: Tag & Rating */
+.placeFooter {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 10px;
-    font-size: 0.8rem;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed #eee;
+}
+
+.tagsWrapper {
+    display: flex;
+    gap: 5px;
 }
 
 .tag {
-    background-color: #FFF3CD; /* Màu nền vàng nhạt */
-    color: #856404; /* Màu chữ vàng đậm */
-    padding: 3px 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #F57F17;
+    background-color: #FFF9C4;
+    border: 1px solid #FBC02D;
+    padding: 2px 8px;
     border-radius: 4px;
-    font-weight: 500;
-    border: 1px solid #FFEEBA;
 }
 
 .rating {
-    color: #F39C12; /* Màu cam ngôi sao */
-    font-weight: 600;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 3px;
 }
 
-/* Responsive cho mobile/tablet */
+.starIcon {
+    color: #FBC02D;
+}
+
+/* Nút Xem thêm */
+.loadMoreBtn {
+    display: block;
+    margin: 0 auto;
+    padding: 12px 40px;
+    border: 1.5px solid #006D5B;
+    color: #006D5B;
+    background: white;
+    border-radius: 30px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.loadMoreBtn:hover {
+    background: #006D5B;
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 1300px) {
+    .placesGrid { grid-template-columns: repeat(3, 1fr); }
+}
 @media (max-width: 1024px) {
-    .grid-container {
-        grid-template-columns: repeat(3, 1fr);
-    }
+    .placesGrid { grid-template-columns: repeat(2, 1fr); }
 }
-
-@media (max-width: 768px) {
-    .grid-container {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    .main-title {
-        font-size: 2rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .grid-container {
-        grid-template-columns: 1fr;
-    }
+@media (max-width: 650px) {
+    .placesGrid { grid-template-columns: 1fr; }
 }

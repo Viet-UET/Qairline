@@ -181,7 +181,7 @@ function Home() {
 
           {/* Card CTA: Link sang trang Promo */}
           <Link to="/promo" className={styles.ctaCard}>
-            <span style={{ fontSize: "2rem", marginBottom: "10px" }}>✈️</span>
+            <span style={{ fontSize: "2rem", marginBottom: "10px" }}></span>
             <div className={styles.ctaText}>Bạn muốn xem thêm ưu đãi?</div>
             <button className={styles.ctaBtn}>Xem tất cả các khuyến mãi</button>
           </Link>
@@ -192,24 +192,31 @@ function Home() {
       <section className={styles.sectionWrapper}>
         <h2 className={styles.sectionTitle}>Ưu đãi đặc biệt</h2>
         <div className={styles.offersGrid}>
-          <div className={styles.offerCard}>
+          
+          {/* 1. Sinh viên -> Link đến mục #student */}
+          <Link to="/special-offers#student" className={styles.offerCard} style={{textDecoration: 'none', color: 'inherit'}}>
             <img src={imgStudent} alt="Sinh viên" className={styles.offerImg} />
             <h3 className={styles.offerTitle}>Ưu đãi dành cho sinh viên</h3>
             <p className={styles.offerDesc}>Giá vé giảm đến 20%, tăng giới hạn hành lý, WiFi miễn phí...</p>
-            <a href="#" className={styles.offerLink}>&gt;&gt; Tìm hiểu thêm</a>
-          </div>
-          <div className={styles.offerCard}>
+            <span className={styles.offerLink}>&gt;&gt; Tìm hiểu thêm</span>
+          </Link>
+
+          {/* 2. Hội viên -> Link đến mục #member */}
+          <Link to="/special-offers#member" className={styles.offerCard} style={{textDecoration: 'none', color: 'inherit'}}>
             <img src={imgMember} alt="Hội viên" className={styles.offerImg} />
             <h3 className={styles.offerTitle}>Đăng ký gói hội viên</h3>
             <p className={styles.offerDesc}>Sử dụng quyền lợi đặc biệt của hội viên để giảm giá vé...</p>
-            <a href="#" className={styles.offerLink}>&gt;&gt; Tìm hiểu thêm</a>
-          </div>
-          <div className={styles.offerCard}>
+            <span className={styles.offerLink}>&gt;&gt; Tìm hiểu thêm</span>
+          </Link>
+
+          {/* 3. Nhà tài trợ -> Link đến mục #sponsor */}
+          <Link to="/special-offers#sponsor" className={styles.offerCard} style={{textDecoration: 'none', color: 'inherit'}}>
             <img src={imgSponsor} alt="Nhà tài trợ" className={styles.offerImg} />
             <h3 className={styles.offerTitle}>Ưu đãi từ nhà tài trợ</h3>
             <p className={styles.offerDesc}>Mã giảm giá đặc biệt đến từ những quý nhà tài trợ hảo tâm...</p>
-            <a href="#" className={styles.offerLink}>&gt;&gt; Tìm hiểu thêm</a>
-          </div>
+            <span className={styles.offerLink}>&gt;&gt; Tìm hiểu thêm</span>
+          </Link>
+
         </div>
       </section>
 

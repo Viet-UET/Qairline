@@ -1,0 +1,142 @@
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 120px 20px 60px 20px; /* Padding lớn để tránh Header fixed */
+    font-family: 'Afacad', sans-serif;
+    color: #333;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 40px;
+}
+.breadcrumbLink {
+    text-decoration: none;
+    color: #006D5B;
+    font-weight: 500;
+}
+.breadcrumb span {
+    margin: 0 8px;
+    color: #999;
+}
+
+/* Header */
+.pageHeader {
+    text-align: center;
+    margin-bottom: 60px;
+    margin-top: -450px;
+}
+.pageTitle {
+    font-size: 3rem;
+    color: #004D40;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+.pageDesc {
+    max-width: 800px;
+    margin: 0 auto;
+    color: #555;
+    line-height: 1.6;
+    font-size: 1.1rem;
+}
+
+/* --- OFFER SECTION (Từng khối ưu đãi) --- */
+.offerSection {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    margin-bottom: 80px;
+    padding: 40px;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
+}
+
+/* Đảo ngược vị trí ảnh/chữ cho các khối chẵn */
+.offerSection.reverse {
+    flex-direction: row-reverse;
+}
+
+.offerImg {
+    width: 50%;
+    height: 350px;
+    object-fit: cover;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.offerContent {
+    width: 50%;
+}
+
+.offerTitle {
+    font-size: 2rem;
+    color: #004D40;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.offerDesc {
+    font-size: 1.1rem;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+/* Danh sách lợi ích */
+.benefitList {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 30px;
+}
+
+.benefitItem {
+    position: relative;
+    padding-left: 25px;
+    margin-bottom: 10px;
+    color: #006D5B;
+    font-weight: 500;
+}
+
+.benefitItem::before {
+    content: "✔";
+    position: absolute;
+    left: 0;
+    color: #529246;
+    font-weight: bold;
+}
+
+/* Nút hành động */
+.actionBtn {
+    background-color: #529246;
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 30px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.actionBtn:hover {
+    background-color: #0E6552;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .offerSection, .offerSection.reverse {
+        flex-direction: column;
+        text-align: center;
+    }
+    .offerImg, .offerContent {
+        width: 100%;
+    }
+    .benefitList {
+        text-align: left;
+        display: inline-block;
+    }
+}

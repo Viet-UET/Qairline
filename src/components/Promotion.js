@@ -328,7 +328,7 @@ function Promotion() {
         </section>
 
         <p style={{ fontSize: "0.8rem", fontStyle: "italic", color: "#1b5e20", marginBottom: "40px" }}>
-          * Giá vé một chiều, chỉ áp dụng trên web. Không bao gồm hành lý ký gửi...
+          * Giá vé một chiều, chỉ áp dụng trên web. Không bao gồm hành lý ký gửi. Không có trên tất cả các chuyến bay hoặc ngày bay. Số lượng vé có hạn. Áp dụng các điều kiện.
         </p>
 
         {/* --- MỤC 1: TRONG NƯỚC --- */}
@@ -394,7 +394,7 @@ function Promotion() {
           </div>
         )}
       </main>
-      <Footer />
+
     </div>
   );
 }

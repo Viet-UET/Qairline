@@ -286,16 +286,20 @@
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     text-align: center;
     padding-bottom: 20px;
+        border: 10px solid #ffffff;
+
 }
 .offerCard:hover {
     transform: translateY(-3px);
-    border-color: #529246;
+
 }
 
 .offerImg {
     width: 100%;
     height: 100%px;
     object-fit: cover;
+
+    
 }
 
 .offerTitle {
