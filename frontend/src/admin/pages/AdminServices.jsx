@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Plus, Pencil } from "lucide-react";
-import AdminLayout from "../layout/AdminLayout";
 
 /* ================= MOCK DATA ================= */
 
@@ -63,7 +62,7 @@ export default function AdminServices() {
   }
 
   return (
-    <AdminLayout title="Service" breadcrumb={["Service"]}>
+    <div className="space-y-6">
       {/* ================= ADD SERVICE ================= */}
       <Card title="Add service">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
@@ -151,6 +150,6 @@ export default function AdminServices() {
           </table>
         </div>
       </Card>
-    </AdminLayout>
+    </div>
   );
 }

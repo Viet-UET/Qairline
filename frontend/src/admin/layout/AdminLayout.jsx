@@ -12,7 +12,7 @@ import {
 import AdminHeader from "../components/AdminHeader";
 
 const navItems = [
-  { to: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/admin", label: "Dashboard", icon: LayoutDashboard, end: true },
   { to: "/admin/posts", label: "Posts", icon: FileText },
   { to: "/admin/flights", label: "Flights", icon: Plane },
   { to: "/admin/bookings", label: "Bookings", icon: Ticket },
@@ -43,6 +43,7 @@ export default function AdminLayout() {
                 <NavLink
                   key={item.to}
                   to={item.to}
+                  end={item.end}
                   className={({ isActive }) =>
                     cx(
                       "flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm transition",

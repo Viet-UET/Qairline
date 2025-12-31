@@ -1,6 +1,5 @@
 import React from "react";
 import { Plus, Pencil } from "lucide-react";
-import AdminLayout from "../layout/AdminLayout";
 
 /* ================= MOCK DATA ================= */
 
@@ -76,7 +75,7 @@ function Card({ title, right, children }) {
 
 export default function AdminAccounts() {
   return (
-    <AdminLayout title="Accounts" breadcrumb={["User", "Accounts"]}>
+    <div className="space-y-6">
       {/* ================= ADMIN LIST ================= */}
       <Card
         title={`Admin List: ${ADMINS.length} admins`}
@@ -167,6 +166,6 @@ export default function AdminAccounts() {
           </table>
         </div>
       </Card>
-    </AdminLayout>
+    </div>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import {
   FileText,
   Filter,
@@ -16,7 +16,6 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import AdminLayout from "../layout/AdminLayout";
 
 /* ================= MOCK DATA ================= */
 
@@ -127,9 +126,9 @@ export default function AdminBookings() {
   ];
 
   return (
-    <AdminLayout title="Bookings" breadcrumb={["Operation", "Bookings"]}>
+    <div className="space-y-6">
       {/* ================= TOP CHARTS ================= */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Total bookings */}
         <Card title={`Total Bookings: ${totalBookings}`} icon={Users}>
           <PieChartBlock data={bookingByStatus} />
@@ -195,7 +194,7 @@ export default function AdminBookings() {
           </table>
         </div>
       </Card>
-    </AdminLayout>
+    </div>
   );
 }
 

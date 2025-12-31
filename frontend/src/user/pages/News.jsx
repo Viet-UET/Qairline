@@ -2,10 +2,10 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 // TODO: Add correct image paths
-import imgSarajevo from "../../assets/images/home/sagrada_familia_1.png";
-import imgIstanbul from "../../assets/images/home/milan.png";
-import imgSantorini from "../../assets/images/home/sagrada_familia_2.png";
-import imgKyoto from "../../assets/images/home/angko_wat.png";
+import imgSarajevo from "../../shared/assets/images/home/sagrada_familia_1.png";
+import imgIstanbul from "../../shared/assets/images/home/milan.png";
+import imgSantorini from "../../shared/assets/images/home/sagrada_familia_2.png";
+import imgKyoto from "../../shared/assets/images/home/angko_wat.png";
 
 function News() {
   useEffect(() => {

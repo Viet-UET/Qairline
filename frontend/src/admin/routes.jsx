@@ -2,6 +2,7 @@ import AdminLayout from "./layout/AdminLayout";
 
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminFlights from "./pages/AdminFlights";
+import AdminPosts from "./pages/AdminPosts";
 import AdminBookings from "./pages/AdminBookings";
 import AdminAirplanes from "./pages/AdminAirplanes";
 import AdminAccounts from "./pages/AdminAccounts";
@@ -14,6 +15,7 @@ const adminRoutes = {
   element: <AdminLayout />,
   children: [
     { index: true, element: <AdminDashboard /> },
+    { path: "posts", element: <AdminPosts /> },
     { path: "flights", element: <AdminFlights /> },
     { path: "bookings", element: <AdminBookings /> },
     { path: "airplanes", element: <AdminAirplanes /> },

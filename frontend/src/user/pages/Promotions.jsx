@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 
 // TODO: Move images to this path
-import imgPromo_1 from "../../assets/images/promotions/Promo_1.png";
-import imgPromo_2 from "../../assets/images/promotions/Promo_2.png";
+import imgPromo_1 from "../../shared/assets/images/promotions/Promo_1.png";
+import imgPromo_2 from "../../shared/assets/images/promotions/Promo_2.png";
 
 // ICONS
 const LocationIcon = () => (

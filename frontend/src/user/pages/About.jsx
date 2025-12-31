@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 
 // TODO: Add correct image paths
-import imgHero from "../../assets/images/home/flight_attendant_1.png";
-import img2010 from "../../assets/images/promotions/Promo_1.png";
-import img2015 from "../../assets/images/promotions/Promo_2.png";
-import img2020 from "../../assets/images/home/plane.png";
-import imgPostcardFront from "../../assets/images/home/postcard.png";
-import imgPostcardBackLeft from "../../assets/images/home/flight_attendant_1.png";
+import imgHero from "../../shared/assets/images/home/flight_attendant_1.png";
+import img2010 from "../../shared/assets/images/promotions/Promo_1.png";
+import img2015 from "../../shared/assets/images/promotions/Promo_2.png";
+import img2020 from "../../shared/assets/images/home/plane.png";
+import imgPostcardFront from "../../shared/assets/images/home/postcard.png";
+import imgPostcardBackLeft from "../../shared/assets/images/home/flight_attendant_1.png";
 
 const MILESTONES = [
   {

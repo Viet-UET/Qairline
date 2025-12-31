@@ -9,7 +9,6 @@ import {
   X,
   FileText,
 } from "lucide-react";
-import AdminLayout from "../components/AdminLayout";
 
 const MOCK_CATEGORIES = ["News", "Promotion", "Flight Update", "Service"];
 const MOCK_STATUSES = ["Scheduled", "Completed", "Delayed", "Cancelled"];
@@ -148,7 +147,7 @@ export default function AdminPosts() {
   }
 
   return (
-    <AdminLayout title="Posts" breadcrumb={["Content", "Posts"]}>
+    <div className="space-y-6">
       {/* Page intro + primary action */}
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
@@ -457,6 +456,6 @@ export default function AdminPosts() {
           </Card>
         </div>
       </div>
-    </AdminLayout>
+    </div>
   );
 }

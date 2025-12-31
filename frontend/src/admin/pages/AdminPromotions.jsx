@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Pencil } from "lucide-react";
-import AdminLayout from "../layout/AdminLayout";
 
 /* ================= MOCK DATA ================= */
 
@@ -48,7 +47,7 @@ export default function AdminPromotions() {
   }
 
   return (
-    <AdminLayout title="Promotion" breadcrumb={["Promotion"]}>
+    <div className="space-y-6">
       {/* ================= ADD DISCOUNT ================= */}
       <Card title="Add discount">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
@@ -134,6 +133,6 @@ export default function AdminPromotions() {
           </table>
         </div>
       </Card>
-    </AdminLayout>
+    </div>
   );
 }

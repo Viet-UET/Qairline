@@ -1,6 +1,5 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { Plus, Pencil } from "lucide-react";
-import AdminLayout from "../layout/AdminLayout";
 
 /* ================= MOCK DATA ================= */
 
@@ -61,61 +60,59 @@ export default function AdminAirplanes() {
   }
 
   return (
-    <AdminLayout title="Airplanes" breadcrumb={["Operation", "Airplanes"]}>
+    <div className="space-y-6">
       {/* ================= ADD FORM ================= */}
-      <div className="mb-6">
-        <Card
-          title="Enter airplane data"
-          right={
-            <button
-              onClick={handleAdd}
-              className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-            >
-              <Plus className="h-4 w-4" />
-              Add airplane
-            </button>
-          }
-        >
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="text-sm font-medium text-gray-700">
-                Model
-              </label>
-              <input
-                value={model}
-                onChange={(e) => setModel(e.target.value)}
-                placeholder="Boeing 737-800"
-                className="mt-2 w-full rounded-xl border border-[#E5E7EB] px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-200"
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-medium text-gray-700">
-                Manufacturer
-              </label>
-              <input
-                value={manufacturer}
-                onChange={(e) => setManufacturer(e.target.value)}
-                placeholder="Boeing"
-                className="mt-2 w-full rounded-xl border border-[#E5E7EB] px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-200"
-              />
-            </div>
-
-            <div>
-              <label className="text-sm font-medium text-gray-700">
-                Total seats
-              </label>
-              <input
-                type="number"
-                value={seats}
-                onChange={(e) => setSeats(e.target.value)}
-                placeholder="180"
-                className="mt-2 w-full rounded-xl border border-[#E5E7EB] px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-200"
-              />
-            </div>
+      <Card
+        title="Enter airplane data"
+        right={
+          <button
+            onClick={handleAdd}
+            className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+          >
+            <Plus className="h-4 w-4" />
+            Add airplane
+          </button>
+        }
+      >
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label className="text-sm font-medium text-gray-700">
+              Model
+            </label>
+            <input
+              value={model}
+              onChange={(e) => setModel(e.target.value)}
+              placeholder="Boeing 737-800"
+              className="mt-2 w-full rounded-xl border border-[#E5E7EB] px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-200"
+            />
           </div>
-        </Card>
-      </div>
+
+          <div>
+            <label className="text-sm font-medium text-gray-700">
+              Manufacturer
+            </label>
+            <input
+              value={manufacturer}
+              onChange={(e) => setManufacturer(e.target.value)}
+              placeholder="Boeing"
+              className="mt-2 w-full rounded-xl border border-[#E5E7EB] px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-200"
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium text-gray-700">
+              Total seats
+            </label>
+            <input
+              type="number"
+              value={seats}
+              onChange={(e) => setSeats(e.target.value)}
+              placeholder="180"
+              className="mt-2 w-full rounded-xl border border-[#E5E7EB] px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-200"
+            />
+          </div>
+        </div>
+      </Card>
 
       {/* ================= TABLE ================= */}
       <Card
@@ -177,6 +174,6 @@ export default function AdminAirplanes() {
           </table>
         </div>
       </Card>
-    </AdminLayout>
+    </div>
   );
 }
