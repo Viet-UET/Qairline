@@ -1,23 +1,40 @@
 import { useState } from "react";
+import { loginUser } from "../../../api/auth";
 import logo from "../../../assets/logo.svg";
-import bg from "../../../assets/bg-beach.webp";
+import bg from "../../../assets/bg-city-modern.jpg";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  // LOGIN WITH USERNAME + PASSWORD
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
 
-    if (!username || !password) {
-      setError("Vui lòng nhập đầy đủ thông tin đăng nhập");
-      return;
-    }
+    try {
+      const res = await loginUser({ username, password });
+      const token = res.data.token;
 
-    alert("Đăng nhập thành công (demo)");
+      if (!token) {
+        setError("Không nhận được token từ server!");
+        return;
+      }
+
+      localStorage.setItem("token", token);
+      alert("Đăng nhập thành công!");
+      window.location.href = "/dashboard";
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("Sai tài khoản hoặc mật khẩu!");
+    }
+  };
+
+  // GOOGLE LOGIN
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:8080/oauth2/authorize/google";
   };
 
   return (
@@ -26,6 +43,7 @@ export default function Login() {
       style={{ backgroundImage: `url(${bg})` }}
     >
       <div className="bg-white shadow-2xl rounded-[36px] px-24 py-20 w-full max-w-[585px] min-h-[728px] mx-6">
+
         {/* LOGO */}
         <div className="flex justify-center mb-9">
           <img
@@ -35,17 +53,17 @@ export default function Login() {
           />
         </div>
 
-        {/* TIÊU ĐỀ */}
+        {/* TITLE */}
         <h2 className="text-[32px] text-qa-green font-audiowide text-center leading-tight mb-10">
           Kính chào quý khách!
         </h2>
 
-        {/* FORM */}
+        {/* LOGIN FORM */}
         <form
-          onSubmit={handleSubmit}
+          onSubmit={handleLogin}
           className="flex flex-col items-center space-y-6 font-afacad"
         >
-          {/* INPUT: Tên đăng nhập */}
+          {/* USERNAME */}
           <div className="relative w-[451px]">
             <label
               htmlFor="username"
@@ -58,11 +76,13 @@ export default function Login() {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-[451px] h-[54px] bg-[#F8F7F9] border border-[#D9D9D9] rounded-lg pt-5 pb-1 px-4 text-[16px] text-qa-green focus:ring-2 focus:ring-qa-green focus:outline-none transition-all"
+              className="w-[451px] h-[54px] bg-[#F8F7F9] border border-[#D9D9D9] 
+                         rounded-lg pt-5 pb-1 px-4 text-[16px] text-qa-green 
+                         focus:ring-2 focus:ring-qa-green focus:outline-none transition-all"
             />
           </div>
 
-          {/* INPUT: Mật khẩu */}
+          {/* PASSWORD */}
           <div className="relative w-[451px]">
             <label
               htmlFor="password"
@@ -75,9 +95,11 @@ export default function Login() {
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-[451px] h-[54px] bg-[#F8F7F9] border border-[#D9D9D9] rounded-lg pt-5 pb-1 px-4 text-[16px] text-qa-green focus:ring-2 focus:ring-qa-green focus:outline-none transition-all pr-10"
+              className="w-[451px] h-[54px] bg-[#F8F7F9] border border-[#D9D9D9] 
+                         rounded-lg pt-5 pb-1 px-4 text-[16px] text-qa-green 
+                         focus:ring-2 focus:ring-qa-green focus:outline-none 
+                         transition-all pr-10"
             />
-            {/* Nút ẩn/hiện mật khẩu */}
             <span
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-4 top-[22px] cursor-pointer text-qa-green"
@@ -86,14 +108,12 @@ export default function Login() {
             </span>
           </div>
 
-          {/* LỖI */}
+          {/* ERROR */}
           {error && (
-            <p className="text-red-600 text-sm text-center font-medium">
-              {error}
-            </p>
+            <p className="text-red-600 text-sm text-center font-medium">{error}</p>
           )}
 
-          {/* QUÊN MẬT KHẨU */}
+          {/* FORGOT PASSWORD */}
           <a
             href="/forgot-password"
             className="text-qa-green font-semibold hover:underline text-[18px] hover:text-green-800"
@@ -101,20 +121,23 @@ export default function Login() {
             Quý khách quên mật khẩu?
           </a>
 
-          {/* NÚT ĐĂNG NHẬP */}
+          {/* LOGIN BUTTON */}
           <button
             type="submit"
-            className="w-[451px] h-[54px] bg-qa-green text-white text-[24px] rounded-xl hover:bg-green-700 transition font-semibold"
+            className="w-[451px] h-[54px] bg-qa-green text-white text-[24px] 
+                       rounded-xl hover:bg-green-700 transition font-semibold"
           >
             Đăng nhập
           </button>
 
-          {/* ĐĂNG NHẬP BẰNG GOOGLE */}
+          {/* GOOGLE LOGIN */}
           <div className="relative w-[451px]">
             <button
               type="button"
-              onClick={() => alert("Google Login (demo)")}
-              className="w-full h-[54px] border border-gray-300 bg-white text-gray-700 text-[20px] rounded-xl hover:bg-gray-100 transition flex items-center justify-center gap-3 font-medium"
+              onClick={handleGoogleLogin}
+              className="w-full h-[54px] border border-gray-300 bg-white 
+                         text-gray-700 text-[20px] rounded-xl hover:bg-gray-100 
+                         transition flex items-center justify-center gap-3 font-medium"
             >
               <img
                 src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
@@ -125,21 +148,15 @@ export default function Login() {
             </button>
           </div>
 
+          {/* REGISTER LINK */}
+          <p className="text-center text-gray-700 text-[18px]">
+            Quý khách chưa có tài khoản?{" "}
+            <a href="/register" className="text-qa-green font-semibold hover:underline">
+              Tạo tài khoản
+            </a>
+          </p>
 
-          {/* CHƯA CÓ TÀI KHOẢN? */}
-<p className="text-center text-gray-700 text-[18px]">
-  Quý khách chưa có tài khoản?{" "}
-  <a
-    href="/register"
-    className="text-qa-green font-semibold hover:underline"
-  >
-    Tạo tài khoản
-  </a>
-</p>
-
-
-
-          {/* TRANG CHỦ */}
+          {/* BACK HOME */}
           <a
             href="/"
             className="text-qa-green font-semibold hover:underline text-[24px]"

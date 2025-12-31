@@ -1,0 +1,183 @@
+╔════════════════════════════════════════════════════════════════════╗
+║                                                                    ║
+║     QAIRLINE FRONTEND-BACKEND CONNECTION TEST - QUICK GUIDE        ║
+║                                                                    ║
+╚════════════════════════════════════════════════════════════════════╝
+
+
+🚀 START FRONTEND
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  $ cd /home/longha/Desktop/Qairline/frontend
+  $ npm run dev
+
+  Then open: http://localhost:5173
+
+
+📊 BROWSER CONSOLE TEST COMMANDS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Open DevTools: F12 or Right-click → Inspect
+  Go to: Console tab
+  Paste commands below:
+
+
+1️⃣  CHECK API CONFIGURATION
+  
+    testAPI.printConfig()
+  
+    Expected output:
+    - Base URL: http://localhost:8080
+    - With Credentials: true
+    - Token: Not set
+
+
+2️⃣  TEST BACKEND CONNECTION
+
+    await testAPI.testConnection()
+  
+    Expected output:
+    ✓ Connection successful: {status: "UP"}
+
+
+3️⃣  TEST LOGIN
+
+    await testAPI.testLogin('admin', 'password123')
+  
+    Replace 'admin' and 'password123' with actual credentials
+    
+    Expected output:
+    ✓ Login successful: {token: "...", user: {...}}
+
+
+4️⃣  CHECK STORED TOKEN
+
+    localStorage.getItem('token')
+  
+    Expected: JWT token (three parts separated by dots)
+    Example: eyJhbGc...rest.of.token
+
+
+5️⃣  TEST AUTHENTICATED REQUEST
+
+    await testAPI.testAuthStatus()
+  
+    Expected output:
+    ✓ Auth status: {user: {...}}
+
+
+6️⃣  RUN ALL TESTS AT ONCE
+
+    await testAll()
+  
+    Runs tests 1, 2, and 5 automatically
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔴 TROUBLESHOOTING QUICK FIXES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Problem: Connection failed
+  → Check backend: curl http://localhost:8080/actuator/health
+  → Check API URL: testAPI.printConfig()
+
+Problem: Login shows 401 error
+  → Use correct credentials
+  → Check backend user table
+  → View backend logs
+
+Problem: CORS error
+  → Backend needs CORS config
+  → Should allow http://localhost:5173
+  → Check backend APP_FRONTEND_URL setting
+
+Problem: Token not saved
+  → Check localStorage: localStorage.getItem('token')
+  → Check Network tab for response
+  → Verify backend returns 'token' field
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔗 TEST WITH LOGIN FORM
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Navigate to: http://localhost:5173/auth/login
+2. Enter username and password
+3. Click "Đăng nhập" (Login)
+4. Open DevTools → Network tab to see request
+5. Check response for token
+6. Should redirect to home if successful
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📈 NETWORK DEBUGGING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Open DevTools → Network tab
+2. Try to login
+3. Look for POST request to /auth/login
+4. Click on request
+5. Check tabs:
+   - Headers: Request/response metadata
+   - Payload: What was sent to backend
+   - Response: What backend returned
+   - Cookies: Session cookies if any
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🧪 MANUAL CURL TEST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# Test backend health
+curl http://localhost:8080/actuator/health
+
+# Test login
+curl -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"password123"}'
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✨ KEY FEATURES IMPLEMENTED
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✓ Smart API URL detection (localhost vs docker)
+✓ Axios instance for consistent requests
+✓ JWT token storage in localStorage
+✓ Auto-redirect on 401 auth errors
+✓ Loading state during login
+✓ Detailed error messages
+✓ Test API utilities for debugging
+✓ Console debugging tools
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📝 UPDATED FILES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✓ src/pages/Auth/Login/Login.jsx
+  → Now uses axios instead of fetch
+  → Better error handling
+  → Loading state
+  → Token storage
+
+✓ src/api/test.js (NEW)
+  → Test API utilities
+  → Browser console commands
+  → Debug tools
+
+✓ src/main.jsx
+  → Test API exposed globally
+  → Available in dev mode
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+For more details, see: TESTING_GUIDE.md
+
