@@ -24,6 +24,7 @@ public class News {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @Column(nullable = false)
     private String status; //DRAFT or PUBLISH
 
 

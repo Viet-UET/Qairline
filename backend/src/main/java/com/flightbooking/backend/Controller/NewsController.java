@@ -4,6 +4,7 @@ import com.flightbooking.backend.DTO.NewsRequestDTO;
 import com.flightbooking.backend.Model.News;
 import com.flightbooking.backend.Service.NewsService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

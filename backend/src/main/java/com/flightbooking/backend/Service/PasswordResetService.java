@@ -65,10 +65,6 @@ public class PasswordResetService {
             throw new IllegalArgumentException("Token đã được sử dụng");
         }
 
-        if (resetToken.getAttemptCount() >= 5) {
-            passwordResetTokenRepository.delete(resetToken);
-            throw new IllegalArgumentException("Token đã bị khóa do thử quá nhiều lần");
-        }
 
         resetToken.setAttemptCount(resetToken.getAttemptCount() + 1);
         passwordResetTokenRepository.save(resetToken);

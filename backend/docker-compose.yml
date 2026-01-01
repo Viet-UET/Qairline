@@ -46,13 +46,6 @@ services:
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
 
-      # JWT 
-      JWT_SECRET_KEY: aGllbW5ndXllbnhpbmh4aWFkYWlzZW5odWNoYW9oYWljMWEK
-      JWT_EXPIRATION_MS: 3600000
-
-      # Email 
-      SPRING_MAIL_PASSWORD: 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
-
       # Frontend URL
       APP_FRONTEND_URL: http://localhost:3000
 
