@@ -34,7 +34,7 @@ public class SecurityConfig {
                                 .logout(logout -> logout.disable())
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers("/oauth2/**", "/login/oauth2/**", "/api/auth/**",
-                                                                "/api/news/published", "/api/news/all", "/api/flights/**")
+                                                                "/api/news/published", "/api/news/all", "/api/flight/**")
                                                 .permitAll()
                                                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**",
                                                                 "/swagger-ui.html")
