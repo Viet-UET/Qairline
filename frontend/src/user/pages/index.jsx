@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom"; 
+import React, { useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import FlightSearch from "../../shared/components/common/FlightSearch";
 
-// TODO: Move images to this path
+// Images
 import imgAdelaide from "../../shared/assets/images/home/Adelaide.png";
 import imgTuscany from "../../shared/assets/images/home/Tuscany.png";
 import imgMali from "../../shared/assets/images/home/Mali.png";
@@ -14,366 +14,399 @@ import imgStudent from "../../shared/assets/images/home/student_discount.png";
 import imgMember from "../../shared/assets/images/home/membership.png";
 import imgSponsor from "../../shared/assets/images/home/sponsors.png";
 
-function Home() {
-  const [currentSlide, setCurrentSlide] = useState(0);
+/* =========================
+   HERO SLIDER
+========================= */
+function HeroSlider({ slides }) {
+  const [current, setCurrent] = useState(0);
 
-  const slides = [
-    { id: 1, img: imgAdelaide, link: "/adelaide" },
-    { id: 2, img: imgTuscany, link: "/tuscany" },
-    { id: 3, img: imgMali, link: "/mali" },
-    { id: 4, img: imgSarajero, link: "/discover/stories/sarajevo" },
-    { id: 5, img: imgCamogli, link: "/camogli" },
-    { id: 6, img: imgSagradaFamilia, link: "/article/sagrada-familia" },
-  ];
-
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
-  };
+  const next = () =>
+    setCurrent((p) => (p === slides.length - 1 ? 0 : p + 1));
+  const prev = () =>
+    setCurrent((p) => (p === 0 ? slides.length - 1 : p - 1));
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      nextSlide();
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [currentSlide]);
+    const t = setInterval(next, 5000);
+    return () => clearInterval(t);
+  }, [current]);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalData, setModalData] = useState({ origin: '', dest: '' });
+  const navigate = useNavigate();
 
-  const openBookingModal = (from, to) => {
-      setModalData({ origin: from, dest: to });
-      setIsModalOpen(true);
-  };
+  return (
+    <section className="relative mx-auto mt-[60px] h-[430px] w-[1265px] max-w-[95%]">
+      {/* Prev */}
+      <button
+        onClick={prev}
+        className="absolute left-[-70px] top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border bg-white text-2xl text-[#006D5B] shadow-md transition hover:bg-[#006D5B] hover:text-white max-[1300px]:left-3"
+      >
+        ‹
+      </button>
 
-  // Newsletter state
-  const [newsEmail, setNewsEmail] = useState("");
-  const [newsLang, setNewsLang] = useState(["Tiếng Việt"]); 
-  const [showLangMenu, setShowLangMenu] = useState(false);
-  const [newsCity, setNewsCity] = useState("");
-  const [showCityMenu, setShowCityMenu] = useState(false);
+      {/* Next */}
+      <button
+        onClick={next}
+        className="absolute right-[-70px] top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border bg-white text-2xl text-[#006D5B] shadow-md transition hover:bg-[#006D5B] hover:text-white max-[1300px]:right-3"
+      >
+        ›
+      </button>
+
+      <div
+        onClick={() => (window.location.href = slides[current].link)}
+        className="relative h-full w-full cursor-pointer overflow-hidden rounded-[30px] bg-cover bg-center shadow-[0_10px_30px_rgba(0,0,0,0.1)] transition-opacity duration-500"
+        style={{ backgroundImage: `url(${slides[current].img})` }}
+      >
+        <div className="absolute left-14 top-1/2 w-[350px] translate-y-16 rounded-bl-[50px] rounded-br-[20px] rounded-tl-[20px] rounded-tr-[5px] p-8">
+          <button 
+            className="rounded-full border-2 border-white px-5 py-2 text-sm font-bold text-white transition-all duration-300 hover:bg-white hover:text-[#529246] hover:border-[#529246]"
+            onClick={(e) => { e.stopPropagation(); navigate('/discover/popular'); }}
+          >
+            Tìm hiểu thêm
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* =========================
+   TICKET CARD
+========================= */
+function TicketCard({ from, to, price, date, deadline, onClick }) {
+  return (
+    <div
+      onClick={onClick}
+      className="flex h-[216px] cursor-pointer flex-col justify-between rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:border-[#529246] hover:shadow-[0_10px_25px_rgba(82,146,70,0.15)]"
+    >
+      <div>
+        <div className="flex justify-between">
+          <div>
+            <p className="text-sm font-medium text-[#004D40]">
+              {from} đến
+            </p>
+            <p className="text-xl font-extrabold text-[#004D40]">
+              {to}
+            </p>
+          </div>
+          <p className="text-xl font-extrabold text-red-600">
+            {price}
+            <span className="text-sm align-super">đ</span>
+          </p>
+        </div>
+
+        <span className="mt-2 inline-block rounded-md border border-orange-200 bg-orange-50 px-3 py-1 text-xs font-bold text-orange-600">
+          Chỗ ngồi có hạn
+        </span>
+      </div>
+
+      <div className="border-t border-dashed pt-3">
+        <p className="text-sm font-bold text-[#006D5B]">{date}</p>
+        <p className="text-xs italic text-gray-500">{deadline}</p>
+      </div>
+    </div>
+  );
+}
+
+/* =========================
+   OFFER CARD
+========================= */
+function OfferCard({ img, title, desc, link }) {
+  return (
+    <Link
+      to={link}
+      className="
+        group
+        flex
+        h-[500px]              /* ⬅️ TĂNG HEIGHT TỔNG */
+        flex-col
+        overflow-hidden
+        rounded-2xl
+        bg-white
+        text-center
+        shadow-sm
+        transition
+        hover:-translate-y-1
+        hover:shadow-lg
+      "
+    >
+      {/* IMAGE */}
+      <div className="relative h-[280px] w-full overflow-hidden">
+        {/* ⬆️ ẢNH CAO HƠN RÕ */}
+        <img
+          src={img}
+          alt={title}
+          className="
+            h-full
+            w-full
+            object-cover
+            transition
+            duration-300
+            group-hover:scale-105
+          "
+        />
+      </div>
+
+      {/* CONTENT */}
+      <div className="flex flex-1 flex-col justify-center px-8">
+        <h3
+          className="
+            mb-3
+            text-2xl
+            font-bold
+            text-[#004D40]
+            transition
+            group-hover:text-[#529246]
+          "
+        >
+          {title}
+        </h3>
+
+        <p
+          className="
+            mb-6
+            text-base
+            italic
+            text-[#529246]
+            transition
+            group-hover:text-[#004D40]
+          "
+        >
+          {desc}
+        </p>
+
+        <span
+          className="
+            text-sm
+            font-bold
+            text-[#006D5B]
+            transition
+            group-hover:text-[#004D40]
+          "
+        >
+          &gt;&gt; Tìm hiểu thêm
+        </span>
+      </div>
+    </Link>
+  );
+}
+
+
+/* =========================
+   NEWSLETTER
+========================= */
+function Newsletter() {
+  const [email, setEmail] = useState("");
+  const [langs, setLangs] = useState(["Tiếng Việt"]);
+  const [city, setCity] = useState("");
+  const [openLang, setOpenLang] = useState(false);
+  const [openCity, setOpenCity] = useState(false);
 
   const langRef = useRef(null);
   const cityRef = useRef(null);
 
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (langRef.current && !langRef.current.contains(event.target)) setShowLangMenu(false);
-      if (cityRef.current && !cityRef.current.contains(event.target)) setShowCityMenu(false);
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    const close = (e) => {
+      if (langRef.current && !langRef.current.contains(e.target))
+        setOpenLang(false);
+      if (cityRef.current && !cityRef.current.contains(e.target))
+        setOpenCity(false);
+    };
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("mousedown", close);
   }, []);
 
-  const toggleLang = (lang) => {
-    if (newsLang.includes(lang)) {
-        if (newsLang.length > 1) {
-            setNewsLang(newsLang.filter(l => l !== lang));
-        }
-    } else {
-        setNewsLang([...newsLang, lang]);
-    }
-  };
+  const toggleLang = (l) =>
+    setLangs((p) =>
+      p.includes(l) ? (p.length > 1 ? p.filter((x) => x !== l) : p) : [...p, l]
+    );
 
-  const CITY_OPTIONS = ["Hà Nội", "Hồ Chí Minh", "Đà Nẵng", "Cần Thơ", "Hải Phòng"];
+  const CITIES = ["Hà Nội", "Hồ Chí Minh", "Đà Nẵng", "Cần Thơ", "Hải Phòng"];
 
   return (
-    <div style={{ paddingTop: "100px", width: "100%", backgroundColor: "#fcfcfc", fontFamily: "'Afacad', sans-serif", paddingBottom: "40px", position: "relative" }}>
-      {/* --- HERO SLIDER --- */}
-      <section style={{ position: "relative", width: "1265px", height: "430px", margin: "40px auto 0 auto", marginTop: "60px", overflow: "visible", cursor: "pointer" }}>
-        <button style={{ position: "absolute", top: "50%", transform: "translateY(-50%)", background: "white", color: "#006D5B", border: "1px solid #eee", fontSize: "2rem", cursor: "pointer", zIndex: 10, width: "50px", height: "50px", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.3s", boxShadow: "0 4px 10px rgba(0,0,0,0.1)", left: "-70px" }} onClick={prevSlide}>
-          &lt;
-        </button>
-        <button style={{ position: "absolute", top: "50%", transform: "translateY(-50%)", background: "white", color: "#006D5B", border: "1px solid #eee", fontSize: "2rem", cursor: "pointer", zIndex: 10, width: "50px", height: "50px", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.3s", boxShadow: "0 4px 10px rgba(0,0,0,0.1)", right: "-70px" }} onClick={nextSlide}>
-          &gt;
-        </button>
+    <section className="mx-auto mb-16 max-w-[1265px]">
+      <h2 className="mb-6 text-center text-5xl font-bold text-[#006D5B]">
+        Đăng ký Q-eflight News
+      </h2>
 
-        <div
-          style={{ width: "100%", height: "100%", position: "relative", backgroundSize: "cover", backgroundPosition: "center", transition: "opacity 0.5s ease-in-out", borderRadius: "30px", overflow: "hidden", boxShadow: "0 10px 30px rgba(0,0,0,0.1)", cursor: "pointer", backgroundImage: `url(${slides[currentSlide].img})` }}
-          onClick={() => window.location.href = slides[currentSlide].link}
-        >
-          <div style={{ position: "absolute", top: "50%", transform: "translateY(70%)", left: "60px", width: "350px", color: "white", padding: "30px", zIndex: 2, borderTopRightRadius: "5px", borderBottomLeftRadius: "50px", borderTopLeftRadius: "20px", borderBottomRightRadius: "20px" }}>
-            <button style={{ background: "transparent", border: "2px solid white", color: "white", padding: "8px 20px", borderRadius: "20px", fontWeight: "bold", cursor: "pointer", fontSize: "0.9rem", transition: "all 0.3s" }}>Tìm hiểu thêm</button>
-          </div>
-        </div>
-      </section>
-
-      <div style={{ marginTop: "-100px", marginBottom: "60px", position: "relative", zIndex: 100 }}>
-        <FlightSearch />
-      </div>
-
-      {/* --- DAILY PROMOTIONS --- */}
-      <section style={{ maxWidth: "1265px", margin: "0 auto 60px auto" }}>
-        <h2 style={{ fontSize: "3rem", color: "#006D5B", fontWeight: 700, marginBottom: "10px" }}>Khám phá khuyến mãi hàng ngày</h2>
-        <p style={{ color: "#529246", marginBottom: "30px", fontSize: "1rem" }}>
-          Tiết kiệm nhiều hơn khi đặt vé bay và khách sạn đến những điểm đến tuyệt vời.
+      <div className="mx-auto w-[880px] max-w-full rounded-xl border bg-white p-10 text-center shadow">
+        <p className="mb-2 text-xl font-bold text-[#004D40]">
+          Đăng ký Q-eflight News để cập nhật các ưu đãi mới nhất
+        </p>
+        <p className="mb-6 italic text-gray-500">
+          (Không bao gồm ưu đãi hội viên đặc biệt)
         </p>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "25px" }}>
-          {/* Ticket Card 1 */}
-          <div 
-            style={{ width: "100%", height: "216px", background: "white", borderRadius: "16px", padding: "25px", boxSizing: "border-box", boxShadow: "0 4px 15px rgba(0,0,0,0.05)", border: "1px solid #e0e0e0", transition: "transform 0.2s, border-color 0.2s", display: "flex", flexDirection: "column", justifyContent: "space-between", cursor: "pointer" }}
-            onClick={() => openBookingModal("Hồ Chí Minh", "Bangkok")}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-5px)";
-              e.currentTarget.style.borderColor = "#529246";
-              e.currentTarget.style.boxShadow = "0 10px 25px rgba(82, 146, 70, 0.15)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.borderColor = "#e0e0e0";
-              e.currentTarget.style.boxShadow = "0 4px 15px rgba(0,0,0,0.05)";
-            }}
-          >
-            <div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px" }}>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-                        <div style={{ fontSize: "0.85rem", color: "#004D40", fontWeight: 500 }}>Thành phố Hồ Chí Minh đến</div>
-                        <div style={{ fontSize: "1.4rem", color: "#004D40", fontWeight: 800, lineHeight: 1.2 }}>Bangkok</div>
-                    </div>
-                    <div style={{ fontSize: "1.5rem", color: "#D32F2F", fontWeight: 800, textAlign: "right", lineHeight: 1 }}>
-                        3,490,000<span style={{ fontSize: "0.9rem", verticalAlign: "super", marginLeft: "2px", color: "#D32F2F" }}>đ</span>
-                    </div>
-                </div>
-                <div style={{ display: "inline-block", backgroundColor: "#FFF3E0", border: "1px solid #FFE0B2", color: "#F57C00", fontSize: "0.75rem", padding: "4px 10px", borderRadius: "6px", fontWeight: "bold", width: "fit-content" }}>Chỗ ngồi có hạn</div>
-            </div>
-            <div style={{ borderTop: "1px dashed #eee", paddingTop: "15px", display: "flex", flexDirection: "column", gap: "8px" }}>
-                <div style={{ fontSize: "0.9rem", color: "#006D5B", fontWeight: 700 }}>30/11/2025 - 31/12/2025</div>
-                <div style={{ fontSize: "0.75rem", color: "#666", fontStyle: "italic" }}>Hạn chót đăng ký: 23:59' ngày 22/11/2025</div>
-            </div>
+        <div className="mb-6 grid grid-cols-[1.5fr_1fr_1.5fr] gap-5">
+          {/* Email */}
+          <div className="flex flex-col rounded-lg border bg-gray-50 px-4 py-2 text-left focus-within:border-[#006D5B]">
+            <label className="text-xs text-[#006D5B]">Email</label>
+            <input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="bg-transparent font-semibold outline-none"
+            />
           </div>
 
-          {/* Ticket Card 2 */}
-          <div 
-            style={{ width: "100%", height: "216px", background: "white", borderRadius: "16px", padding: "25px", boxSizing: "border-box", boxShadow: "0 4px 15px rgba(0,0,0,0.05)", border: "1px solid #e0e0e0", transition: "transform 0.2s, border-color 0.2s", display: "flex", flexDirection: "column", justifyContent: "space-between", cursor: "pointer" }}
-            onClick={() => openBookingModal("Hồ Chí Minh", "Hà Nội")}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-5px)";
-              e.currentTarget.style.borderColor = "#529246";
-              e.currentTarget.style.boxShadow = "0 10px 25px rgba(82, 146, 70, 0.15)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.borderColor = "#e0e0e0";
-              e.currentTarget.style.boxShadow = "0 4px 15px rgba(0,0,0,0.05)";
-            }}
+          {/* Lang */}
+          <div
+            ref={langRef}
+            onClick={() => setOpenLang(!openLang)}
+            className="relative flex cursor-pointer flex-col rounded-lg border bg-gray-50 px-4 py-2 text-left"
           >
-            <div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px" }}>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
-                        <div style={{ fontSize: "0.85rem", color: "#004D40", fontWeight: 500 }}>Thành phố Hồ Chí Minh đến</div>
-                        <div style={{ fontSize: "1.4rem", color: "#004D40", fontWeight: 800, lineHeight: 1.2 }}>Hà Nội</div>
-                    </div>
-                    <div style={{ fontSize: "1.5rem", color: "#D32F2F", fontWeight: 800, textAlign: "right", lineHeight: 1 }}>
-                        1,290,000<span style={{ fontSize: "0.9rem", verticalAlign: "super", marginLeft: "2px", color: "#D32F2F" }}>đ</span>
-                    </div>
-                </div>
-                <div style={{ display: "inline-block", backgroundColor: "#FFF3E0", border: "1px solid #FFE0B2", color: "#F57C00", fontSize: "0.75rem", padding: "4px 10px", borderRadius: "6px", fontWeight: "bold", width: "fit-content" }}>Chỗ ngồi có hạn</div>
-            </div>
-            <div style={{ borderTop: "1px dashed #eee", paddingTop: "15px", display: "flex", flexDirection: "column", gap: "8px" }}>
-                <div style={{ fontSize: "0.9rem", color: "#006D5B", fontWeight: 700 }}>18/11/2025 - 15/03/2026</div>
-                <div style={{ fontSize: "0.75rem", color: "#666", fontStyle: "italic" }}>Hạn chót đăng ký: 23:59' ngày 22/10/2025</div>
-            </div>
+            <label className="text-xs text-[#006D5B]">Ngôn ngữ</label>
+            <div className="font-semibold">{langs.join(", ")}</div>
+            {openLang && (
+              <div className="absolute top-[110%] left-0 w-full rounded-lg border bg-white shadow">
+                {["Tiếng Việt", "Tiếng Anh"].map((l) => (
+                  <div
+                    key={l}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleLang(l);
+                    }}
+                    className={`cursor-pointer px-4 py-2 ${
+                      langs.includes(l)
+                        ? "bg-green-50 font-bold text-[#006D5B]"
+                        : ""
+                    }`}
+                  >
+                    {l}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* CTA Card */}
-          <Link to="/explore/promotions" style={{ width: "100%", height: "216px", backgroundColor: "#004D40", borderRadius: "16px", padding: "30px 20px", color: "white", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center", position: "relative", overflow: "hidden", boxSizing: "border-box", cursor: "pointer", textDecoration: "none", transition: "transform 0.2s" }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-5px)";
-              e.currentTarget.style.backgroundColor = "#00695c";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.backgroundColor = "#004D40";
-            }}
+          {/* City */}
+          <div
+            ref={cityRef}
+            onClick={() => setOpenCity(!openCity)}
+            className="relative flex cursor-pointer flex-col rounded-lg border bg-gray-50 px-4 py-2 text-left"
           >
-            <div style={{ content: "", position: "absolute", top: "-30px", right: "-30px", width: "100px", height: "100px", background: "#cddc39", borderRadius: "50%", zIndex: 1, opacity: 0.2 }}></div>
-            <div style={{ fontSize: "1.2rem", fontWeight: "bold", marginBottom: "20px", zIndex: 2, color: "white" }}>Bạn muốn xem thêm ưu đãi?</div>
-            <button style={{ background: "transparent", border: "1px solid white", color: "white", padding: "10px 30px", borderRadius: "20px", fontWeight: "bold", cursor: "pointer", zIndex: 2, fontSize: "0.9rem" }}>Xem tất cả các khuyến mãi</button>
-          </Link>
+            <label className="text-xs text-[#006D5B]">Thành phố</label>
+            <div className="font-semibold text-gray-600">
+              {city || "Chọn thành phố"}
+            </div>
+            {openCity && (
+              <div className="absolute top-[110%] left-0 w-full rounded-lg border bg-white shadow">
+                {CITIES.map((c) => (
+                  <div
+                    key={c}
+                    onClick={() => {
+                      setCity(c);
+                      setOpenCity(false);
+                    }}
+                    className={`cursor-pointer px-4 py-2 ${
+                      city === c
+                        ? "bg-green-50 font-bold text-[#006D5B]"
+                        : ""
+                    }`}
+                  >
+                    {c}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-      </section>
 
-      {/* --- SPECIAL OFFERS --- */}
-      <section style={{ maxWidth: "1265px", margin: "0 auto 60px auto" }}>
-        <h2 style={{ fontSize: "3rem", color: "#006D5B", fontWeight: 700 }}>Ưu đãi đặc biệt</h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "25px", marginTop: "30px" }}>
-          
-          <Link to="/special-offers#student" style={{ background: "white", borderRadius: "12px", overflow: "hidden", boxShadow: "0 4px 15px rgba(0,0,0,0.05)", textAlign: "center", paddingBottom: "20px", border: "10px solid #ffffff", textDecoration: "none", color: "inherit", transition: "transform 0.2s, box-shadow 0.2s" }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-3px)";
-              e.currentTarget.style.boxShadow = "0 10px 25px rgba(82, 146, 70, 0.15)";
-              e.currentTarget.firstElementChild.style.transform = "scale(1.05)";
-              e.currentTarget.children[1].style.color = "#529246";
-              e.currentTarget.children[2].style.color = "#004D40";
-              e.currentTarget.lastElementChild.style.color = "#004D40";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "0 4px 15px rgba(0,0,0,0.05)";
-              e.currentTarget.firstElementChild.style.transform = "scale(1)";
-              e.currentTarget.children[1].style.color = "#004D40";
-              e.currentTarget.children[2].style.color = "#529246";
-              e.currentTarget.lastElementChild.style.color = "#006D5B";
-            }}
-          >
-            <img src={imgStudent} alt="Sinh viên" style={{ width: "100%", height: "100px", objectFit: "cover", transition: "transform 0.2s" }} />
-            <h3 style={{ fontSize: "2rem", fontWeight: "bold", color: "#004D40", margin: "15px 0 10px 0" }}>Ưu đãi dành cho sinh viên</h3>
-            <p style={{ fontSize: "1rem", color: "#529246", padding: "0 15px", margin: "0 auto 15px auto", fontStyle: "italic", textAlign: "center" }}>Giá vé giảm đến 20%, tăng giới hạn hành lý, WiFi miễn phí...</p>
-            <span style={{ color: "#006D5B", fontWeight: "bold", fontSize: "0.85rem" }}>&gt;&gt; Tìm hiểu thêm</span>
-          </Link>
-
-          <Link to="/special-offers#member" style={{ background: "white", borderRadius: "12px", overflow: "hidden", boxShadow: "0 4px 15px rgba(0,0,0,0.05)", textAlign: "center", paddingBottom: "20px", border: "10px solid #ffffff", textDecoration: "none", color: "inherit", transition: "transform 0.2s, box-shadow 0.2s" }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-3px)";
-              e.currentTarget.style.boxShadow = "0 10px 25px rgba(82, 146, 70, 0.15)";
-              e.currentTarget.firstElementChild.style.transform = "scale(1.05)";
-              e.currentTarget.children[1].style.color = "#529246";
-              e.currentTarget.children[2].style.color = "#004D40";
-              e.currentTarget.lastElementChild.style.color = "#004D40";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "0 4px 15px rgba(0,0,0,0.05)";
-              e.currentTarget.firstElementChild.style.transform = "scale(1)";
-              e.currentTarget.children[1].style.color = "#004D40";
-              e.currentTarget.children[2].style.color = "#529246";
-              e.currentTarget.lastElementChild.style.color = "#006D5B";
-            }}
-          >
-            <img src={imgMember} alt="Hội viên" style={{ width: "100%", height: "100px", objectFit: "cover", transition: "transform 0.2s" }} />
-            <h3 style={{ fontSize: "2rem", fontWeight: "bold", color: "#004D40", margin: "15px 0 10px 0" }}>Đăng ký gói hội viên</h3>
-            <p style={{ fontSize: "1rem", color: "#529246", padding: "0 15px", margin: "0 auto 15px auto", fontStyle: "italic", textAlign: "center" }}>Sử dụng quyền lợi đặc biệt của hội viên để giảm giá vé...</p>
-            <span style={{ color: "#006D5B", fontWeight: "bold", fontSize: "0.85rem" }}>&gt;&gt; Tìm hiểu thêm</span>
-          </Link>
-
-          <Link to="/special-offers#sponsor" style={{ background: "white", borderRadius: "12px", overflow: "hidden", boxShadow: "0 4px 15px rgba(0,0,0,0.05)", textAlign: "center", paddingBottom: "20px", border: "10px solid #ffffff", textDecoration: "none", color: "inherit", transition: "transform 0.2s, box-shadow 0.2s" }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-3px)";
-              e.currentTarget.style.boxShadow = "0 10px 25px rgba(82, 146, 70, 0.15)";
-              e.currentTarget.firstElementChild.style.transform = "scale(1.05)";
-              e.currentTarget.children[1].style.color = "#529246";
-              e.currentTarget.children[2].style.color = "#004D40";
-              e.currentTarget.lastElementChild.style.color = "#004D40";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "0 4px 15px rgba(0,0,0,0.05)";
-              e.currentTarget.firstElementChild.style.transform = "scale(1)";
-              e.currentTarget.children[1].style.color = "#004D40";
-              e.currentTarget.children[2].style.color = "#529246";
-              e.currentTarget.lastElementChild.style.color = "#006D5B";
-            }}
-          >
-            <img src={imgSponsor} alt="Nhà tài trợ" style={{ width: "100%", height: "100px", objectFit: "cover", transition: "transform 0.2s" }} />
-            <h3 style={{ fontSize: "2rem", fontWeight: "bold", color: "#004D40", margin: "15px 0 10px 0" }}>Ưu đãi từ nhà tài trợ</h3>
-            <p style={{ fontSize: "1rem", color: "#529246", padding: "0 15px", margin: "0 auto 15px auto", fontStyle: "italic", textAlign: "center" }}>Mã giảm giá đặc biệt đến từ những quý nhà tài trợ hảo tâm...</p>
-            <span style={{ color: "#006D5B", fontWeight: "bold", fontSize: "0.85rem" }}>&gt;&gt; Tìm hiểu thêm</span>
-          </Link>
-
-        </div>
-      </section>
-
-      {/* --- NEWSLETTER --- */}
-      <section style={{ maxWidth: "1265px", margin: "0 auto 60px auto" }}>
-        <h2 style={{ fontSize: "3rem", color: "#006D5B", fontWeight: 700, textAlign: "center" }}>Đăng ký Q-eflight News</h2>
-
-        <div style={{ background: "white", width: "880px", maxWidth: "100%", margin: "0 auto", padding: "40px 60px", borderRadius: "12px", boxShadow: "0 5px 20px rgba(0,0,0,0.05)", border: "1px solid #eee", textAlign: "center" }}>
-          <p style={{ color: "#004D40", fontWeight: "bold", marginBottom: "10px", fontSize: "1.3rem", textAlign: "center" }}>
-            Đăng ký Q-eflight News để cập nhật các thông tin, ưu đãi mới nhất từ QAirlines.
-          </p>
-          <p style={{ fontSize: "0.9rem", color: "#666", marginBottom: "30px", fontStyle: "italic", textAlign: "center" }}>
-            (Không bao gồm thông tin ưu đãi dành riêng cho gói hội viên "Long-Lân-Quy-Phụng")
-          </p>
-
-          <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 1.5fr", gap: "20px", marginBottom: "25px" }}>
-            {/* Email */}
-            <div style={{ position: "relative", border: "1px solid #ccc", borderRadius: "8px", background: "#f9f9f9", height: "50px", display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 15px", cursor: "pointer" }}>
-                <div style={{ fontSize: "0.75rem", color: "#006D5B", marginBottom: "2px" }}>Địa chỉ thư điện tử</div>
-                <input 
-                    type="email" 
-                    placeholder="nhap_email@example.com" 
-                    style={{ border: "none", background: "transparent", width: "100%", outline: "none", fontSize: "0.95rem", color: "#333", fontWeight: 600 }}
-                    value={newsEmail}
-                    onChange={(e) => setNewsEmail(e.target.value)}
-                />
-            </div>
-
-            {/* Language */}
-            <div style={{ position: "relative", border: "1px solid #ccc", borderRadius: "8px", background: "#f9f9f9", height: "50px", display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 15px", cursor: "pointer" }} ref={langRef} onClick={() => setShowLangMenu(!showLangMenu)}>
-                <div style={{ fontSize: "0.75rem", color: "#006D5B", marginBottom: "2px" }}>Ngôn ngữ</div>
-                <div style={{ border: "none", background: "transparent", width: "100%", outline: "none", fontSize: "0.95rem", color: "#333", fontWeight: 600 }}>
-                    {newsLang.join(", ")}
-                </div>
-                <span style={{ position: "absolute", right: "15px", color: "#999", fontSize: "0.8rem" }}>▼</span>
-                {showLangMenu && (
-                    <div style={{ position: "absolute", top: "110%", left: "0", width: "100%", background: "white", border: "1px solid #006D5B", borderRadius: "8px", padding: "5px", boxShadow: "0 5px 15px rgba(0,0,0,0.15)", zIndex: 10, textAlign: "left" }}>
-                        <div 
-                            style={{ padding: "10px", cursor: "pointer", fontSize: "0.9rem", borderRadius: "4px", color: newsLang.includes("Tiếng Việt") ? "#006D5B" : "#333", fontWeight: newsLang.includes("Tiếng Việt") ? "bold" : "normal", backgroundColor: newsLang.includes("Tiếng Việt") ? "#e8f5e9" : "transparent" }}
-                            onClick={(e) => { e.stopPropagation(); toggleLang("Tiếng Việt"); }}
-                        >
-                            Tiếng Việt
-                        </div>
-                        <div 
-                            style={{ padding: "10px", cursor: "pointer", fontSize: "0.9rem", borderRadius: "4px", color: newsLang.includes("Tiếng Anh") ? "#006D5B" : "#333", fontWeight: newsLang.includes("Tiếng Anh") ? "bold" : "normal", backgroundColor: newsLang.includes("Tiếng Anh") ? "#e8f5e9" : "transparent" }}
-                            onClick={(e) => { e.stopPropagation(); toggleLang("Tiếng Anh"); }}
-                        >
-                            Tiếng Anh
-                        </div>
-                    </div>
-                )}
-            </div>
-
-            {/* City */}
-            <div style={{ position: "relative", border: "1px solid #ccc", borderRadius: "8px", background: "#f9f9f9", height: "50px", display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 15px", cursor: "pointer" }} ref={cityRef} onClick={() => setShowCityMenu(!showCityMenu)}>
-                <div style={{ fontSize: "0.75rem", color: "#006D5B", marginBottom: "2px" }}>Thành phố khởi hành ưu tiên</div>
-                <div style={{ border: "none", background: "transparent", width: "100%", outline: "none", fontSize: "0.95rem", fontWeight: 600, color: newsCity ? "#333" : "#999" }}>
-                    {newsCity || "Chọn thành phố"}
-                </div>
-                <span style={{ position: "absolute", right: "15px", color: "#999", fontSize: "0.8rem" }}>▼</span>
-                {showCityMenu && (
-                    <div style={{ position: "absolute", top: "110%", left: "0", width: "100%", background: "white", border: "1px solid #006D5B", borderRadius: "8px", padding: "5px", boxShadow: "0 5px 15px rgba(0,0,0,0.15)", zIndex: 10, textAlign: "left" }}>
-                        <div style={{ padding: "10px", cursor: "pointer", fontSize: "0.9rem", borderRadius: "4px" }} onClick={() => { setNewsCity(""); setShowCityMenu(false); }}>
-                            (Bỏ chọn)
-                        </div>
-                        {CITY_OPTIONS.map((city, idx) => (
-                            <div 
-                                key={idx} 
-                                style={{ padding: "10px", cursor: "pointer", fontSize: "0.9rem", borderRadius: "4px", color: newsCity === city ? "#006D5B" : "#333", fontWeight: newsCity === city ? "bold" : "normal", backgroundColor: newsCity === city ? "#e8f5e9" : "transparent" }}
-                                onClick={() => { setNewsCity(city); setShowCityMenu(false); }}
-                            >
-                                {city}
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </div>
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", fontSize: "0.9rem", color: "#004D40", marginBottom: "30px" }}>
-            <input type="checkbox" />
-            <span>
-              Tôi muốn nhận các ưu đãi và tin tức từ QAirline. Tôi đã đọc và hiểu
-            </span>
-          </div>
-
-          <button style={{ background: "transparent", border: "2px solid #529246", color: "#529246", padding: "10px 50px", borderRadius: "8px", fontWeight: "bold", fontSize: "1.1rem", cursor: "pointer", transition: "all 0.3s" }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "#529246";
-              e.currentTarget.style.color = "white";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "transparent";
-              e.currentTarget.style.color = "#529246";
-            }}
-          >Đăng ký</button>
-        </div>
-      </section>
-    </div>
+        <button className="rounded-lg border-2 border-[#529246] px-10 py-2 font-bold text-[#529246] transition hover:bg-[#529246] hover:text-white">
+          Đăng ký
+        </button>
+      </div>
+    </section>
   );
 }
 
-export default Home;
+/* =========================
+   HOME PAGE
+========================= */
+export default function Home() {
+  const slides = [
+    { img: imgAdelaide, link: "/adelaide" },
+    { img: imgTuscany, link: "/tuscany" },
+    { img: imgMali, link: "/mali" },
+    { img: imgSarajero, link: "/discover/stories/sarajevo" },
+    { img: imgCamogli, link: "/camogli" },
+    { img: imgSagradaFamilia, link: "/article/sagrada-familia" },
+  ];
+
+  return (
+    <div className="bg-[#fcfcfc] pb-10 pt-[100px] font-[Afacad]">
+      <HeroSlider slides={slides} />
+
+      <div className="-mt-[100px] relative z-10 mb-16">
+        <FlightSearch />
+      </div>
+
+      {/* Promotions */}
+      <section className="mx-auto mb-16 max-w-[1265px]">
+        <h2 className="mb-2 text-5xl font-bold text-[#006D5B]">
+          Khám phá khuyến mãi hàng ngày
+        </h2>
+        <p className="mb-8 text-[#529246]">
+          Tiết kiệm nhiều hơn khi đặt vé bay
+        </p>
+
+        <div className="grid grid-cols-3 gap-6">
+          <TicketCard
+            from="TP. Hồ Chí Minh"
+            to="Bangkok"
+            price="3,490,000"
+            date="30/11/2025 - 31/12/2025"
+            deadline="Hạn chót: 22/11/2025"
+          />
+          <TicketCard
+            from="TP. Hồ Chí Minh"
+            to="Hà Nội"
+            price="1,290,000"
+            date="18/11/2025 - 15/03/2026"
+            deadline="Hạn chót: 22/10/2025"
+          />
+
+          <Link
+            to="/explore/promotions"
+            className="relative flex h-[216px] flex-col items-center justify-center rounded-2xl bg-[#004D40] text-white transition hover:-translate-y-1 hover:bg-[#00695c]"
+          >
+            <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-lime-400/20" />
+            <p className="mb-5 text-lg font-bold">
+              Bạn muốn xem thêm ưu đãi?
+            </p>
+            <button className="rounded-full border px-6 py-2 text-sm font-bold">
+              Xem tất cả
+            </button>
+          </Link>
+        </div>
+      </section>
+
+      {/* Special Offers */}
+      <section className="mx-auto mb-16 max-w-[1265px]">
+        <h2 className="mb-8 text-5xl font-bold text-[#006D5B]">
+          Ưu đãi đặc biệt
+        </h2>
+
+        <div className="grid grid-cols-3 gap-6">
+          <OfferCard
+            img={imgStudent}
+            title="Ưu đãi sinh viên"
+            desc="Giảm giá đến 20%"
+            link="/special-offers#student"
+          />
+          <OfferCard
+            img={imgMember}
+            title="Gói hội viên"
+            desc="Ưu đãi độc quyền"
+            link="/special-offers#member"
+          />
+          <OfferCard
+            img={imgSponsor}
+            title="Nhà tài trợ"
+            desc="Mã giảm giá hấp dẫn"
+            link="/special-offers#sponsor"
+          />
+        </div>
+      </section>
+
+      <Newsletter />
+    </div>
+  );
+}

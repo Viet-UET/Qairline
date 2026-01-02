@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useRef, useEffect } from "react";
 import {
   Plus,
   Upload,
@@ -109,11 +109,23 @@ export default function AdminPosts() {
   const [category, setCategory] = useState("News");
   const [content, setContent] = useState("");
   const [attachments, setAttachments] = useState([]);
-
   const [q, setQ] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
   const [filterStatus, setFilterStatus] = useState("All");
-  const [density, setDensity] = useState("Comfortable"); // Comfortable | Compact
+  const [showAddModal, setShowAddModal] = useState(false);
+
+  const fileInputRef = useRef(null);
+
+  // Close modal on Esc key
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && showAddModal) {
+        setShowAddModal(false);
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [showAddModal]);
 
   const filteredPosts = useMemo(() => {
     return MOCK_POSTS.filter((p) => {
@@ -127,190 +139,83 @@ export default function AdminPosts() {
     });
   }, [q, filterCategory, filterStatus]);
 
-  const rowPad = density === "Compact" ? "py-2" : "py-3";
-  const rowText = density === "Compact" ? "text-sm" : "text-sm";
+  const rowPad = "py-2";
+  const rowText = "text-xs";
 
-  function handleFakeUpload() {
-    // mock "upload"
-    setAttachments((prev) => {
-      const next = [...prev];
-      next.push(`attachment-${prev.length + 1}.png`);
-      return next;
+  const validateFile = (file) => {
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'application/pdf'];
+    const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.pdf'];
+    const maxSize = 5 * 1024 * 1024; // 5MB
+
+    if (!allowedTypes.includes(file.type) && !allowedExtensions.some(ext => file.name.toLowerCase().endsWith(ext))) {
+      return 'Invalid file type. Only images (jpg, png, webp) and PDF files are allowed.';
+    }
+
+    if (file.size > maxSize) {
+      return 'File size exceeds 5MB limit.';
+    }
+
+    return null;
+  };
+
+  const handleFileSelect = (e) => {
+    const files = Array.from(e.target.files);
+    const newAttachments = [];
+
+    for (const file of files) {
+      const error = validateFile(file);
+      let preview = null;
+      if (!error && file.type.startsWith('image/')) {
+        preview = URL.createObjectURL(file);
+      }
+      newAttachments.push({ file, error, preview });
+    }
+
+    setAttachments(prev => [...prev, ...newAttachments]);
+    e.target.value = ''; // reset input
+  };
+
+  const removeAttachment = (index) => {
+    setAttachments(prev => {
+      const newAtt = [...prev];
+      const att = newAtt[index];
+      if (att.preview) URL.revokeObjectURL(att.preview);
+      newAtt.splice(index, 1);
+      return newAtt;
     });
-  }
+  };
 
   function resetForm() {
     setTitle("");
     setCategory("News");
     setContent("");
-    setAttachments([]);
+    setAttachments(prev => {
+      prev.forEach(att => {
+        if (att.preview) URL.revokeObjectURL(att.preview);
+      });
+      return [];
+    });
   }
 
   return (
     <div className="space-y-6">
-      {/* Page intro + primary action */}
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-sm text-gray-500">
-            Create and manage news, promotions and operational updates.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <button className="inline-flex items-center gap-2 rounded-xl border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
-            <Upload className="h-4 w-4 text-blue-600" />
-            Import
-          </button>
-          <button className="inline-flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700">
-            <Plus className="h-4 w-4" />
-            New Post
-          </button>
-        </div>
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-gray-900">Posts</h1>
+        <button 
+          onClick={() => setShowAddModal(true)}
+          className="inline-flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700"
+        >
+          <Plus className="h-4 w-4" />
+          Add Post
+        </button>
       </div>
 
-      {/* Layout: form card + list card */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-        {/* Add Post */}
-        <div className="lg:col-span-2">
-          <Card title="Add post" icon={FileText}>
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm font-medium text-gray-700">
-                  Title
-                </label>
-                <input
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Post title"
-                  className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
-                />
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-gray-700">
-                  Category
-                </label>
-                <select
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
-                >
-                  {MOCK_CATEGORIES.map((c) => (
-                    <option key={c} value={c}>
-                      {c}
-                    </option>
-                  ))}
-                </select>
-                <p className="mt-2 text-xs text-gray-500">
-                  Use <span className="text-purple-700 font-medium">Purple</span>{" "}
-                  accent only for premium-related content.
-                </p>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-gray-700">
-                  Content
-                </label>
-                <textarea
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  placeholder="Write content…"
-                  className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-green-200 h-32 resize-none"
-                />
-              </div>
-
-              <div className="rounded-2xl border border-dashed border-[#D9D9D9] bg-[#F8F7F9] p-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <div className="text-sm font-medium text-gray-800">
-                      Attachments
-                    </div>
-                    <div className="text-xs text-gray-500">
-                      Mock upload for UI preview (no backend).
-                    </div>
-                  </div>
-                  <button
-                    onClick={handleFakeUpload}
-                    className="inline-flex items-center gap-2 rounded-xl border border-[#E5E7EB] bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                  >
-                    <Upload className="h-4 w-4 text-blue-600" />
-                    Add
-                  </button>
-                </div>
-
-                {attachments.length > 0 ? (
-                  <ul className="mt-3 space-y-2">
-                    {attachments.map((a, idx) => (
-                      <li
-                        key={a}
-                        className="flex items-center justify-between rounded-xl border border-[#E5E7EB] bg-white px-3 py-2 text-sm"
-                      >
-                        <span className="truncate text-gray-700">{a}</span>
-                        <button
-                          onClick={() =>
-                            setAttachments((prev) =>
-                              prev.filter((_, i) => i !== idx)
-                            )
-                          }
-                          className="h-8 w-8 rounded-xl hover:bg-gray-50 flex items-center justify-center"
-                          aria-label="Remove attachment"
-                        >
-                          <X className="h-4 w-4 text-gray-500" />
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <div className="mt-3 text-xs text-gray-500">
-                    No attachments yet.
-                  </div>
-                )}
-              </div>
-
-              <div className="flex items-center justify-end gap-3 pt-1">
-                <button
-                  onClick={resetForm}
-                  className="inline-flex items-center justify-center rounded-xl border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                >
-                  Reset
-                </button>
-                <button className="inline-flex items-center justify-center rounded-xl bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700">
-                  Publish
-                </button>
-              </div>
-            </div>
-          </Card>
-        </div>
-
-        {/* Post list */}
-        <div className="lg:col-span-3">
-          <Card
-            title={`Post list`}
-            icon={Filter}
-            right={
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-gray-500 hidden sm:inline">
-                  Density:
-                </span>
-                <div className="flex rounded-xl border border-[#E5E7EB] bg-white p-1">
-                  {["Comfortable", "Compact"].map((d) => (
-                    <button
-                      key={d}
-                      onClick={() => setDensity(d)}
-                      className={cx(
-                        "px-3 py-1.5 text-xs font-medium rounded-lg transition",
-                        density === d
-                          ? "bg-green-50 text-green-800"
-                          : "text-gray-600 hover:bg-gray-50"
-                      )}
-                    >
-                      {d}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            }
-          >
+      {/* Post List */}
+      <Card
+        title={`Posts (${filteredPosts.length})`}
+        icon={Filter}
+      >
             {/* Filters */}
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-4">
               <div className="flex flex-col sm:flex-row gap-3">
@@ -357,35 +262,32 @@ export default function AdminPosts() {
                   </span>{" "}
                   posts
                 </div>
-                <button className="inline-flex items-center gap-2 rounded-xl border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
-                  <Upload className="h-4 w-4 text-blue-600" />
-                  Export
-                </button>
               </div>
             </div>
 
             {/* Table */}
-            <div className="overflow-hidden rounded-2xl border border-[#E5E7EB]">
-              <table className="w-full">
-                <thead className="bg-[#F8F7F9] text-xs text-gray-600">
-                  <tr className="border-b border-[#E5E7EB]">
-                    <th className="text-left font-semibold px-4 py-3">
-                      Title
-                    </th>
-                    <th className="text-left font-semibold px-4 py-3">
-                      Category
-                    </th>
-                    <th className="text-left font-semibold px-4 py-3">
-                      Status
-                    </th>
-                    <th className="text-left font-semibold px-4 py-3">
-                      Created
-                    </th>
-                    <th className="text-right font-semibold px-4 py-3">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
+            <div className="rounded-2xl border border-[#E5E7EB]">
+              <div className="max-h-96 overflow-y-auto">
+                <table className="w-full min-w-full">
+                  <thead className="bg-[#F8F7F9] text-xs text-gray-600 sticky top-0">
+                    <tr className="border-b border-[#E5E7EB]">
+                      <th className="text-left font-semibold px-4 py-3">
+                        Title
+                      </th>
+                      <th className="text-left font-semibold px-4 py-3">
+                        Category
+                      </th>
+                      <th className="text-left font-semibold px-4 py-3">
+                        Status
+                      </th>
+                      <th className="text-left font-semibold px-4 py-3">
+                        Meta
+                      </th>
+                      <th className="text-right font-semibold px-4 py-3">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
 
                 <tbody className="divide-y divide-[#E5E7EB] bg-white">
                   {filteredPosts.map((p) => (
@@ -421,7 +323,7 @@ export default function AdminPosts() {
                       </td>
 
                       <td className={cx("px-4", rowPad, rowText)}>
-                        <span className="text-gray-700">{p.createdAt}</span>
+                        <span className="text-gray-700">{p.author} • {p.createdAt}</span>
                       </td>
 
                       <td className={cx("px-4", rowPad, rowText)}>
@@ -452,10 +354,162 @@ export default function AdminPosts() {
                   ) : null}
                 </tbody>
               </table>
+              </div>
             </div>
           </Card>
-        </div>
-      </div>
+
+      {/* Add Post Modal */}
+      {showAddModal && (
+        <>
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-40" onClick={() => setShowAddModal(false)}></div>
+          <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[85vh] overflow-y-auto">
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-semibold">Add new post</h2>
+                  <button onClick={() => setShowAddModal(false)} className="text-gray-500 hover:text-gray-700">
+                    <X className="h-6 w-6" />
+                  </button>
+                </div>
+
+                <div className="space-y-6">
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">
+                      Title
+                    </label>
+                    <input
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="Post title"
+                      className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">
+                      Category
+                    </label>
+                    <select
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                      className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                    >
+                      {MOCK_CATEGORIES.map((c) => (
+                        <option key={c} value={c}>
+                          {c}
+                        </option>
+                      ))}
+                    </select>
+                    <p className="mt-2 text-xs text-gray-500">
+                      Use <span className="text-purple-700 font-medium">Purple</span>{" "}
+                      accent only for premium-related content.
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">
+                      Content
+                    </label>
+                    <textarea
+                      value={content}
+                      onChange={(e) => setContent(e.target.value)}
+                      placeholder="Write content…"
+                      className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-green-200 h-48 resize-none"
+                    />
+                  </div>
+
+                  <div className="rounded-2xl border border-dashed border-[#D9D9D9] bg-[#F8F7F9] p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <div className="text-sm font-medium text-gray-800">
+                          Attachments
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          Max 5MB per file. Images (jpg, png, webp) and PDFs only.
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          multiple
+                          accept=".jpg,.jpeg,.png,.webp,.pdf"
+                          onChange={handleFileSelect}
+                          className="hidden"
+                        />
+                        <button
+                          onClick={() => fileInputRef.current?.click()}
+                          className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                        >
+                          <Upload className="h-4 w-4 text-blue-600" />
+                          Add attachment
+                        </button>
+                      </div>
+                    </div>
+
+                    {attachments.length > 0 ? (
+                      <ul className="mt-3 space-y-2">
+                        {attachments.map((att, index) => (
+                          <li
+                            key={index}
+                            className="flex items-center justify-between rounded-xl border border-[#E5E7EB] bg-white px-3 py-2 text-sm"
+                          >
+                            <div className="flex items-center space-x-2 flex-1 min-w-0">
+                              {att.preview ? (
+                                <img src={att.preview} alt="Preview" className="w-8 h-8 object-cover rounded" />
+                              ) : (
+                                <div className="w-8 h-8 bg-gray-200 rounded flex items-center justify-center">
+                                  <FileText className="w-4 h-4 text-gray-500" />
+                                </div>
+                              )}
+                              <div className="flex-1 min-w-0">
+                                <span className="truncate text-gray-700">{att.file.name}</span>
+                                <div className="text-xs text-gray-500">
+                                  {(att.file.size / 1024 / 1024).toFixed(2)} MB
+                                </div>
+                                {att.error && (
+                                  <div className="text-xs text-red-600">{att.error}</div>
+                                )}
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => removeAttachment(index)}
+                              className="h-8 w-8 rounded-xl hover:bg-gray-50 flex items-center justify-center"
+                              aria-label="Remove attachment"
+                            >
+                              <X className="h-4 w-4 text-gray-500" />
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <div className="mt-3 text-xs text-gray-500">
+                        No attachments yet.
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
+                    <button
+                      onClick={() => { resetForm(); setShowAddModal(false); }}
+                      className="inline-flex items-center justify-center rounded-xl border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                    >
+                      Reset
+                    </button>
+                    <button 
+                      onClick={() => { /* publish logic */ setShowAddModal(false); }}
+                      disabled={attachments.some(att => att.error)}
+                      className="inline-flex items-center justify-center rounded-xl bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                    >
+                      Publish
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
