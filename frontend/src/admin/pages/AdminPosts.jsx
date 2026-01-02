@@ -5,10 +5,10 @@ import {
   Filter,
   Pencil,
   Trash2,
-  Eye,
   X,
   FileText,
 } from "lucide-react";
+import SuccessToast from "../components/SuccessToast";
 
 const MOCK_CATEGORIES = ["News", "Promotion", "Flight Update", "Service"];
 const MOCK_STATUSES = ["Scheduled", "Completed", "Delayed", "Cancelled"];
@@ -89,6 +89,25 @@ function StatusBadge({ status }) {
   );
 }
 
+function CategoryBadge({ category }) {
+  const map = {
+    News: "bg-blue-50 text-blue-700 border-blue-100",
+    Promotion: "bg-purple-50 text-purple-700 border-purple-100",
+    "Flight Update": "bg-orange-50 text-orange-700 border-orange-100",
+    Service: "bg-green-50 text-green-700 border-green-100",
+  };
+  return (
+    <span
+      className={cx(
+        "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium",
+        map[category] || "bg-gray-50 text-gray-700 border-gray-200"
+      )}
+    >
+      {category}
+    </span>
+  );
+}
+
 function Card({ title, icon: Icon, children, right }) {
   return (
     <div className="rounded-2xl border border-[#E5E7EB] bg-white shadow-sm">
@@ -111,21 +130,40 @@ export default function AdminPosts() {
   const [attachments, setAttachments] = useState([]);
   const [q, setQ] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
-  const [filterStatus, setFilterStatus] = useState("All");
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingPost, setEditingPost] = useState(null);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const fileInputRef = useRef(null);
 
   // Close modal on Esc key
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape' && showAddModal) {
+      if (e.key === 'Escape' && (showAddModal || showEditModal)) {
         setShowAddModal(false);
+        setShowEditModal(false);
       }
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [showAddModal]);
+  }, [showAddModal, showEditModal]);
+
+  const openEditModal = (post) => {
+    setEditingPost(post);
+    setTitle(post.title);
+    setCategory(post.category);
+    setContent(post.content || "");
+    // Convert existing attachments to the expected format
+    const existingAttachments = (post.attachments || []).map(filename => ({
+      file: { name: filename, size: 0 }, // Mock file object for display
+      error: null,
+      preview: null,
+      isExisting: true
+    }));
+    setAttachments(existingAttachments);
+    setShowEditModal(true);
+  };
 
   const filteredPosts = useMemo(() => {
     return MOCK_POSTS.filter((p) => {
@@ -134,10 +172,9 @@ export default function AdminPosts() {
         p.title.toLowerCase().includes(q.toLowerCase()) ||
         p.id.toLowerCase().includes(q.toLowerCase());
       const matchCat = filterCategory === "All" || p.category === filterCategory;
-      const matchStatus = filterStatus === "All" || p.status === filterStatus;
-      return matchQ && matchCat && matchStatus;
+      return matchQ && matchCat;
     });
-  }, [q, filterCategory, filterStatus]);
+  }, [q, filterCategory]);
 
   const rowPad = "py-2";
   const rowText = "text-xs";
@@ -186,19 +223,31 @@ export default function AdminPosts() {
   };
 
   function resetForm() {
-    setTitle("");
-    setCategory("News");
-    setContent("");
-    setAttachments(prev => {
-      prev.forEach(att => {
-        if (att.preview) URL.revokeObjectURL(att.preview);
-      });
-      return [];
-    });
+    if (editingPost) {
+      // Reset to original post data for edit mode
+      setTitle(editingPost.title);
+      setCategory(editingPost.category);
+      setContent(editingPost.content || "");
+      const existingAttachments = (editingPost.attachments || []).map(filename => ({
+        file: { name: filename, size: 0 },
+        error: null,
+        preview: null,
+        isExisting: true
+      }));
+      setAttachments(existingAttachments);
+    } else {
+      // Reset to empty for add mode
+      setTitle("");
+      setCategory("News");
+      setContent("");
+      setAttachments([]);
+    }
   }
 
   return (
     <div className="space-y-6">
+      <SuccessToast open={showSuccess} onClose={() => setShowSuccess(false)} />
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Posts</h1>
@@ -240,19 +289,6 @@ export default function AdminPosts() {
                     </option>
                   ))}
                 </select>
-
-                <select
-                  value={filterStatus}
-                  onChange={(e) => setFilterStatus(e.target.value)}
-                  className="rounded-xl border border-[#E5E7EB] bg-white px-3 py-2 text-sm outline-none"
-                >
-                  <option value="All">All status</option>
-                  {MOCK_STATUSES.map((s) => (
-                    <option key={s} value={s}>
-                      {s}
-                    </option>
-                  ))}
-                </select>
               </div>
 
               <div className="flex items-center justify-between md:justify-end gap-3">
@@ -276,9 +312,6 @@ export default function AdminPosts() {
                       </th>
                       <th className="text-left font-semibold px-4 py-3">
                         Category
-                      </th>
-                      <th className="text-left font-semibold px-4 py-3">
-                        Status
                       </th>
                       <th className="text-left font-semibold px-4 py-3">
                         Meta
@@ -315,11 +348,7 @@ export default function AdminPosts() {
                       </td>
 
                       <td className={cx("px-4", rowPad, rowText)}>
-                        <span className="text-gray-700">{p.category}</span>
-                      </td>
-
-                      <td className={cx("px-4", rowPad, rowText)}>
-                        <StatusBadge status={p.status} />
+                        <CategoryBadge category={p.category} />
                       </td>
 
                       <td className={cx("px-4", rowPad, rowText)}>
@@ -328,10 +357,10 @@ export default function AdminPosts() {
 
                       <td className={cx("px-4", rowPad, rowText)}>
                         <div className="flex items-center justify-end gap-2">
-                          <button className="h-9 w-9 rounded-xl border border-[#E5E7EB] bg-white hover:bg-gray-50 flex items-center justify-center">
-                            <Eye className="h-4 w-4 text-blue-600" />
-                          </button>
-                          <button className="h-9 w-9 rounded-xl border border-[#E5E7EB] bg-white hover:bg-gray-50 flex items-center justify-center">
+                          <button 
+                            onClick={() => openEditModal(p)}
+                            className="h-9 w-9 rounded-xl border border-[#E5E7EB] bg-white hover:bg-gray-50 flex items-center justify-center"
+                          >
                             <Pencil className="h-4 w-4 text-gray-700" />
                           </button>
                           <button className="h-9 w-9 rounded-xl border border-red-200 bg-white hover:bg-red-50 flex items-center justify-center">
@@ -345,7 +374,7 @@ export default function AdminPosts() {
                   {filteredPosts.length === 0 ? (
                     <tr>
                       <td
-                        colSpan={5}
+                        colSpan={4}
                         className="px-4 py-10 text-center text-sm text-gray-500"
                       >
                         No posts found.
@@ -400,10 +429,6 @@ export default function AdminPosts() {
                         </option>
                       ))}
                     </select>
-                    <p className="mt-2 text-xs text-gray-500">
-                      Use <span className="text-purple-700 font-medium">Purple</span>{" "}
-                      accent only for premium-related content.
-                    </p>
                   </div>
 
                   <div>
@@ -497,11 +522,168 @@ export default function AdminPosts() {
                       Reset
                     </button>
                     <button 
-                      onClick={() => { /* publish logic */ setShowAddModal(false); }}
+                      onClick={() => { 
+                        // publish logic 
+                        setShowAddModal(false);
+                        setShowSuccess(true);
+                      }}
                       disabled={attachments.some(att => att.error)}
                       className="inline-flex items-center justify-center rounded-xl bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
                     >
                       Publish
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Edit Post Modal */}
+      {showEditModal && (
+        <>
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-40" onClick={() => setShowEditModal(false)}></div>
+          <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[85vh] overflow-y-auto">
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-semibold">Edit post</h2>
+                  <button onClick={() => setShowEditModal(false)} className="text-gray-500 hover:text-gray-700">
+                    <X className="h-6 w-6" />
+                  </button>
+                </div>
+
+                <div className="space-y-6">
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">
+                      Title
+                    </label>
+                    <input
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="Post title"
+                      className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">
+                      Category
+                    </label>
+                    <select
+                      value={category}
+                      onChange={(e) => setCategory(e.target.value)}
+                      className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                    >
+                      {MOCK_CATEGORIES.map((c) => (
+                        <option key={c} value={c}>
+                          {c}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium text-gray-700">
+                      Content
+                    </label>
+                    <textarea
+                      value={content}
+                      onChange={(e) => setContent(e.target.value)}
+                      placeholder="Write content…"
+                      className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-green-200 h-48 resize-none"
+                    />
+                  </div>
+
+                  <div className="rounded-2xl border border-dashed border-[#D9D9D9] bg-[#F8F7F9] p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <div className="text-sm font-medium text-gray-800">
+                          Attachments
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          Max 5MB per file. Images (jpg, png, webp) and PDFs only.
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          multiple
+                          accept=".jpg,.jpeg,.png,.webp,.pdf"
+                          onChange={handleFileSelect}
+                          className="hidden"
+                        />
+                        <button
+                          onClick={() => fileInputRef.current?.click()}
+                          className="inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                        >
+                          <Upload className="h-4 w-4 text-blue-600" />
+                          Add attachment
+                        </button>
+                      </div>
+                    </div>
+
+                    {attachments.length > 0 ? (
+                      <ul className="mt-3 space-y-2">
+                        {attachments.map((att, index) => (
+                          <li
+                            key={index}
+                            className="flex items-center justify-between rounded-xl border border-[#E5E7EB] bg-white px-3 py-2 text-sm"
+                          >
+                            <div className="flex items-center space-x-2 flex-1 min-w-0">
+                              {att.preview ? (
+                                <img src={att.preview} alt="Preview" className="w-8 h-8 object-cover rounded" />
+                              ) : (
+                                <div className="w-8 h-8 bg-gray-200 rounded flex items-center justify-center">
+                                  <FileText className="w-4 h-4 text-gray-500" />
+                                </div>
+                              )}
+                              <div className="flex-1 min-w-0">
+                                <span className="truncate text-gray-700">{att.file.name}</span>
+                                <div className="text-xs text-gray-500">
+                                  {att.isExisting ? "Existing file" : `${(att.file.size / 1024 / 1024).toFixed(2)} MB`}
+                                </div>
+                                {att.error && (
+                                  <div className="text-xs text-red-600">{att.error}</div>
+                                )}
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => removeAttachment(index)}
+                              className="h-8 w-8 rounded-xl hover:bg-gray-50 flex items-center justify-center"
+                              aria-label="Remove attachment"
+                            >
+                              <X className="h-4 w-4 text-gray-500" />
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <div className="mt-3 text-xs text-gray-500">
+                        No attachments yet.
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
+                    <button
+                      onClick={() => resetForm()}
+                      className="inline-flex items-center justify-center rounded-xl border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                    >
+                      Reset
+                    </button>
+                    <button
+                      onClick={() => {
+                        // Mock save logic
+                        setShowEditModal(false);
+                        setShowSuccess(true);
+                      }}
+                      disabled={attachments.some(att => att.error)}
+                      className="inline-flex items-center justify-center rounded-xl bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                    >
+                      Save changes
                     </button>
                   </div>
                 </div>

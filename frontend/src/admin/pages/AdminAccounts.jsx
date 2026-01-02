@@ -1,5 +1,6 @@
-import React from "react";
-import { Plus, Pencil } from "lucide-react";
+import React, { useState } from "react";
+import { Plus, Pencil, X } from "lucide-react";
+import SuccessToast from "../components/SuccessToast";
 
 /* ================= MOCK DATA ================= */
 
@@ -59,11 +60,14 @@ const USERS = [
 
 /* ================= UI HELPERS ================= */
 
-function Card({ title, right, children }) {
+function Card({ title, icon: Icon, children, right }) {
   return (
-    <div className="rounded-2xl border border-[#E5E7EB] bg-white shadow-sm mb-6">
-      <div className="flex items-center justify-between px-5 py-4 border-b border-[#E5E7EB]">
-        <h2 className="font-semibold text-gray-900">{title}</h2>
+    <div className="rounded-2xl border border-[#E5E7EB] bg-white shadow-sm">
+      <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-[#E5E7EB]">
+        <div className="flex items-center gap-2 min-w-0">
+          {Icon ? <Icon className="h-4 w-4 text-gray-500" /> : null}
+          <h2 className="font-semibold text-gray-900 truncate">{title}</h2>
+        </div>
         {right}
       </div>
       <div className="p-5">{children}</div>
@@ -74,98 +78,202 @@ function Card({ title, right, children }) {
 /* ================= PAGE ================= */
 
 export default function AdminAccounts() {
-  return (
-    <div className="space-y-6">
-      {/* ================= ADMIN LIST ================= */}
-      <Card
-        title={`Admin List: ${ADMINS.length} admins`}
-        right={
-          <button className="inline-flex items-center gap-2 rounded-xl border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
-            <Plus className="h-4 w-4 text-blue-600" />
-            Add Admin
-          </button>
-        }
-      >
-        <div className="overflow-hidden rounded-2xl border border-[#E5E7EB]">
-          <table className="w-full">
-            <thead className="bg-[#F3F4F6] text-xs text-gray-600">
-              <tr>
-                <th className="px-4 py-3 text-left font-semibold">ID</th>
-                <th className="px-4 py-3 text-left font-semibold">Name</th>
-                <th className="px-4 py-3 text-left font-semibold">Email</th>
-                <th className="px-4 py-3 text-left font-semibold">
-                  Phone number
-                </th>
-                <th className="px-4 py-3 text-right font-semibold">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#E5E7EB] bg-white">
-              {ADMINS.map((a) => (
-                <tr key={a.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 font-medium">{a.id}</td>
-                  <td className="px-4 py-3">{a.name}</td>
-                  <td className="px-4 py-3">{a.email}</td>
-                  <td className="px-4 py-3">{a.phone}</td>
-                  <td className="px-4 py-3 text-right">
-                    <button className="inline-flex items-center gap-1 rounded-lg border border-[#E5E7EB] bg-white px-3 py-1.5 text-sm hover:bg-gray-50">
-                      <Pencil className="h-4 w-4" />
-                      Edit
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </Card>
+  const [admins, setAdmins] = useState(ADMINS);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
-      {/* ================= USER LIST ================= */}
-      <Card title={`User List: ${USERS.length} users`}>
-        <div className="overflow-hidden rounded-2xl border border-[#E5E7EB]">
-          <table className="w-full text-sm">
-            <thead className="bg-[#F3F4F6] text-xs text-gray-600">
-              <tr>
-                <th className="px-4 py-3 text-left font-semibold">ID</th>
-                <th className="px-4 py-3 text-left font-semibold">
-                  Full Name
-                </th>
-                <th className="px-4 py-3 text-left font-semibold">Email</th>
-                <th className="px-4 py-3 text-left font-semibold">
-                  Phone number
-                </th>
-                <th className="px-4 py-3 text-left font-semibold">
-                  Passport
-                </th>
-                <th className="px-4 py-3 text-left font-semibold">
-                  ID Card
-                </th>
-                <th className="px-4 py-3 text-left font-semibold">
-                  Created at
-                </th>
-                <th className="px-4 py-3 text-left font-semibold">
-                  Updated at
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#E5E7EB] bg-white">
-              {USERS.map((u) => (
-                <tr key={u.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 font-medium">{u.id}</td>
-                  <td className="px-4 py-3">{u.name}</td>
-                  <td className="px-4 py-3">{u.email}</td>
-                  <td className="px-4 py-3">{u.phone}</td>
-                  <td className="px-4 py-3">{u.passport}</td>
-                  <td className="px-4 py-3">{u.idCard}</td>
-                  <td className="px-4 py-3">{u.createdAt}</td>
-                  <td className="px-4 py-3">{u.updatedAt}</td>
+  // Form state for Add Admin
+  const [adminName, setAdminName] = useState("");
+  const [adminEmail, setAdminEmail] = useState("");
+  const [adminPhone, setAdminPhone] = useState("");
+
+  const resetForm = () => {
+    setAdminName("");
+    setAdminEmail("");
+    setAdminPhone("");
+  };
+
+  const handleAddAdmin = () => {
+    if (!adminName || !adminEmail || !adminPhone) return;
+
+    const newAdmin = {
+      id: admins.length + 1,
+      name: adminName,
+      email: adminEmail,
+      phone: adminPhone,
+    };
+
+    setAdmins(prev => [...prev, newAdmin]);
+    setShowAddModal(false);
+    setShowSuccess(true);
+    resetForm();
+  };
+
+  return (
+    <>
+      <SuccessToast
+        open={showSuccess}
+        onClose={() => setShowSuccess(false)}
+        text="Successfully"
+      />
+
+      <div className="space-y-6">
+        {/* ================= ADMIN LIST ================= */}
+        <Card
+          title={`Admins (${admins.length})`}
+          right={
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2 text-sm text-white hover:bg-green-700"
+            >
+              <Plus className="h-4 w-4" />
+              Add admin
+            </button>
+          }
+        >
+          <div className="overflow-hidden rounded-xl border">
+            <table className="w-full">
+              <thead className="bg-gray-50 text-xs">
+                <tr>
+                  <th className="px-4 py-3 text-left">ID</th>
+                  <th className="px-4 py-3 text-left">Name</th>
+                  <th className="px-4 py-3 text-left">Email</th>
+                  <th className="px-4 py-3 text-left">Phone number</th>
+                  <th className="px-4 py-3 text-right">Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </Card>
-    </div>
+              </thead>
+              <tbody>
+                {admins.map((a) => (
+                  <tr key={a.id} className="hover:bg-gray-50">
+                    <td className="px-4 py-3">{a.id}</td>
+                    <td className="px-4 py-3">{a.name}</td>
+                    <td className="px-4 py-3">{a.email}</td>
+                    <td className="px-4 py-3">{a.phone}</td>
+                    <td className="px-4 py-3 text-right">
+                      <button className="h-9 w-9 border rounded-xl hover:bg-gray-50 flex items-center justify-center">
+                        <Pencil className="h-4 w-4 text-gray-700" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+
+        {/* ================= USER LIST ================= */}
+        <Card title={`Users (${USERS.length})`}>
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[800px]">
+              <thead className="bg-gray-50 text-xs">
+                <tr>
+                  <th className="px-4 py-3 text-left">ID</th>
+                  <th className="px-4 py-3 text-left">Full name</th>
+                  <th className="px-4 py-3 text-left">Email</th>
+                  <th className="px-4 py-3 text-left">Phone number</th>
+                  <th className="px-4 py-3 text-left">Passport</th>
+                  <th className="px-4 py-3 text-left">ID card</th>
+                  <th className="px-4 py-3 text-left">Created at</th>
+                  <th className="px-4 py-3 text-left">Updated at</th>
+                </tr>
+              </thead>
+              <tbody>
+                {USERS.map((u) => (
+                  <tr key={u.id} className="hover:bg-gray-50">
+                    <td className="px-4 py-3">{u.id}</td>
+                    <td className="px-4 py-3">{u.name}</td>
+                    <td className="px-4 py-3 truncate max-w-[200px]" title={u.email}>
+                      {u.email}
+                    </td>
+                    <td className="px-4 py-3">{u.phone}</td>
+                    <td className="px-4 py-3">{u.passport}</td>
+                    <td className="px-4 py-3">{u.idCard}</td>
+                    <td className="px-4 py-3 text-gray-500">{u.createdAt}</td>
+                    <td className="px-4 py-3 text-gray-500">{u.updatedAt}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+
+        {/* Add Admin Modal */}
+        {showAddModal && (
+          <>
+            <div className="fixed inset-0 bg-black bg-opacity-50 z-40" onClick={() => setShowAddModal(false)}></div>
+            <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+              <div className="bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[85vh] overflow-y-auto">
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-semibold">Add new admin</h2>
+                    <button onClick={() => setShowAddModal(false)} className="text-gray-500 hover:text-gray-700">
+                      <X className="h-6 w-6" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-6">
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">
+                        Full name
+                      </label>
+                      <input
+                        value={adminName}
+                        onChange={(e) => setAdminName(e.target.value)}
+                        placeholder="e.g. Nguyen Van A"
+                        className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        value={adminEmail}
+                        onChange={(e) => setAdminEmail(e.target.value)}
+                        placeholder="e.g. admin@qairline.com"
+                        className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">
+                        Phone number
+                      </label>
+                      <input
+                        value={adminPhone}
+                        onChange={(e) => setAdminPhone(e.target.value)}
+                        placeholder="e.g. 0901234567"
+                        className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
+                      <button
+                        onClick={() => {
+                          resetForm();
+                          setShowAddModal(false);
+                        }}
+                        className="inline-flex items-center justify-center rounded-xl border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleAddAdmin}
+                        disabled={!adminName || !adminEmail || !adminPhone}
+                        className="inline-flex items-center justify-center rounded-xl bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                      >
+                        Add admin
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+    </>
   );
 }

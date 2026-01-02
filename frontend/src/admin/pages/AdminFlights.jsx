@@ -1,11 +1,38 @@
 import React, { useMemo, useState } from "react";
-import { Plus, Pencil, Plane, Clock, MapPin } from "lucide-react";
+import { Plus, Pencil, Plane, Clock, MapPin, X } from "lucide-react";
+import SuccessToast from "../components/SuccessToast";
 
 /* ================= MOCK DATA ================= */
 
 const FLIGHT_STATUSES = ["Scheduled", "Completed", "Delayed", "Cancelled"];
 
-const MOCK_FLIGHTS = [
+const AIRPORTS = [
+  { city: "Hà Nội", code: "HAN" },
+  { city: "Hồ Chí Minh", code: "SGN" },
+  { city: "Đà Nẵng", code: "DAD" },
+  { city: "Nha Trang", code: "CXR" },
+  { city: "Phú Quốc", code: "PQC" },
+  { city: "Huế", code: "HUI" },
+  { city: "Đà Lạt", code: "DLI" },
+  { city: "Hải Phòng", code: "HPH" },
+  { city: "Cần Thơ", code: "VCA" },
+  { city: "Bangkok", code: "BKK" },
+  { city: "Singapore", code: "SIN" },
+  { city: "Seoul", code: "ICN" },
+  { city: "Tokyo", code: "NRT" },
+];
+
+const AIRPLANES = [
+  { id: "VN-A320-001", model: "Airbus A320" },
+  { id: "VN-A321-002", model: "Airbus A321" },
+  { id: "VN-A350-003", model: "Airbus A350" },
+  { id: "VN-B787-004", model: "Boeing 787-9 Dreamliner" },
+  { id: "VN-B777-005", model: "Boeing 777-300ER" },
+  { id: "VN-E190-006", model: "Embraer E190" },
+  { id: "VN-CRJ9-007", model: "Bombardier CRJ900" },
+];
+
+const INITIAL_FLIGHTS = [
   {
     id: "VN128",
     airplane: "Bombardier CRJ900",
@@ -87,11 +114,175 @@ function Card({ title, icon: Icon, children, right }) {
 /* ================= PAGE ================= */
 
 export default function AdminFlights() {
+  const [flights, setFlights] = useState(INITIAL_FLIGHTS);
   const [q, setQ] = useState("");
   const [status, setStatus] = useState("All");
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingFlight, setEditingFlight] = useState(null);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [lastAction, setLastAction] = useState(""); // "add" or "edit"
+
+  // Form state
+  const [flightCode, setFlightCode] = useState("");
+  const [airplaneId, setAirplaneId] = useState("");
+  const [fromAirport, setFromAirport] = useState("");
+  const [toAirport, setToAirport] = useState("");
+  const [departDate, setDepartDate] = useState("");
+  const [departTime, setDepartTime] = useState("");
+  const [arriveDate, setArriveDate] = useState("");
+  const [arriveTime, setArriveTime] = useState("");
+  const [economyPrice, setEconomyPrice] = useState("");
+  const [businessPrice, setBusinessPrice] = useState("");
+  const [firstClassPrice, setFirstClassPrice] = useState("");
+  const [flightStatus, setFlightStatus] = useState("Scheduled");
+
+  const resetForm = () => {
+    setFlightCode("");
+    setAirplaneId("");
+    setFromAirport("");
+    setToAirport("");
+    setDepartDate("");
+    setDepartTime("");
+    setArriveDate("");
+    setArriveTime("");
+    setEconomyPrice("");
+    setBusinessPrice("");
+    setFirstClassPrice("");
+    setFlightStatus("Scheduled");
+  };
+
+  const populateFormWithFlight = (flight) => {
+    setFlightCode(flight.id);
+    // Find airplane ID from model
+    const airplane = AIRPLANES.find(a => a.model === flight.airplane);
+    setAirplaneId(airplane ? airplane.id : "");
+    // Find airport codes from city names
+    const fromAirport = AIRPORTS.find(a => a.city === flight.from);
+    const toAirport = AIRPORTS.find(a => a.city === flight.to);
+    setFromAirport(fromAirport ? fromAirport.code : "");
+    setToAirport(toAirport ? toAirport.code : "");
+    // Parse dates and times from the formatted strings
+    const [departDateStr, departTimeStr] = flight.departTime.split(' ');
+    const [arriveDateStr, arriveTimeStr] = flight.arriveTime.split(' ');
+    setDepartDate(departDateStr);
+    setDepartTime(departTimeStr);
+    setArriveDate(arriveDateStr);
+    setArriveTime(arriveTimeStr);
+    setEconomyPrice(flight.economy.toString());
+    setBusinessPrice(flight.business.toString());
+    setFirstClassPrice(flight.firstClass.toString());
+    setFlightStatus(flight.status);
+  };
+
+  const handleEditFlight = (flight) => {
+    setEditingFlight(flight);
+    populateFormWithFlight(flight);
+    setShowEditModal(true);
+  };
+
+  const handleAddFlight = () => {
+    // Validation
+    if (!flightCode || !airplaneId || !fromAirport || !toAirport || !departDate || !departTime || !arriveDate || !arriveTime || !economyPrice || !businessPrice || !firstClassPrice) {
+      return;
+    }
+
+    // Check if departure and destination are different
+    if (fromAirport === toAirport) {
+      return;
+    }
+
+    // Check if flight code is unique
+    if (flights.some(f => f.id === flightCode)) {
+      return;
+    }
+
+    // Check if arrival is after departure
+    const departDateTime = new Date(`${departDate}T${departTime}`);
+    const arriveDateTime = new Date(`${arriveDate}T${arriveTime}`);
+    if (arriveDateTime <= departDateTime) {
+      return;
+    }
+
+    // Check if prices are positive
+    if (Number(economyPrice) <= 0 || Number(businessPrice) <= 0 || Number(firstClassPrice) <= 0) {
+      return;
+    }
+
+    const fromCity = AIRPORTS.find(a => a.code === fromAirport)?.city || fromAirport;
+    const toCity = AIRPORTS.find(a => a.code === toAirport)?.city || toAirport;
+    const airplane = AIRPLANES.find(a => a.id === airplaneId)?.model || airplaneId;
+
+    const newFlight = {
+      id: flightCode,
+      airplane: airplane,
+      from: fromCity,
+      to: toCity,
+      departTime: `${departDate} ${departTime}`,
+      arriveTime: `${arriveDate} ${arriveTime}`,
+      economy: Number(economyPrice),
+      business: Number(businessPrice),
+      firstClass: Number(firstClassPrice),
+      status: flightStatus,
+    };
+
+    setFlights(prev => [...prev, newFlight]);
+    setShowAddModal(false);
+    setLastAction("add");
+    setShowSuccess(true);
+    resetForm();
+  };
+
+  const handleSaveEdit = () => {
+    // Validation
+    if (!flightCode || !airplaneId || !fromAirport || !toAirport || !departDate || !departTime || !arriveDate || !arriveTime || !economyPrice || !businessPrice || !firstClassPrice) {
+      return;
+    }
+
+    // Check if departure and destination are different
+    if (fromAirport === toAirport) {
+      return;
+    }
+
+    // Check if arrival is after departure
+    const departDateTime = new Date(`${departDate}T${departTime}`);
+    const arriveDateTime = new Date(`${arriveDate}T${arriveTime}`);
+    if (arriveDateTime <= departDateTime) {
+      return;
+    }
+
+    // Check if prices are positive
+    if (Number(economyPrice) <= 0 || Number(businessPrice) <= 0 || Number(firstClassPrice) <= 0) {
+      return;
+    }
+
+    const fromCity = AIRPORTS.find(a => a.code === fromAirport)?.city || fromAirport;
+    const toCity = AIRPORTS.find(a => a.code === toAirport)?.city || toAirport;
+    const airplane = AIRPLANES.find(a => a.id === airplaneId)?.model || airplaneId;
+
+    const updatedFlight = {
+      id: flightCode,
+      airplane: airplane,
+      from: fromCity,
+      to: toCity,
+      departTime: `${departDate} ${departTime}`,
+      arriveTime: `${arriveDate} ${arriveTime}`,
+      economy: Number(economyPrice),
+      business: Number(businessPrice),
+      firstClass: Number(firstClassPrice),
+      status: flightStatus,
+    };
+
+    setFlights(prev => prev.map(f => f.id === editingFlight.id ? updatedFlight : f));
+    setShowEditModal(false);
+    setLastAction("edit");
+    setShowSuccess(true);
+    resetForm();
+    setEditingFlight(null);
+  };
 
   const filteredFlights = useMemo(() => {
-    return MOCK_FLIGHTS.filter((f) => {
+    return flights.filter((f) => {
       const matchQ =
         !q ||
         f.id.toLowerCase().includes(q.toLowerCase()) ||
@@ -100,20 +291,26 @@ export default function AdminFlights() {
       const matchStatus = status === "All" || f.status === status;
       return matchQ && matchStatus;
     });
-  }, [q, status]);
+  }, [flights, q, status]);
 
   const stats = useMemo(() => {
     return {
-      total: MOCK_FLIGHTS.length,
-      completed: MOCK_FLIGHTS.filter((f) => f.status === "Completed").length,
-      delayed: MOCK_FLIGHTS.filter((f) => f.status === "Delayed").length,
-      cancelled: MOCK_FLIGHTS.filter((f) => f.status === "Cancelled").length,
-      scheduled: MOCK_FLIGHTS.filter((f) => f.status === "Scheduled").length,
+      total: flights.length,
+      completed: flights.filter((f) => f.status === "Completed").length,
+      delayed: flights.filter((f) => f.status === "Delayed").length,
+      cancelled: flights.filter((f) => f.status === "Cancelled").length,
+      scheduled: flights.filter((f) => f.status === "Scheduled").length,
     };
-  }, []);
+  }, [flights]);
 
   return (
     <>
+      <SuccessToast
+        open={showSuccess}
+        onClose={() => setShowSuccess(false)}
+        text={lastAction === "edit" ? "Successfully updated" : "Successfully"}
+      />
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
         <Kpi label="Total flights" value={stats.total} />
         <Kpi label="Scheduled" value={stats.scheduled} color="blue" />
@@ -126,7 +323,10 @@ export default function AdminFlights() {
         title="Flight list"
         icon={Plane}
         right={
-          <button className="flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2 text-sm text-white">
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2 text-sm text-white hover:bg-green-700"
+          >
             <Plus className="h-4 w-4" />
             Add flight
           </button>
@@ -181,8 +381,11 @@ export default function AdminFlights() {
                     <StatusBadge status={f.status} />
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <button className="h-9 w-9 border rounded-xl">
-                      <Pencil className="h-4 w-4" />
+                    <button 
+                      onClick={() => handleEditFlight(f)}
+                      className="h-9 w-9 border rounded-xl hover:bg-gray-50 flex items-center justify-center"
+                    >
+                      <Pencil className="h-4 w-4 text-gray-700" />
                     </button>
                   </td>
                 </tr>
@@ -191,6 +394,410 @@ export default function AdminFlights() {
           </table>
         </div>
       </Card>
+
+      {/* Add Flight Modal */}
+      {showAddModal && (
+        <>
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-40" onClick={() => setShowAddModal(false)}></div>
+          <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl shadow-xl w-[900px] max-h-[90vh] overflow-y-auto">
+              <div className="p-10">
+                <div className="flex items-center justify-between mb-8">
+                  <h2 className="text-xl font-semibold">Add new flight</h2>
+                  <button onClick={() => setShowAddModal(false)} className="text-gray-500 hover:text-gray-700">
+                    <X className="h-6 w-6" />
+                  </button>
+                </div>
+
+                <div className="space-y-8">
+                  {/* Row 1: Flight number + Airplane ID */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">
+                        Flight number
+                      </label>
+                      <input
+                        value={flightCode}
+                        onChange={(e) => setFlightCode(e.target.value)}
+                        placeholder="e.g. VN128"
+                        className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">
+                        Airplane ID
+                      </label>
+                      <select
+                        value={airplaneId}
+                        onChange={(e) => setAirplaneId(e.target.value)}
+                        className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                      >
+                        <option value="">Select airplane</option>
+                        {AIRPLANES.map((airplane) => (
+                          <option key={airplane.id} value={airplane.id}>
+                            {airplane.id} - {airplane.model}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Row 2: Departure + Destination */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">
+                        Departure
+                      </label>
+                      <select
+                        value={fromAirport}
+                        onChange={(e) => setFromAirport(e.target.value)}
+                        className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                      >
+                        <option value="">Select departure airport</option>
+                        {AIRPORTS.map((airport) => (
+                          <option key={airport.code} value={airport.code}>
+                            {airport.city} ({airport.code})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">
+                        Destination
+                      </label>
+                      <select
+                        value={toAirport}
+                        onChange={(e) => setToAirport(e.target.value)}
+                        className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                      >
+                        <option value="">Select destination airport</option>
+                        {AIRPORTS.map((airport) => (
+                          <option key={airport.code} value={airport.code}>
+                            {airport.city} ({airport.code})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Row 3: Departure date + time */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">
+                        Departure date
+                      </label>
+                      <input
+                        type="date"
+                        value={departDate}
+                        onChange={(e) => setDepartDate(e.target.value)}
+                        className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">
+                        Departure time
+                      </label>
+                      <input
+                        type="time"
+                        value={departTime}
+                        onChange={(e) => setDepartTime(e.target.value)}
+                        className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 4: Arrival date + time */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">
+                        Arrival date
+                      </label>
+                      <input
+                        type="date"
+                        value={arriveDate}
+                        onChange={(e) => setArriveDate(e.target.value)}
+                        className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">
+                        Arrival time
+                      </label>
+                      <input
+                        type="time"
+                        value={arriveTime}
+                        onChange={(e) => setArriveTime(e.target.value)}
+                        className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 5: Prices */}
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">
+                        Economy price (VND)
+                      </label>
+                      <input
+                        type="number"
+                        value={economyPrice}
+                        onChange={(e) => setEconomyPrice(e.target.value)}
+                        placeholder="e.g. 1500000"
+                        className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">
+                        Business price (VND)
+                      </label>
+                      <input
+                        type="number"
+                        value={businessPrice}
+                        onChange={(e) => setBusinessPrice(e.target.value)}
+                        placeholder="e.g. 3000000"
+                        className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">
+                        First-class price (VND)
+                      </label>
+                      <input
+                        type="number"
+                        value={firstClassPrice}
+                        onChange={(e) => setFirstClassPrice(e.target.value)}
+                        placeholder="e.g. 6000000"
+                        className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-end gap-3 pt-8 border-t border-gray-200">
+                    <button
+                      onClick={() => {
+                        resetForm();
+                        setShowAddModal(false);
+                      }}
+                      className="inline-flex items-center justify-center rounded-xl border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleAddFlight}
+                      disabled={!flightCode || !airplaneId || !fromAirport || !toAirport || !departDate || !departTime || !arriveDate || !arriveTime || !economyPrice || !businessPrice || !firstClassPrice}
+                      className="inline-flex items-center justify-center rounded-xl bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                    >
+                      Add flight
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Edit Flight Modal */}
+      {showEditModal && (
+        <>
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-40" onClick={() => setShowEditModal(false)}></div>
+          <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl shadow-xl w-[900px] max-h-[90vh] overflow-y-auto">
+              <div className="p-10">
+                <div className="flex items-center justify-between mb-8">
+                  <h2 className="text-xl font-semibold">Edit flight</h2>
+                  <button onClick={() => setShowEditModal(false)} className="text-gray-500 hover:text-gray-700">
+                    <X className="h-6 w-6" />
+                  </button>
+                </div>
+
+                <div className="space-y-8">
+                  {/* Row 1: Flight number + Airplane ID */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">
+                        Flight number
+                      </label>
+                      <input
+                        value={flightCode}
+                        readOnly
+                        className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-gray-50 px-4 py-2.5 text-sm outline-none cursor-not-allowed"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">
+                        Airplane ID
+                      </label>
+                      <select
+                        value={airplaneId}
+                        onChange={(e) => setAirplaneId(e.target.value)}
+                        className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                      >
+                        <option value="">Select airplane</option>
+                        {AIRPLANES.map((airplane) => (
+                          <option key={airplane.id} value={airplane.id}>
+                            {airplane.id} - {airplane.model}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Row 2: Departure + Destination */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">
+                        Departure
+                      </label>
+                      <select
+                        value={fromAirport}
+                        onChange={(e) => setFromAirport(e.target.value)}
+                        className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                      >
+                        <option value="">Select departure airport</option>
+                        {AIRPORTS.map((airport) => (
+                          <option key={airport.code} value={airport.code}>
+                            {airport.city} ({airport.code})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">
+                        Destination
+                      </label>
+                      <select
+                        value={toAirport}
+                        onChange={(e) => setToAirport(e.target.value)}
+                        className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                      >
+                        <option value="">Select destination airport</option>
+                        {AIRPORTS.map((airport) => (
+                          <option key={airport.code} value={airport.code}>
+                            {airport.city} ({airport.code})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Row 3: Departure date + time */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">
+                        Departure date
+                      </label>
+                      <input
+                        type="date"
+                        value={departDate}
+                        onChange={(e) => setDepartDate(e.target.value)}
+                        className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">
+                        Departure time
+                      </label>
+                      <input
+                        type="time"
+                        value={departTime}
+                        onChange={(e) => setDepartTime(e.target.value)}
+                        className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 4: Arrival date + time */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">
+                        Arrival date
+                      </label>
+                      <input
+                        type="date"
+                        value={arriveDate}
+                        onChange={(e) => setArriveDate(e.target.value)}
+                        className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">
+                        Arrival time
+                      </label>
+                      <input
+                        type="time"
+                        value={arriveTime}
+                        onChange={(e) => setArriveTime(e.target.value)}
+                        className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 5: Prices */}
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">
+                        Economy price (VND)
+                      </label>
+                      <input
+                        type="number"
+                        value={economyPrice}
+                        onChange={(e) => setEconomyPrice(e.target.value)}
+                        placeholder="e.g. 1500000"
+                        className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">
+                        Business price (VND)
+                      </label>
+                      <input
+                        type="number"
+                        value={businessPrice}
+                        onChange={(e) => setBusinessPrice(e.target.value)}
+                        placeholder="e.g. 3000000"
+                        className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">
+                        First-class price (VND)
+                      </label>
+                      <input
+                        type="number"
+                        value={firstClassPrice}
+                        onChange={(e) => setFirstClassPrice(e.target.value)}
+                        placeholder="e.g. 6000000"
+                        className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-end gap-3 pt-8 border-t border-gray-200">
+                    <button
+                      onClick={() => {
+                        resetForm();
+                        setShowEditModal(false);
+                        setEditingFlight(null);
+                      }}
+                      className="inline-flex items-center justify-center rounded-xl border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleSaveEdit}
+                      disabled={!flightCode || !airplaneId || !fromAirport || !toAirport || !departDate || !departTime || !arriveDate || !arriveTime || !economyPrice || !businessPrice || !firstClassPrice}
+                      className="inline-flex items-center justify-center rounded-xl bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                    >
+                      Save changes
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </>
   );
 }
