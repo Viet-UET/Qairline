@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../../shared/components/layout/Header';
+import { getAirports } from '../../api/airports';
 
 // IMPORT ẢNH
 import imgHero from '../../shared/assets/images/home/plane_2.png';
@@ -26,21 +27,6 @@ const INT_ROUTES = [
 ];
 
 // 2. Danh sách Sân bay liên kết (Đầy đủ hơn)
-const DOMESTIC_AIRPORTS = [
-    { code: "HAN", name: "Quốc tế Nội Bài", city: "Hà Nội", web: "http://noibaiairport.vn/" },
-    { code: "SGN", name: "Quốc tế Tân Sơn Nhất", city: "TP. Hồ Chí Minh", web: "http://tansonnhatairport.vn/" },
-    { code: "DAD", name: "Quốc tế Đà Nẵng", city: "Đà Nẵng", web: "https://vietnamairport.vn/danangairport/" },
-    { code: "CXR", name: "Quốc tế Cam Ranh", city: "Nha Trang", web: "http://camranh.aero/" },
-    { code: "PQC", name: "Quốc tế Phú Quốc", city: "Phú Quốc", web: "https://vietnamairport.vn/phuquocairport/" },
-    { code: "HUI", name: "Quốc tế Phú Bài", city: "Huế", web: "https://vietnamairport.vn/phubaiairport/" },
-    { code: "DLI", name: "Sân bay Liên Khương", city: "Đà Lạt", web: "https://vietnamairport.vn/lienkhuongairport/" },
-    { code: "HPH", name: "Quốc tế Cát Bi", city: "Hải Phòng", web: "https://vietnamairport.vn/catbiairport/" },
-    { code: "VCA", name: "Quốc tế Cần Thơ", city: "Cần Thơ", web: "https://vietnamairport.vn/canthoairport/" },
-    { code: "VDO", name: "Quốc tế Vân Đồn", city: "Quảng Ninh", web: "http://vandoniairport.vn/" },
-    { code: "UIH", name: "Sân bay Phù Cát", city: "Quy Nhơn", web: "https://vietnamairport.vn/phucatairport/" },
-    { code: "VCS", name: "Sân bay Côn Đảo", city: "Bà Rịa - Vũng Tàu", web: "#" },
-];
-
 const INTERNATIONAL_AIRPORTS = [
     { code: "BKK", name: "Suvarnabhumi", city: "Bangkok, Thái Lan", web: "https://suvarnabhumi.airportthai.co.th/" },
     { code: "SIN", name: "Changi Airport", city: "Singapore", web: "https://www.changiairport.com/" },
@@ -62,8 +48,33 @@ const LocationIcon = () => (
 );
 
 function AirportMap() {
+    const [domesticAirports, setDomesticAirports] = useState([]);
+    const [loadingAirports, setLoadingAirports] = useState(true);
+
     useEffect(() => {
         window.scrollTo(0, 0);
+    }, []);
+
+    useEffect(() => {
+        const fetchAirports = async () => {
+            setLoadingAirports(true);
+            try {
+                const data = await getAirports();
+                const mapped = data.map(airport => ({
+                    code: airport.code,
+                    name: airport.name,
+                    city: airport.city,
+                    web: '#' // placeholder
+                }));
+                setDomesticAirports(mapped);
+            } catch (error) {
+                console.error('Error fetching airports:', error);
+                setDomesticAirports([]);
+            } finally {
+                setLoadingAirports(false);
+            }
+        };
+        fetchAirports();
     }, []);
 
     return (
@@ -180,7 +191,10 @@ function AirportMap() {
                 {/* LIST SÂN BAY NỘI ĐỊA */}
                 <h3 className="text-[#004D40] mb-5 ml-2.5">Mạng lưới Quốc nội</h3>
                 <div className="grid grid-cols-4 gap-6">
-                    {DOMESTIC_AIRPORTS.map((apt, idx) => (
+                  {loadingAirports ? (
+                    <div className="col-span-4 text-center">Loading airports...</div>
+                  ) : (
+                    domesticAirports.map((apt, idx) => (
                         <div key={idx} className="bg-white border border-[#e0e0e0] rounded-[16px] p-6 transition-all duration-300 flex flex-col justify-between h-full relative overflow-hidden before:content-[''] before:absolute before:top-0 before:left-0 before:w-1 before:h-full before:bg-[#ccc] before:transition-colors before:duration-300 hover:-translate-y-2.5 hover:shadow-[0_15px_30px_rgba(0,77,64,0.1)] hover:border-transparent hover:before:bg-[#529246]">
                             <div>
                                 <div className="text-4xl font-bold text-[#004D40] mb-2.5 -tracking-1">{apt.code}</div>
@@ -191,7 +205,8 @@ function AirportMap() {
                                 Website sân bay
                             </a>
                         </div>
-                    ))}
+                    ))
+                  )}
                 </div>
 
                 {/* LIST SÂN BAY QUỐC TẾ */}

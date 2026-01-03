@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "/api",  
+  // Prefer env override; fall back to deployed backend host so FE works even when dev proxy isn't used
+  baseURL: import.meta.env.VITE_API_URL || "https://api.sbltsena.me/api",
   withCredentials: true, // giúp gửi cookie nếu backend dùng OAuth2
 });
 

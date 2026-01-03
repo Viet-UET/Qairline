@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Plus, Pencil, Plane, Clock, MapPin, X } from "lucide-react";
 import SuccessToast from "../components/SuccessToast";
+import { getSeatClasses } from "../../api/seatClasses";
 
 /* ================= MOCK DATA ================= */
 
@@ -41,6 +42,7 @@ const INITIAL_FLIGHTS = [
     departTime: "18/12/2024 02:55",
     arriveTime: "18/12/2024 04:34",
     economy: 1515000,
+    premium: 2000000,
     business: 4690000,
     firstClass: 9702000,
     status: "Completed",
@@ -53,6 +55,7 @@ const INITIAL_FLIGHTS = [
     departTime: "18/12/2024 06:30",
     arriveTime: "18/12/2024 09:33",
     economy: 1583000,
+    premium: 2100000,
     business: 3992000,
     firstClass: 9192000,
     status: "Scheduled",
@@ -65,6 +68,7 @@ const INITIAL_FLIGHTS = [
     departTime: "18/12/2024 13:35",
     arriveTime: "18/12/2024 15:09",
     economy: 1569000,
+    premium: 2000000,
     business: 4102000,
     firstClass: 8531000,
     status: "Scheduled",
@@ -122,6 +126,27 @@ export default function AdminFlights() {
   const [editingFlight, setEditingFlight] = useState(null);
   const [showSuccess, setShowSuccess] = useState(false);
   const [lastAction, setLastAction] = useState(""); // "add" or "edit"
+  const [seatClasses, setSeatClasses] = useState([]);
+
+  useEffect(() => {
+    const fetchSeatClasses = async () => {
+      try {
+        const data = await getSeatClasses();
+        setSeatClasses(data);
+      } catch (err) {
+        console.error("Failed to fetch seat classes:", err);
+        setSeatClasses([]);
+      }
+    };
+    fetchSeatClasses();
+  }, []);
+
+  const priceMap = {
+    "Economy": "economy",
+    "Premium Economy": "premium",
+    "Business": "business",
+    "First Class": "firstClass"
+  };
 
   // Form state
   const [flightCode, setFlightCode] = useState("");
@@ -133,6 +158,7 @@ export default function AdminFlights() {
   const [arriveDate, setArriveDate] = useState("");
   const [arriveTime, setArriveTime] = useState("");
   const [economyPrice, setEconomyPrice] = useState("");
+  const [premiumPrice, setPremiumPrice] = useState("");
   const [businessPrice, setBusinessPrice] = useState("");
   const [firstClassPrice, setFirstClassPrice] = useState("");
   const [flightStatus, setFlightStatus] = useState("Scheduled");
@@ -147,6 +173,7 @@ export default function AdminFlights() {
     setArriveDate("");
     setArriveTime("");
     setEconomyPrice("");
+    setPremiumPrice("");
     setBusinessPrice("");
     setFirstClassPrice("");
     setFlightStatus("Scheduled");
@@ -170,6 +197,7 @@ export default function AdminFlights() {
     setArriveDate(arriveDateStr);
     setArriveTime(arriveTimeStr);
     setEconomyPrice(flight.economy.toString());
+    setPremiumPrice(flight.premium.toString());
     setBusinessPrice(flight.business.toString());
     setFirstClassPrice(flight.firstClass.toString());
     setFlightStatus(flight.status);
@@ -183,7 +211,7 @@ export default function AdminFlights() {
 
   const handleAddFlight = () => {
     // Validation
-    if (!flightCode || !airplaneId || !fromAirport || !toAirport || !departDate || !departTime || !arriveDate || !arriveTime || !economyPrice || !businessPrice || !firstClassPrice) {
+    if (!flightCode || !airplaneId || !fromAirport || !toAirport || !departDate || !departTime || !arriveDate || !arriveTime || !economyPrice || !premiumPrice || !businessPrice || !firstClassPrice) {
       return;
     }
 
@@ -205,7 +233,7 @@ export default function AdminFlights() {
     }
 
     // Check if prices are positive
-    if (Number(economyPrice) <= 0 || Number(businessPrice) <= 0 || Number(firstClassPrice) <= 0) {
+    if (Number(economyPrice) <= 0 || Number(premiumPrice) <= 0 || Number(businessPrice) <= 0 || Number(firstClassPrice) <= 0) {
       return;
     }
 
@@ -221,6 +249,7 @@ export default function AdminFlights() {
       departTime: `${departDate} ${departTime}`,
       arriveTime: `${arriveDate} ${arriveTime}`,
       economy: Number(economyPrice),
+      premium: Number(premiumPrice),
       business: Number(businessPrice),
       firstClass: Number(firstClassPrice),
       status: flightStatus,
@@ -235,7 +264,7 @@ export default function AdminFlights() {
 
   const handleSaveEdit = () => {
     // Validation
-    if (!flightCode || !airplaneId || !fromAirport || !toAirport || !departDate || !departTime || !arriveDate || !arriveTime || !economyPrice || !businessPrice || !firstClassPrice) {
+    if (!flightCode || !airplaneId || !fromAirport || !toAirport || !departDate || !departTime || !arriveDate || !arriveTime || !economyPrice || !premiumPrice || !businessPrice || !firstClassPrice) {
       return;
     }
 
@@ -252,7 +281,7 @@ export default function AdminFlights() {
     }
 
     // Check if prices are positive
-    if (Number(economyPrice) <= 0 || Number(businessPrice) <= 0 || Number(firstClassPrice) <= 0) {
+    if (Number(economyPrice) <= 0 || Number(premiumPrice) <= 0 || Number(businessPrice) <= 0 || Number(firstClassPrice) <= 0) {
       return;
     }
 
@@ -268,6 +297,7 @@ export default function AdminFlights() {
       departTime: `${departDate} ${departTime}`,
       arriveTime: `${arriveDate} ${arriveTime}`,
       economy: Number(economyPrice),
+      premium: Number(premiumPrice),
       business: Number(businessPrice),
       firstClass: Number(firstClassPrice),
       status: flightStatus,
@@ -375,7 +405,10 @@ export default function AdminFlights() {
                     <Clock className="inline h-3 w-3" /> {f.departTime}
                   </td>
                   <td className="px-4 py-3 text-xs">
-                    Eco: {f.economy.toLocaleString()}đ
+                    {seatClasses.map(c => {
+                      const key = priceMap[c.name];
+                      return `${c.name}: ${f[key] ? f[key].toLocaleString() : '—'}đ`;
+                    }).join(', ')}
                   </td>
                   <td className="px-4 py-3">
                     <StatusBadge status={f.status} />
@@ -533,7 +566,7 @@ export default function AdminFlights() {
                   </div>
 
                   {/* Row 5: Prices */}
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="text-sm font-medium text-gray-700">
                         Economy price (VND)
@@ -543,6 +576,18 @@ export default function AdminFlights() {
                         value={economyPrice}
                         onChange={(e) => setEconomyPrice(e.target.value)}
                         placeholder="e.g. 1500000"
+                        className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">
+                        Premium Economy price (VND)
+                      </label>
+                      <input
+                        type="number"
+                        value={premiumPrice}
+                        onChange={(e) => setPremiumPrice(e.target.value)}
+                        placeholder="e.g. 2000000"
                         className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
                       />
                     </div>
@@ -584,7 +629,7 @@ export default function AdminFlights() {
                     </button>
                     <button
                       onClick={handleAddFlight}
-                      disabled={!flightCode || !airplaneId || !fromAirport || !toAirport || !departDate || !departTime || !arriveDate || !arriveTime || !economyPrice || !businessPrice || !firstClassPrice}
+                      disabled={!flightCode || !airplaneId || !fromAirport || !toAirport || !departDate || !departTime || !arriveDate || !arriveTime || !economyPrice || !premiumPrice || !businessPrice || !firstClassPrice}
                       className="inline-flex items-center justify-center rounded-xl bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
                     >
                       Add flight
@@ -734,7 +779,7 @@ export default function AdminFlights() {
                   </div>
 
                   {/* Row 5: Prices */}
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="text-sm font-medium text-gray-700">
                         Economy price (VND)
@@ -744,6 +789,18 @@ export default function AdminFlights() {
                         value={economyPrice}
                         onChange={(e) => setEconomyPrice(e.target.value)}
                         placeholder="e.g. 1500000"
+                        className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">
+                        Premium Economy price (VND)
+                      </label>
+                      <input
+                        type="number"
+                        value={premiumPrice}
+                        onChange={(e) => setPremiumPrice(e.target.value)}
+                        placeholder="e.g. 2000000"
                         className="mt-2 w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-200"
                       />
                     </div>
@@ -786,7 +843,7 @@ export default function AdminFlights() {
                     </button>
                     <button
                       onClick={handleSaveEdit}
-                      disabled={!flightCode || !airplaneId || !fromAirport || !toAirport || !departDate || !departTime || !arriveDate || !arriveTime || !economyPrice || !businessPrice || !firstClassPrice}
+                      disabled={!flightCode || !airplaneId || !fromAirport || !toAirport || !departDate || !departTime || !arriveDate || !arriveTime || !economyPrice || !premiumPrice || !businessPrice || !firstClassPrice}
                       className="inline-flex items-center justify-center rounded-xl bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
                     >
                       Save changes

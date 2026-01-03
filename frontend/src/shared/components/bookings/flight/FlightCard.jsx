@@ -10,6 +10,9 @@ import {
 } from "lucide-react";
 
 import useFlightStore from "../../../stores/useFlightStore";
+import { getSeatClasses } from "../../../../api/seatClasses";
+import { getFlightDetail } from "../../../../api/flights";
+import { useEffect, useState } from "react";
 
 /* ===== CLASS META ===== */
 const CLASS_META = {
@@ -20,6 +23,16 @@ const CLASS_META = {
     perks: [
       { icon: <Utensils size={14} />, text: "Bữa ăn cơ bản" },
       { icon: <Armchair size={14} />, text: "Ghế tiêu chuẩn" },
+    ],
+  },
+  "Premium Economy": {
+    border: "border-yellow-300",
+    bg: "bg-yellow-50",
+    btn: "bg-yellow-600 hover:bg-yellow-700",
+    perks: [
+      { icon: <Utensils size={14} />, text: "Bữa ăn nâng cao" },
+      { icon: <Armchair size={14} />, text: "Ghế thoải mái" },
+      { icon: <Wifi size={14} />, text: "Wifi cơ bản" },
     ],
   },
   Business: {
@@ -44,8 +57,49 @@ const CLASS_META = {
   },
 };
 
+function mapSeatClassToAvailability(seatClasses, seatAvailability) {
+  return seatClasses.map(sc => {
+    const match = seatAvailability?.find(
+      a => a.seatClassName === sc.name
+    );
+    return {
+      ...sc,
+      price: match?.price ?? null,
+      availableSeats: match?.availableSeats ?? null
+    };
+  });
+}
+
 export default function FlightCard({ flight }) {
   const openSeatModal = useFlightStore((s) => s.openSeatModal);
+
+  const [seatClasses, setSeatClasses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [flightDetail, setFlightDetail] = useState(null);
+  const [loadingDetail, setLoadingDetail] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [seatClassesData, detailData] = await Promise.all([
+          getSeatClasses(),
+          getFlightDetail(flight.flight_id)
+        ]);
+        setSeatClasses(seatClassesData);
+        setFlightDetail(detailData);
+      } catch (err) {
+        console.error("Failed to fetch data:", err);
+        setSeatClasses([]);
+        setFlightDetail(null);
+      } finally {
+        setLoading(false);
+        setLoadingDetail(false);
+      }
+    };
+    fetchData();
+  }, [flight.flight_id]);
+
+  const combinedData = mapSeatClassToAvailability(seatClasses, flightDetail?.seatAvailability);
 
   return (
     <div className="bg-white border border-[#D9D9D9] rounded-[28px] p-6 mb-8 font-afacad">
@@ -122,28 +176,14 @@ export default function FlightCard({ flight }) {
 
         {/* RIGHT: CLASS OPTIONS */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-stretch h-full">
-          {[
-            {
-              name: "Economy",
-              price: flight.economy_price,
-              seat: flight.economy_available,
-            },
-            {
-              name: "Business",
-              price: flight.business_price,
-              seat: flight.business_available,
-            },
-            {
-              name: "First Class",
-              price: flight.first_class_price,
-              seat: flight.first_class_available,
-            },
-          ].map((c) => {
+          {combinedData.map((c) => {
             const meta = CLASS_META[c.name];
+
+            if (!meta) return null; // Skip if no meta
 
             return (
               <div
-                key={c.name}
+                key={c.id}
                 className={`rounded-2xl border ${meta.border} ${meta.bg} p-5 flex flex-col h-full`}
               >
                 {/* Header */}
@@ -152,13 +192,13 @@ export default function FlightCard({ flight }) {
                     {c.name}
                   </p>
                   <p className="text-[22px] font-bold">
-                    {c.price.toLocaleString()} đ
+                    {c.price ? c.price.toLocaleString() + ' đ' : '—'}
                   </p>
                 </div>
 
                 {/* Meta */}
                 <p className="text-[13px] text-gray-600 mb-4">
-                  {c.seat} chỗ trống
+                  {c.availableSeats ?? '—'} chỗ trống
                 </p>
 
                 {/* Features */}

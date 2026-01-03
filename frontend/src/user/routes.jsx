@@ -1,6 +1,7 @@
 import UserLayout from "./layout/UserLayout";
 import Home from "./pages/index";
 import FlightResults from "./pages/FlightResults";
+import AllFlights from "./pages/AllFlights";
 import Profile from "./pages/Profile";
 import BookingHistory from "./pages/BookingHistory";
 import UserBookings from "./pages/UserBookings";
@@ -14,6 +15,7 @@ const userRoutes = {
   children: [
     { path: "/", element: <Home /> },
     { path: "/flights", element: <FlightResults /> },
+    { path: "/all-flights", element: <AllFlights /> },
     { path: "/user/profile", element: <Profile /> },
     { path: "/user/booking-history", element: <BookingHistory /> },
     { path: "/userbooking", element: <UserBookings /> },

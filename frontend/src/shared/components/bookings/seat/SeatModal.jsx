@@ -44,6 +44,8 @@ export default function SeatModal() {
       ? { rows: 4, cols: ["A", "C", "D", "F"], seatClass: "First Class" }
       : selectedClass === "Business"
       ? { rows: 6, cols: ["A", "B", "C", "D"], seatClass: "Business" }
+      : selectedClass === "Premium Economy"
+      ? { rows: 10, cols: ["A", "B", "C", "D", "E", "F"], seatClass: "Premium Economy" }
       : { rows: 12, cols: ["A", "B", "C", "D", "E", "F"], seatClass: "Economy" }
   );
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { MapPin, Calendar, Users } from "lucide-react";
 
@@ -7,6 +7,26 @@ import bg from "../../shared/assets/bg-city-modern.jpg";
 
 import FlightCard from "../../shared/components/bookings/flight/FlightCard";
 import SeatModal from "../../shared/components/bookings/seat/SeatModal";
+import { searchFlights } from "../../api/flightApi";
+
+/* =========================
+   ADAPTER
+========================= */
+function normalizeFlight(backendFlight) {
+  return {
+    id: backendFlight.id,
+    flight_id: backendFlight.id,
+    departure: backendFlight.origin || backendFlight.departure,
+    destination: backendFlight.destination,
+    departure_time_from: backendFlight.departureTime || backendFlight.departure_time_from,
+    departure_time_to: backendFlight.arrivalTime || backendFlight.departure_time_to,
+    departure_date: backendFlight.departureDate || backendFlight.departure_date,
+    arrival_date: backendFlight.arrivalDate || backendFlight.arrival_date,
+    duration: backendFlight.duration,
+    airplane_id: backendFlight.aircraftId || backendFlight.airplane_id,
+    // Add other fields as needed
+  };
+}
 
 /* =========================
    SEARCH SUMMARY
@@ -49,51 +69,45 @@ const SearchSummary = ({ departure, destination, date, amount, isRoundTrip }) =>
 };
 
 export default function FlightResults() {
-  // Demo data (giữ như bạn đang làm). Khi nối API, chỉ cần setFlights(data).
-  const [flights] = useState([
-    {
-      flight_id: 1,
-      departure: "SGN",
-      destination: "HAN",
-      departure_time_from: "07:45",
-      departure_time_to: "09:00",
-      departure_date: "2025-12-31",
-      arrival_date: "2025-12-31",
-      duration: 75,
-      economy_price: 1200000,
-      business_price: 2500000,
-      first_class_price: 4000000,
-      economy_available: 12,
-      business_available: 4,
-      first_class_available: 2,
-      airplane_id: 19,
-      airplane_model: "Boeing 747-400",
-      total_seats: 116,
-      status: "Scheduled",
-    },
-    {
-      flight_id: 2,
-      departure: "SGN",
-      destination: "DAD",
-      departure_time_from: "10:30",
-      departure_time_to: "12:00",
-      departure_date: "2025-12-31",
-      arrival_date: "2025-12-31",
-      duration: 90,
-      economy_price: 900000,
-      business_price: 2000000,
-      first_class_price: 3500000,
-      economy_available: 20,
-      business_available: 6,
-      first_class_available: 0,
-      airplane_id: 22,
-      airplane_model: "Airbus A321",
-      total_seats: 184,
-      status: "Scheduled",
-    },
-  ]);
+  const [flights, setFlights] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [totalElements, setTotalElements] = useState(0);
 
   const { departure, destination, departure_time, amount } = useParams();
+
+  useEffect(() => {
+    const fetchFlights = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const params = {
+          cityOrigin: departure,
+          cityDestination: destination,
+          departureDate: departure_time,
+          page: 0,
+          size: 10,
+        };
+        const data = await searchFlights(params);
+        const normalized = data.content.map(normalizeFlight);
+        setFlights(normalized);
+        setTotalElements(data.totalElements);
+      } catch (err) {
+        console.error("Failed to search flights:", err);
+        setError("Failed to load flights");
+        setFlights([]);
+        setTotalElements(0);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (departure && destination && departure_time) {
+      fetchFlights();
+    } else {
+      setLoading(false);
+    }
+  }, [departure, destination, departure_time, amount]);
 
   return (
     <div
@@ -126,6 +140,10 @@ export default function FlightResults() {
           <h2 className="text-[24px] text-qa-green font-semibold mb-6 font-afacad">
             Các chuyến bay
           </h2>
+
+          {loading && <p className="text-center text-gray-500">Đang tải chuyến bay...</p>}
+          {error && <p className="text-center text-red-500">{error}</p>}
+          {!loading && !error && totalElements === 0 && <p className="text-center text-gray-500">Không tìm thấy chuyến bay phù hợp.</p>}
 
           <div className="space-y-8">
             {flights.map((f) => (

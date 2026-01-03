@@ -12,6 +12,7 @@ import {
   History,
   LogOut,
   Crown,
+  Plane,
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import logo from "../../assets/logo.svg";
@@ -55,6 +56,14 @@ export default function Header() {
           >
             <Search size={16} />
             Tìm chuyến bay
+          </Link>
+
+          <Link
+            to="/all-flights"
+            className="flex items-center gap-2 text-gray-600 hover:text-qa-green"
+          >
+            <Plane size={16} />
+            Tất cả chuyến bay
           </Link>
 
           <Link

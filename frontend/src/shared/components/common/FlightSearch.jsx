@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from 'react-router-dom';
+import { getAirports } from '../../../api/airports';
+import { normalizeString } from '../../../shared/utils/string';
 
 // ICON COMPONENTS
 const PlaneIcon = () => (
@@ -54,28 +56,23 @@ const ArrowIcon = () => (
     </svg>
 );
 
-const LOCATIONS = [
-  "Hà Nội (HAN)",
-  "Hồ Chí Minh (SGN)",
-  "Đà Nẵng (DAD)",
-  "Nha Trang (CXR)",
-  "Phú Quốc (PQC)",
-  "Huế (HUI)",
-  "Đà Lạt (DLI)",
-  "Hải Phòng (HPH)",
-  "Cần Thơ (VCA)",
-  "Bangkok (BKK)",
-  "Singapore (SIN)",
-  "Seoul (ICN)",
-  "Tokyo (NRT)",
-];
-
 const TICKET_CLASSES = ["Phổ thông", "Thương gia", "Đặc biệt"];
+
+// Mapping for display cities with accents
+const cityDisplayMap = {
+  'HAN': 'Hà Nội',
+  'SGN': 'Hồ Chí Minh',
+  // Add more mappings as needed for other airports
+};
 
 function FlightSearch({ initialOrigin, initialDest }) {
   const navigate = useNavigate();
-  const [origin, setOrigin] = useState(initialOrigin || "");
-  const [destination, setDestination] = useState(initialDest || "");
+  const [airports, setAirports] = useState([]);
+  const [airportsError, setAirportsError] = useState(null);
+  const [originInput, setOriginInput] = useState("");
+  const [destinationInput, setDestinationInput] = useState("");
+  const [selectedOrigin, setSelectedOrigin] = useState(null);
+  const [selectedDestination, setSelectedDestination] = useState(null);
   const [dateVal, setDateVal] = useState("");
   const [dateError, setDateError] = useState("");
   const [ticketType, setTicketType] = useState("Khứ hồi");
@@ -100,8 +97,22 @@ function FlightSearch({ initialOrigin, initialDest }) {
   const passengerRef = useRef(null);
 
   useEffect(() => {
-    if (initialOrigin !== undefined) setOrigin(initialOrigin);
-    if (initialDest !== undefined) setDestination(initialDest);
+    const fetchAirports = async () => {
+      try {
+        const data = await getAirports();
+        setAirports(data);
+      } catch (err) {
+        console.error("Failed to fetch airports:", err);
+        setAirports([]);
+        setAirportsError("Không thể tải danh sách sân bay");
+      }
+    };
+    fetchAirports();
+  }, []);
+
+  useEffect(() => {
+    if (initialOrigin !== undefined) setOriginInput(initialOrigin);
+    if (initialDest !== undefined) setDestinationInput(initialDest);
   }, [initialOrigin, initialDest]);
 
   useEffect(() => {
@@ -138,33 +149,30 @@ function FlightSearch({ initialOrigin, initialDest }) {
   };
 
   const getDropdownList = (inputValue) => {
-    const isExactMatch = LOCATIONS.includes(inputValue);
-    if (isExactMatch || inputValue === "") return LOCATIONS;
-    return LOCATIONS.filter((loc) =>
-      loc.toLowerCase().includes(inputValue.toLowerCase())
-    );
+    if (!inputValue.trim()) return airports.map(a => ({ label: `${cityDisplayMap[a.code] || a.city} (${a.code})`, value: { cityRaw: a.city, code: a.code } }));
+    const normalizedQuery = normalizeString(inputValue);
+    return airports
+      .filter(a =>
+        normalizeString(a.city).includes(normalizedQuery) ||
+        normalizeString(a.code).includes(normalizedQuery) ||
+        normalizeString(a.name).includes(normalizedQuery)
+      )
+      .map(a => ({ label: `${cityDisplayMap[a.code] || a.city} (${a.code})`, value: { cityRaw: a.city, code: a.code } }));
   };
 
-  const currentOriginList = getDropdownList(origin);
-  const currentDestList = getDropdownList(destination);
+  const currentOriginList = getDropdownList(originInput);
+  const currentDestList = getDropdownList(destinationInput);
 
   const showChildWarning = passengers.child >= 1;
   const showInfantWarning = passengers.infant >= 1;
-  const showSameLocationWarning = origin && destination && origin === destination;
+  const showSameLocationWarning = selectedOrigin && selectedDestination && selectedOrigin.cityRaw === selectedDestination.cityRaw;
   const hasAnyWarning = showChildWarning || showInfantWarning || showSameLocationWarning;
 
   const handleSearch = (e) => {
     e.preventDefault();
-    navigate('/flights', {
-      state: {
-        origin,
-        destination,
-        date: dateVal,
-        ticketType,
-        ticketClass,
-        passengers,
-      }
-    });
+    if (!selectedOrigin || !selectedDestination || selectedOrigin.cityRaw === selectedDestination.cityRaw) return;
+    const totalPassengers = passengers.adult + passengers.child + passengers.infant;
+    navigate(`/flights/${encodeURIComponent(selectedOrigin.cityRaw)}/${encodeURIComponent(selectedDestination.cityRaw)}/${dateVal}/${totalPassengers}`);
   };
 
   const renderPassengerText = () => {
@@ -199,22 +207,24 @@ function FlightSearch({ initialOrigin, initialDest }) {
             type="text"
             className="border-none outline-none bg-transparent w-full text-qa-green font-bold text-base"
             placeholder="Chọn điểm đi"
-            value={origin}
-            onChange={(e) => { setOrigin(e.target.value); setShowOriginMenu(true); }}
+            value={originInput}
+            onChange={(e) => { setOriginInput(e.target.value); setShowOriginMenu(true); }}
             onFocus={() => setShowOriginMenu(true)}
             onClick={() => setShowOriginMenu(true)}
           />
           <span className="absolute right-4 top-1/2 -translate-y-1/2 text-qa-green pointer-events-none"><LocationIcon /></span>
           {showOriginMenu && (
             <div className="absolute top-full mt-2 left-0 w-full bg-white border border-qa-green rounded-xl p-1 shadow-lg z-50 max-h-72 overflow-y-auto">
-              {currentOriginList.length > 0 ? (
+              {airportsError ? (
+                <div className="p-2.5 text-red-500">{airportsError}</div>
+              ) : currentOriginList.length > 0 ? (
                 currentOriginList.map((loc, idx) => (
                   <div
                     key={idx}
-                    className={`p-2.5 rounded-lg text-qa-green font-semibold cursor-pointer mb-0.5 text-sm transition-colors hover:bg-gray-100 ${loc === origin ? 'bg-qa-green text-white' : ''}`}
-                    onClick={() => { setOrigin(loc); setShowOriginMenu(false); }}
+                    className={`p-2.5 rounded-lg text-qa-green font-semibold cursor-pointer mb-0.5 text-sm transition-colors hover:bg-gray-100 ${selectedOrigin && loc.value.cityRaw === selectedOrigin.cityRaw ? 'bg-qa-green text-white' : ''}`}
+                    onClick={() => { setSelectedOrigin(loc.value); setOriginInput(loc.label); setShowOriginMenu(false); }}
                   >
-                    {loc}
+                    {loc.label}
                   </div>
                 ))
               ) : (
@@ -231,22 +241,24 @@ function FlightSearch({ initialOrigin, initialDest }) {
                 type="text"
                 className="border-none outline-none bg-transparent w-full text-qa-green font-bold text-base"
                 placeholder="Chọn điểm đến"
-                value={destination}
-                onChange={(e) => { setDestination(e.target.value); setShowDestMenu(true); }}
+                value={destinationInput}
+                onChange={(e) => { setDestinationInput(e.target.value); setShowDestMenu(true); }}
                 onFocus={() => setShowDestMenu(true)}
                 onClick={() => setShowDestMenu(true)}
             />
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-qa-green pointer-events-none"><LocationIcon /></span>
             {showDestMenu && (
                 <div className="absolute top-full mt-2 left-0 w-full bg-white border border-qa-green rounded-xl p-1 shadow-lg z-50 max-h-72 overflow-y-auto">
-                {currentDestList.length > 0 ? (
+                {airportsError ? (
+                  <div className="p-2.5 text-red-500">{airportsError}</div>
+                ) : currentDestList.length > 0 ? (
                     currentDestList.map((loc, idx) => (
                     <div
                         key={idx}
-                        className={`p-2.5 rounded-lg text-qa-green font-semibold cursor-pointer mb-0.5 text-sm transition-colors hover:bg-gray-100 ${loc === destination ? 'bg-qa-green text-white' : ''}`}
-                        onClick={() => { setDestination(loc); setShowDestMenu(false); }}
+                        className={`p-2.5 rounded-lg text-qa-green font-semibold cursor-pointer mb-0.5 text-sm transition-colors hover:bg-gray-100 ${selectedDestination && loc.value.cityRaw === selectedDestination.cityRaw ? 'bg-qa-green text-white' : ''}`}
+                        onClick={() => { setSelectedDestination(loc.value); setDestinationInput(loc.label); setShowDestMenu(false); }}
                     >
-                        {loc}
+                        {loc.label}
                     </div>
                     ))
                 ) : (
