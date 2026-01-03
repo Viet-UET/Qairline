@@ -1,4 +1,10 @@
-export default function ConfirmBookingModal({ open, onClose, onConfirm }) {
+export default function ConfirmBookingModal({
+  open,
+  onClose,
+  onConfirm,
+  summary,
+  totalPrice,
+}) {
   if (!open) return null;
 
   return (
@@ -8,11 +14,44 @@ export default function ConfirmBookingModal({ open, onClose, onConfirm }) {
           Xác nhận đặt vé
         </h3>
 
-        <p className="text-gray-600">
-          Bạn có chắc chắn muốn đặt vé?
-        </p>
+        {/* SUMMARY */}
+        {summary && (
+          <div className="text-sm text-gray-700 space-y-1">
+            <p>
+              <strong>Hạng ghế:</strong> {summary.seatClass}
+            </p>
+            <p>
+              <strong>Số ghế:</strong> {summary.seatCount}
+            </p>
+            <p>
+              <strong>Giá mỗi ghế:</strong>{" "}
+              {summary.seatPrice.toLocaleString("vi-VN")} ₫
+            </p>
+            {summary.serviceTotal > 0 && (
+              <p>
+                <strong>Dịch vụ thêm:</strong>{" "}
+                {summary.serviceTotal.toLocaleString("vi-VN")} ₫
+              </p>
+            )}
+            {summary.discountPercent > 0 && (
+              <p className="text-green-600">
+                <strong>Giảm giá:</strong> -{summary.discountPercent}%
+              </p>
+            )}
+          </div>
+        )}
 
-        <p className="text-sm text-gray-500">
+        {/* TOTAL */}
+        {typeof totalPrice === "number" && (
+          <div className="border-t pt-3 mt-3 text-lg font-semibold flex justify-between">
+            <span>Tổng cộng</span>
+            <span>
+              {totalPrice.toLocaleString("vi-VN")} ₫
+            </span>
+          </div>
+        )}
+
+        <p className="text-xs text-gray-500">
           Sau khi xác nhận, thông tin đặt vé sẽ không thể thay đổi.
         </p>
 

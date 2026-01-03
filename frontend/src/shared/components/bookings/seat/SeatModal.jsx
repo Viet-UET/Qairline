@@ -1,13 +1,68 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { X } from "lucide-react";
 import useFlightStore from "../../../stores/useFlightStore";
-import { generateFakeSeats } from "../../../utils/fakeSeats";
 
 import SeatMap from "./SeatMap";
 import SeatSelected from "./SeatSelected";
 import ExtraServices from "./ExtraServices";
 import DiscountCode from "./DiscountCode";
 import ConfirmBookingModal from "./ConfirmBookingModal";
+
+/* ======================================================
+   FAKE SEAT GENERATOR – INLINE (DỰA BACKEND)
+====================================================== */
+function generateFakeSeats({
+  rows,
+  cols,
+  seatClass,
+  totalSeats,
+  availableSeats,
+}) {
+  const maxSeats = rows * cols;
+
+  const bookedCount = Math.min(
+    Math.max(0, totalSeats - availableSeats),
+    maxSeats
+  );
+
+  const bookedIndexes = new Set();
+  while (bookedIndexes.size < bookedCount) {
+    bookedIndexes.add(Math.floor(Math.random() * maxSeats));
+  }
+
+  const seats = [];
+  let index = 0;
+
+  for (let r = 1; r <= rows; r++) {
+    for (const c of cols) {
+      seats.push({
+        seat_id: `${seatClass}-${r}${c}`,
+        seat_number: `${r}${c}`,
+        seatClass,
+        status: bookedIndexes.has(index) ? "booked" : "available",
+      });
+      index++;
+    }
+  }
+
+  return seats;
+}
+
+/* ======================================================
+   SEAT LAYOUT CONFIG
+====================================================== */
+function getSeatLayout(seatClass) {
+  switch (seatClass) {
+    case "First Class":
+      return { rows: 4, cols: ["A", "C", "D", "F"] };
+    case "Business":
+      return { rows: 6, cols: ["A", "B", "C", "D"] };
+    case "Premium Economy":
+      return { rows: 10, cols: ["A", "B", "C", "D", "E", "F"] };
+    default:
+      return { rows: 12, cols: ["A", "B", "C", "D", "E", "F"] };
+  }
+}
 
 export default function SeatModal() {
   const isOpen = useFlightStore((s) => s.isSeatModalOpen);
@@ -34,27 +89,51 @@ export default function SeatModal() {
     setConfirmOpen(false);
   }, [selectedFlight, selectedClass]);
 
-  if (!isOpen) return null;
+  
 
-  const passengerCount = selectedFlight?.passengerCount ?? 2;
+  /* ======================================================
+     DATA DẪN XUẤT TỪ BACKEND (QUAN TRỌNG)
+  ====================================================== */
+ // hooks + derived state (LUÔN CHẠY)
+const passengerCount = selectedFlight?.passengerCount ?? 1;
 
-  /* ===== FAKE SEATS ===== */
-  const seats = generateFakeSeats(
-    selectedClass === "First Class"
-      ? { rows: 4, cols: ["A", "C", "D", "F"], seatClass: "First Class" }
-      : selectedClass === "Business"
-      ? { rows: 6, cols: ["A", "B", "C", "D"], seatClass: "Business" }
-      : selectedClass === "Premium Economy"
-      ? { rows: 10, cols: ["A", "B", "C", "D", "E", "F"], seatClass: "Premium Economy" }
-      : { rows: 12, cols: ["A", "B", "C", "D", "E", "F"], seatClass: "Economy" }
-  );
+const currentSeatInfo = selectedFlight?.seatAvailability?.find(
+  (s) => s.seatClassName === selectedClass
+);
 
+const maxSelectableSeats = Math.min(
+  passengerCount,
+  currentSeatInfo?.availableSeats ?? passengerCount
+);
+
+const seats = useMemo(() => {
+  if (!selectedClass) return [];
+
+  const layout = getSeatLayout(selectedClass);
+
+  return generateFakeSeats({
+    rows: layout.rows,
+    cols: layout.cols,
+    seatClass: selectedClass,
+    totalSeats:
+      currentSeatInfo?.totalSeats ?? layout.rows * layout.cols,
+    availableSeats:
+      currentSeatInfo?.availableSeats ?? layout.rows * layout.cols,
+  });
+}, [selectedClass, currentSeatInfo]);
+
+// ⬇️ return đặt CUỐI
+if (!isOpen || !selectedFlight || !selectedClass) return null;
+
+  
   /* ===== SEAT LOGIC ===== */
   const handleSeatSelect = (seat) => {
+    if (seat.status === "booked") return;
+
     setSelectedSeats((prev) => {
       const exists = prev.some((s) => s.seat_id === seat.seat_id);
       if (exists) return prev.filter((s) => s.seat_id !== seat.seat_id);
-      if (prev.length >= passengerCount) return prev;
+      if (prev.length >= maxSelectableSeats) return prev;
       return [...prev, seat];
     });
   };
@@ -90,6 +169,8 @@ export default function SeatModal() {
   /* ===== CONFIRM ===== */
   const handleConfirmBooking = () => {
     console.log("BOOKING CONFIRMED", {
+      flightId: selectedFlight.flight_id,
+      seatClass: selectedClass,
       seats: selectedSeats,
       services,
       discount,
@@ -121,10 +202,13 @@ export default function SeatModal() {
             <div className="lg:col-span-8 space-y-4">
               <div className="bg-[#EFF6FF] border border-[#BFDBFE] rounded-2xl p-4">
                 <p className="font-semibold">
-                  Số lượng hành khách: {passengerCount}
+                  Giá:{" "}
+                  {typeof currentSeatInfo?.price === "number"
+                    ? currentSeatInfo.price.toLocaleString("vi-VN") + " ₫"
+                    : "—"}
                 </p>
                 <p className="text-sm text-gray-600">
-                  Đã chọn {selectedSeats.length}/{passengerCount} ghế
+                  Đã chọn {selectedSeats.length}/{maxSelectableSeats} ghế
                 </p>
               </div>
 
@@ -132,7 +216,7 @@ export default function SeatModal() {
                 seats={seats}
                 selectedSeats={selectedSeats}
                 onSeatSelect={handleSeatSelect}
-                maxSeats={passengerCount}
+                maxSeats={maxSelectableSeats}
               />
             </div>
 
@@ -177,7 +261,7 @@ export default function SeatModal() {
               onClick={() => setConfirmOpen(true)}
               className="px-6 py-2 rounded-xl bg-qa-green text-white font-semibold hover:bg-green-700 transition disabled:opacity-50"
             >
-              Xác nhận {selectedSeats.length}/{passengerCount} ghế
+              Xác nhận {selectedSeats.length}/{maxSelectableSeats} ghế
             </button>
           </div>
         </div>

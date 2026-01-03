@@ -33,6 +33,7 @@ const SeatMap = ({
 
           return (
             <div key={row} className="flex items-center gap-6">
+              {/* LEFT */}
               <div className="flex gap-2">
                 {left.map((s) => {
                   const selected = selectedSeats.some(
@@ -40,12 +41,19 @@ const SeatMap = ({
                   );
 
                   const disabled =
-                    !selected && selectedSeats.length >= maxSeats;
+                    s.status === "booked" ||
+                    (!selected && selectedSeats.length >= maxSeats);
 
                   return (
                     <Tooltip
                       key={s.seat_id}
-                      content={`${s.seat_number} – ${Number(s.price).toLocaleString("vi-VN")} đ`}
+                      content={`${s.seat_number} – ${
+                        s.status === "booked"
+                          ? "Đã đặt"
+                          : selected
+                          ? "Đang chọn"
+                          : "Còn trống"
+                      }`}
                     >
                       <div>
                         <Seat
@@ -53,7 +61,9 @@ const SeatMap = ({
                           status={s.status}
                           selected={selected}
                           disabled={disabled}
-                          onClick={() => onSeatSelect(s)}
+                          onClick={() => {
+                            if (!disabled) onSeatSelect(s);
+                          }}
                         />
                       </div>
                     </Tooltip>
@@ -63,6 +73,7 @@ const SeatMap = ({
 
               <div className="w-6" />
 
+              {/* RIGHT */}
               <div className="flex gap-2">
                 {right.map((s) => {
                   const selected = selectedSeats.some(
@@ -70,7 +81,8 @@ const SeatMap = ({
                   );
 
                   const disabled =
-                    !selected && selectedSeats.length >= maxSeats;
+                    s.status === "booked" ||
+                    (!selected && selectedSeats.length >= maxSeats);
 
                   return (
                     <Seat
@@ -79,7 +91,9 @@ const SeatMap = ({
                       status={s.status}
                       selected={selected}
                       disabled={disabled}
-                      onClick={() => onSeatSelect(s)}
+                      onClick={() => {
+                        if (!disabled) onSeatSelect(s);
+                      }}
                     />
                   );
                 })}

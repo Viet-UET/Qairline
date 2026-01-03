@@ -5,19 +5,19 @@ export default function Seat({
   disabled,
   onClick,
 }) {
-  const isBooked = status === "BOOKED";
+  const isBooked = status === "booked";
 
   let className =
     "w-8 h-8 rounded-md text-xs font-semibold flex items-center justify-center transition";
 
   if (isBooked) {
-    className += " bg-gray-300 cursor-not-allowed";
+    className += " bg-gray-300 cursor-not-allowed text-gray-500";
   } else if (selected) {
     className += " bg-green-600 text-white";
   } else if (disabled) {
     className += " bg-blue-300 cursor-not-allowed text-white";
   } else {
-    className += " bg-blue-600 hover:bg-blue-700 text-white";
+    className += " bg-blue-600 hover:bg-blue-700 text-white cursor-pointer";
   }
 
   return (
