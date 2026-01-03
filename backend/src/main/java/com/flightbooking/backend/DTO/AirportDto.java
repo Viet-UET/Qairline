@@ -14,6 +14,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Data
 public class AirportDto implements Serializable {
+    Long id;
     String code;
     String name;
     String city;

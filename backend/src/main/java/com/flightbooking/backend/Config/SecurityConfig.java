@@ -2,6 +2,7 @@ package com.flightbooking.backend.Config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -34,11 +35,15 @@ public class SecurityConfig {
                                 .logout(logout -> logout.disable())
                                 .authorizeHttpRequests(auth -> auth
                                                 .requestMatchers("/oauth2/**", "/login/oauth2/**", "/api/auth/**",
-                                                                "/api/news/published", "/api/news/all", "/api/flight/**")
+                                                                "/api/news/published", "/api/news/all",
+                                                                "/api/flight/**")
+                                                .permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/api/aircrafts", "/api/aircrafts/*")
                                                 .permitAll()
                                                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**",
                                                                 "/swagger-ui.html")
                                                 .permitAll()
+                                                .requestMatchers("/actuator/health/**", "/actuator/info").permitAll()
                                                 .anyRequest().authenticated())
 
                                 .oauth2Login(oauth2 -> oauth2

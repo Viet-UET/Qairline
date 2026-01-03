@@ -14,6 +14,7 @@ import java.io.Serializable;
 @Value
 @AllArgsConstructor
 public class AirlineDto implements Serializable {
+    Long id;
     String code;
     String name;
 }

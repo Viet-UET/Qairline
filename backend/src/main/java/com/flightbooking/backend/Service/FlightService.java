@@ -28,7 +28,7 @@ public class FlightService {
         List<Airport> airports = airportRepository.findAll();
         List<AirportDto> airportDtos = new ArrayList<>();
         for (Airport airport : airports) {
-            AirportDto airportDto = new AirportDto(airport.getCode(),airport.getName(), airport.getCity());
+            AirportDto airportDto = new AirportDto(airport.getId() , airport.getCode(), airport.getName(), airport.getCity());
             airportDtos.add(airportDto);
         }
         return airportDtos;
@@ -38,7 +38,7 @@ public class FlightService {
         List<SeatClass> seatClasses = seatClassRepository.findAll();
         List<SeatClassDto> seatClassDtos = new ArrayList<>();
         for (SeatClass seatClass : seatClasses) {
-            SeatClassDto seatClassDto = new SeatClassDto(seatClass.getName());
+            SeatClassDto seatClassDto = new SeatClassDto(seatClass.getId(), seatClass.getName());
             seatClassDtos.add(seatClassDto);
         }
         return seatClassDtos;
@@ -48,11 +48,10 @@ public class FlightService {
         List<Airline> airlines = airlineRepository.findAll();
         List<AirlineDto> airlineDtos = new ArrayList<>();
         for (Airline airline : airlines) {
-            AirlineDto airlineDto = new AirlineDto( airline.getCode(),airline.getName());
+            AirlineDto airlineDto = new AirlineDto(airline.getId(),airline.getCode(), airline.getName());
             airlineDtos.add(airlineDto);
         }
         return airlineDtos;
     }
-
 
 }

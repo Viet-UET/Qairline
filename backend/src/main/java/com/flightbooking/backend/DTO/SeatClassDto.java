@@ -13,5 +13,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Data
 public class SeatClassDto implements Serializable {
+    Long id;
     String name;
 }

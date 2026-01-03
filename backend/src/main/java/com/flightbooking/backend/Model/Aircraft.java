@@ -23,7 +23,7 @@ public class Aircraft {
     private Airline airline;
 
     @Column(name = "model", nullable = false)
-    private Long model;
+    private String model;
 
     @Column(name = "registration_code", nullable = false, length = 255)
     private String registrationCode;

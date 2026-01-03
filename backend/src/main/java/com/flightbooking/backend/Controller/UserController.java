@@ -4,6 +4,9 @@ import com.flightbooking.backend.DTO.ChangePasswordRequestDTO;
 import com.flightbooking.backend.DTO.UpdateUserRequestDTO;
 import com.flightbooking.backend.DTO.UserInfoDTO;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,10 +26,17 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
+@Tag(name = "User", description = "API quản lý thông tin người dùng")
 public class UserController {
 
     private final UserService userService;
 
+    @Operation(summary = "Lấy thông tin người dùng hiện tại", description = "Lấy thông tin chi tiết của người dùng đang đăng nhập")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lấy thông tin thành công"),
+            @ApiResponse(responseCode = "401", description = "Chưa xác thực"),
+            @ApiResponse(responseCode = "404", description = "Không tìm thấy người dùng")
+    })
     @GetMapping("/me")
     public ResponseEntity<?> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
         try {
@@ -37,6 +47,12 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Cập nhật thông tin người dùng", description = "Cập nhật thông tin cá nhân của người dùng hiện tại")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Cập nhật thành công"),
+            @ApiResponse(responseCode = "400", description = "Dữ liệu không hợp lệ"),
+            @ApiResponse(responseCode = "401", description = "Chưa xác thực")
+    })
     @PutMapping("/me")
     public ResponseEntity<?> updateCurrentUser(
             @AuthenticationPrincipal UserDetails userDetails,
@@ -50,6 +66,12 @@ public class UserController {
         }
     }
 
+    @Operation(summary = "Đổi mật khẩu", description = "Đổi mật khẩu của người dùng hiện tại")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Đổi mật khẩu thành công"),
+            @ApiResponse(responseCode = "400", description = "Mật khẩu cũ không đúng hoặc dữ liệu không hợp lệ"),
+            @ApiResponse(responseCode = "401", description = "Chưa xác thực")
+    })
     @PatchMapping("/me/password")
     public ResponseEntity<?> changePassword(@AuthenticationPrincipal UserDetails userDetails,
             @RequestBody @Valid ChangePasswordRequestDTO changePasswordRequestDTO) {

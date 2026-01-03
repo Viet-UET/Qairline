@@ -37,6 +37,11 @@ public class AuthController {
         return ResponseEntity.ok("Register success");
     }
 
+    @Operation(summary = "Đăng nhập", description = "Đăng nhập bằng email và password để nhận access token và refresh token")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Đăng nhập thành công"),
+            @ApiResponse(responseCode = "401", description = "Sai tên đăng nhập hoặc mật khẩu")
+    })
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequestDTO) {
         try {
@@ -47,6 +52,12 @@ public class AuthController {
 
     }
 
+    @Operation(summary = "Đăng xuất", description = "Đăng xuất và vô hiệu hóa access token hiện tại")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Đăng xuất thành công"),
+            @ApiResponse(responseCode = "400", description = "Header Authorization không hợp lệ"),
+            @ApiResponse(responseCode = "500", description = "Lỗi server khi đăng xuất")
+    })
     @PostMapping("/logout")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<?> logout(HttpServletRequest request) {
@@ -63,6 +74,12 @@ public class AuthController {
         }
     }
 
+    @Operation(summary = "Làm mới token", description = "Sử dụng refresh token để lấy access token mới")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Làm mới token thành công"),
+            @ApiResponse(responseCode = "400", description = "Refresh token không được cung cấp"),
+            @ApiResponse(responseCode = "401", description = "Refresh token không hợp lệ hoặc đã hết hạn")
+    })
     @PostMapping("/refresh-token")
     public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequestDTO request) {
         if (request.getRefreshToken() == null || request.getRefreshToken().trim().isEmpty()) {
@@ -81,6 +98,12 @@ public class AuthController {
         }
     }
 
+    @Operation(summary = "Quên mật khẩu", description = "Gửi email chứa link đặt lại mật khẩu đến địa chỉ email đã đăng ký")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Đã gửi email hướng dẫn đặt lại mật khẩu (nếu email tồn tại)"),
+            @ApiResponse(responseCode = "500", description = "Lỗi server khi xử lý yêu cầu"),
+            @ApiResponse(responseCode = "503", description = "Lỗi gửi email")
+    })
     @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestBody @Valid ForgotPasswordRequestDTO request) {
         try {
@@ -104,6 +127,12 @@ public class AuthController {
         }
     }
 
+    @Operation(summary = "Đặt lại mật khẩu", description = "Đặt lại mật khẩu mới bằng token nhận được từ email")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Đặt lại mật khẩu thành công"),
+            @ApiResponse(responseCode = "400", description = "Token không hợp lệ, đã hết hạn hoặc mật khẩu xác nhận không khớp"),
+            @ApiResponse(responseCode = "500", description = "Lỗi server khi đặt lại mật khẩu")
+    })
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestBody @Valid ResetPasswordRequestDTO request) {
         try {
