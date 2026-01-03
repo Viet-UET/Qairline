@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from 'react-router-dom';
-import { getAirports } from '../../../api/airports';
 import { normalizeString } from '../../../shared/utils/string';
 
 // ICON COMPONENTS
@@ -58,12 +57,15 @@ const ArrowIcon = () => (
 
 const TICKET_CLASSES = ["Phổ thông", "Thương gia", "Đặc biệt"];
 
-// Mapping for display cities with accents
-const cityDisplayMap = {
-  'HAN': 'Hà Nội',
-  'SGN': 'Hồ Chí Minh',
-  // Add more mappings as needed for other airports
-};
+// Airport options constant
+const AIRPORT_OPTIONS = [
+  { code: "HAN", city: "Hà Nội" },
+  { code: "SGN", city: "Hồ Chí Minh" },
+  { code: "DAD", city: "Đà Nẵng" },
+  { code: "DLI", city: "Đà Lạt" },
+  { code: "HUI", city: "Huế" },
+  { code: "PQC", city: "Phú Quốc" },
+];
 
 function FlightSearch({ initialOrigin, initialDest }) {
   const navigate = useNavigate();
@@ -97,17 +99,13 @@ function FlightSearch({ initialOrigin, initialDest }) {
   const passengerRef = useRef(null);
 
   useEffect(() => {
-    const fetchAirports = async () => {
-      try {
-        const data = await getAirports();
-        setAirports(data);
-      } catch (err) {
-        console.error("Failed to fetch airports:", err);
-        setAirports([]);
-        setAirportsError("Không thể tải danh sách sân bay");
-      }
-    };
-    fetchAirports();
+    const staticAirports = Array.isArray(AIRPORT_OPTIONS) ? AIRPORT_OPTIONS.map(option => ({
+      code: option.code,
+      name: option.city,
+      city: option.city,
+    })) : [];
+    setAirports(staticAirports);
+    setAirportsError(null);
   }, []);
 
   useEffect(() => {
@@ -149,15 +147,17 @@ function FlightSearch({ initialOrigin, initialDest }) {
   };
 
   const getDropdownList = (inputValue) => {
-    if (!inputValue.trim()) return airports.map(a => ({ label: `${cityDisplayMap[a.code] || a.city} (${a.code})`, value: { cityRaw: a.city, code: a.code } }));
+    if (!Array.isArray(airports) || airports.length === 0) {
+      return [{ label: airportsError || "Không thể tải danh sách sân bay", value: null, disabled: true }];
+    }
+    if (!inputValue.trim()) return airports.map(a => ({ label: `${a.name} (${a.code})`, value: { cityRaw: a.name, code: a.code } }));
     const normalizedQuery = normalizeString(inputValue);
     return airports
       .filter(a =>
-        normalizeString(a.city).includes(normalizedQuery) ||
-        normalizeString(a.code).includes(normalizedQuery) ||
-        normalizeString(a.name).includes(normalizedQuery)
+        normalizeString(a.name).includes(normalizedQuery) ||
+        normalizeString(a.code).includes(normalizedQuery)
       )
-      .map(a => ({ label: `${cityDisplayMap[a.code] || a.city} (${a.code})`, value: { cityRaw: a.city, code: a.code } }));
+      .map(a => ({ label: `${a.name} (${a.code})`, value: { cityRaw: a.name, code: a.code } }));
   };
 
   const currentOriginList = getDropdownList(originInput);
@@ -172,7 +172,10 @@ function FlightSearch({ initialOrigin, initialDest }) {
     e.preventDefault();
     if (!selectedOrigin || !selectedDestination || selectedOrigin.cityRaw === selectedDestination.cityRaw) return;
     const totalPassengers = passengers.adult + passengers.child + passengers.infant;
-    navigate(`/flights/${encodeURIComponent(selectedOrigin.cityRaw)}/${encodeURIComponent(selectedDestination.cityRaw)}/${dateVal}/${totalPassengers}`);
+    
+    // Navigate với format: /flights/:departure/:destination/:departure_time/:amount
+    // Sử dụng cityRaw (tên thành phố) để match với backend API
+    navigate(`/flights/${selectedOrigin.cityRaw}/${selectedDestination.cityRaw}/${dateVal}/${totalPassengers}`);
   };
 
   const renderPassengerText = () => {
@@ -215,14 +218,12 @@ function FlightSearch({ initialOrigin, initialDest }) {
           <span className="absolute right-4 top-1/2 -translate-y-1/2 text-qa-green pointer-events-none"><LocationIcon /></span>
           {showOriginMenu && (
             <div className="absolute top-full mt-2 left-0 w-full bg-white border border-qa-green rounded-xl p-1 shadow-lg z-50 max-h-72 overflow-y-auto">
-              {airportsError ? (
-                <div className="p-2.5 text-red-500">{airportsError}</div>
-              ) : currentOriginList.length > 0 ? (
+              {currentOriginList.length > 0 ? (
                 currentOriginList.map((loc, idx) => (
                   <div
-                    key={idx}
-                    className={`p-2.5 rounded-lg text-qa-green font-semibold cursor-pointer mb-0.5 text-sm transition-colors hover:bg-gray-100 ${selectedOrigin && loc.value.cityRaw === selectedOrigin.cityRaw ? 'bg-qa-green text-white' : ''}`}
-                    onClick={() => { setSelectedOrigin(loc.value); setOriginInput(loc.label); setShowOriginMenu(false); }}
+                    key={loc.value ? loc.value.code : idx}
+                    className={`p-2.5 rounded-lg text-qa-green font-semibold cursor-pointer mb-0.5 text-sm transition-colors hover:bg-gray-100 ${selectedOrigin && loc.value && loc.value.cityRaw === selectedOrigin.cityRaw ? 'bg-qa-green text-white' : ''} ${loc.disabled ? 'cursor-not-allowed opacity-50' : ''}`}
+                    onClick={() => { if (!loc.disabled) { setSelectedOrigin(loc.value); setOriginInput(loc.label); setShowOriginMenu(false); } }}
                   >
                     {loc.label}
                   </div>
@@ -249,14 +250,12 @@ function FlightSearch({ initialOrigin, initialDest }) {
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-qa-green pointer-events-none"><LocationIcon /></span>
             {showDestMenu && (
                 <div className="absolute top-full mt-2 left-0 w-full bg-white border border-qa-green rounded-xl p-1 shadow-lg z-50 max-h-72 overflow-y-auto">
-                {airportsError ? (
-                  <div className="p-2.5 text-red-500">{airportsError}</div>
-                ) : currentDestList.length > 0 ? (
+                {currentDestList.length > 0 ? (
                     currentDestList.map((loc, idx) => (
                     <div
-                        key={idx}
-                        className={`p-2.5 rounded-lg text-qa-green font-semibold cursor-pointer mb-0.5 text-sm transition-colors hover:bg-gray-100 ${selectedDestination && loc.value.cityRaw === selectedDestination.cityRaw ? 'bg-qa-green text-white' : ''}`}
-                        onClick={() => { setSelectedDestination(loc.value); setDestinationInput(loc.label); setShowDestMenu(false); }}
+                        key={loc.value ? loc.value.code : idx}
+                        className={`p-2.5 rounded-lg text-qa-green font-semibold cursor-pointer mb-0.5 text-sm transition-colors hover:bg-gray-100 ${selectedDestination && loc.value && loc.value.cityRaw === selectedDestination.cityRaw ? 'bg-qa-green text-white' : ''} ${loc.disabled ? 'cursor-not-allowed opacity-50' : ''}`}
+                        onClick={() => { if (!loc.disabled) { setSelectedDestination(loc.value); setDestinationInput(loc.label); setShowDestMenu(false); } }}
                     >
                         {loc.label}
                     </div>

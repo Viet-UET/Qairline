@@ -10,23 +10,66 @@ import SeatModal from "../../shared/components/bookings/seat/SeatModal";
 import { searchFlights } from "../../api/flightApi";
 
 /* =========================
+   BỎ DẤU TIẾNG VIỆT
+========================= */
+function removeVietnameseTones(str) {
+  if (!str) return '';
+  str = str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  str = str.replace(/đ/g, 'd').replace(/Đ/g, 'D');
+  return str;
+}
+
+/* =========================
    ADAPTER
 ========================= */
 function normalizeFlight(backendFlight) {
+  const departureDate = new Date(backendFlight.departureTime);
+
+  const arrivalDate = backendFlight.arrivalTime
+    ? new Date(backendFlight.arrivalTime)
+    : new Date(departureDate.getTime() + 2 * 60 * 60 * 1000);
+
+  const durationMs = arrivalDate - departureDate;
+  const durationHours = Math.floor(durationMs / (1000 * 60 * 60));
+  const durationMinutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
+  const duration = `${durationHours}h ${durationMinutes}m`;
+
   return {
-    id: backendFlight.id,
-    flight_id: backendFlight.id,
-    departure: backendFlight.origin || backendFlight.departure,
-    destination: backendFlight.destination,
-    departure_time_from: backendFlight.departureTime || backendFlight.departure_time_from,
-    departure_time_to: backendFlight.arrivalTime || backendFlight.departure_time_to,
-    departure_date: backendFlight.departureDate || backendFlight.departure_date,
-    arrival_date: backendFlight.arrivalDate || backendFlight.arrival_date,
-    duration: backendFlight.duration,
-    airplane_id: backendFlight.aircraftId || backendFlight.airplane_id,
-    // Add other fields as needed
+    id: backendFlight.flightInstanceId,
+    flight_id: backendFlight.flightInstanceId,
+    flight_number: backendFlight.flightNumber,
+    airline_name: backendFlight.airlineName,
+
+    departure: `${backendFlight.originCity} – ${backendFlight.originAirportCode}`,
+    destination: `${backendFlight.destinationCity} – ${backendFlight.destinationAirportCode}`,
+
+    departure_time_from: departureDate.toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
+    departure_time_to: arrivalDate.toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
+
+    departure_date: departureDate.toLocaleDateString("en-GB"),
+    arrival_date: arrivalDate.toLocaleDateString("en-GB"),
+    duration,
+
+    airplane_id: backendFlight.flightNumber,
+    aircraftModel: backendFlight.airlineName,
+
+    total_seats: 150,
+
+    /* ⭐ QUAN TRỌNG: shape đúng FlightCard */
+    seatAvailability: (backendFlight.seatClassPrices || []).map(s => ({
+      seatClassName: s.seatClass,   // 👈 ĐÚNG KEY
+      price: s.price,               // 👈 NUMBER
+      availableSeats: 25,           // mock tạm
+    })),
   };
 }
+
 
 /* =========================
    SEARCH SUMMARY
@@ -78,25 +121,58 @@ export default function FlightResults() {
 
   useEffect(() => {
     const fetchFlights = async () => {
-      setLoading(true);
-      setError(null);
+      const timeoutId = setTimeout(() => {
+        console.error('⏱️ Request timeout after 30 seconds!');
+        setError('Yêu cầu quá lâu. Vui lòng thử lại.');
+        setLoading(false);
+      }, 30000);
+
       try {
+        setLoading(true);
+        setError(null);
+        
+        console.log('🚀 Fetching flights...');
+        console.log('📤 URL Params from route (có dấu):', { departure, destination, departure_time, amount });
+        
+        // BỎ DẤU trước khi gửi lên backend
+        const departureNoDiacritics = removeVietnameseTones(departure);
+        const destinationNoDiacritics = removeVietnameseTones(destination);
+        
         const params = {
-          cityOrigin: departure,
-          cityDestination: destination,
+          cityOrigin: departureNoDiacritics,      // "Ha Noi"
+          cityDestination: destinationNoDiacritics, // "Ho Chi Minh"
           departureDate: departure_time,
           page: 0,
-          size: 10,
+          size: 10
         };
+        
+        console.log('🌐 API Request params (không dấu):', params);
+        
         const data = await searchFlights(params);
+        
+        console.log('✅ API Response:', data);
+        console.log('✅ Response content length:', data?.content?.length);
+        
+        if (!data || !data.content) {
+          throw new Error('Invalid response format - missing content array');
+        }
+        
         const normalized = data.content.map(normalizeFlight);
+        console.log('✅ Normalized flights:', normalized.length, 'items');
+        
         setFlights(normalized);
         setTotalElements(data.totalElements);
+        
+        clearTimeout(timeoutId);
+        console.log('🎉 Fetch completed successfully!');
+        
       } catch (err) {
-        console.error("Failed to search flights:", err);
-        setError("Failed to load flights");
-        setFlights([]);
-        setTotalElements(0);
+        clearTimeout(timeoutId);
+        console.error('❌ Fetch error:', err);
+        console.error('❌ Error message:', err.message);
+        console.error('❌ Error response:', err.response?.data);
+        console.error('❌ Error status:', err.response?.status);
+        setError('Không thể tải dữ liệu chuyến bay. Vui lòng thử lại.');
       } finally {
         setLoading(false);
       }
@@ -105,9 +181,10 @@ export default function FlightResults() {
     if (departure && destination && departure_time) {
       fetchFlights();
     } else {
+      console.warn('⚠️ Missing required params:', { departure, destination, departure_time });
       setLoading(false);
     }
-  }, [departure, destination, departure_time, amount]);
+  }, [departure, destination, departure_time]);
 
   return (
     <div
@@ -118,7 +195,6 @@ export default function FlightResults() {
 
       <div className="mx-auto w-full max-w-[1300px] px-6">
         <div className="bg-white/95 backdrop-blur-sm shadow-2xl rounded-[36px] px-10 py-12">
-          {/* LOGO */}
           <div className="flex justify-center mb-10">
             <img
               src={logo}
@@ -127,7 +203,6 @@ export default function FlightResults() {
             />
           </div>
 
-          {/* SEARCH INFO */}
           <SearchSummary
             departure={departure}
             destination={destination}
@@ -136,7 +211,6 @@ export default function FlightResults() {
             isRoundTrip={false}
           />
 
-          {/* FLIGHT LIST */}
           <h2 className="text-[24px] text-qa-green font-semibold mb-6 font-afacad">
             Các chuyến bay
           </h2>

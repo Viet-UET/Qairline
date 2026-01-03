@@ -14,7 +14,9 @@ const userRoutes = {
   element: <UserLayout />,
   children: [
     { path: "/", element: <Home /> },
-    { path: "/flights", element: <FlightResults /> },
+    
+    { path: "/flights/:departure/:destination/:departure_time/:amount", element: <FlightResults /> },
+    
     { path: "/all-flights", element: <AllFlights /> },
     { path: "/user/profile", element: <Profile /> },
     { path: "/user/booking-history", element: <BookingHistory /> },

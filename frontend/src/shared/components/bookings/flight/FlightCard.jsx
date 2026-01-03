@@ -79,30 +79,23 @@ export default function FlightCard({ flight }) {
   const [loadingDetail, setLoadingDetail] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [seatClassesData, detailData] = await Promise.all([
-          getSeatClasses(),
-          getFlightDetail(flight.flight_id)
-        ]);
-        setSeatClasses(seatClassesData);
-        setFlightDetail(detailData);
-      } catch (err) {
-        console.error("Failed to fetch data:", err);
-        setSeatClasses([]);
-        setFlightDetail(null);
-      } finally {
-        setLoading(false);
-        setLoadingDetail(false);
-      }
-    };
-    fetchData();
-  }, [flight.flight_id]);
+    // Use data from flight prop
+    const tempSeatClasses = [
+      { id: 1, name: "Economy" },
+      { id: 2, name: "Premium Economy" },
+      { id: 3, name: "Business" },
+      { id: 4, name: "First Class" },
+    ];
+    setSeatClasses(tempSeatClasses);
+    setFlightDetail({ seatAvailability: flight.seatAvailability || [] });
+    setLoading(false);
+    setLoadingDetail(false);
+  }, [flight.flight_id, flight.seatAvailability]);
 
   const combinedData = mapSeatClassToAvailability(seatClasses, flightDetail?.seatAvailability);
 
   return (
-    <div className="bg-white border border-[#D9D9D9] rounded-[28px] p-6 mb-8 font-afacad">
+    <div className="bg-white border border-[#D9D9D9] rounded-xl p-6 mb-8 font-afacad">
 
       {/* ===== HEADER ===== */}
       <div className="flex justify-between items-center mb-5">
@@ -121,13 +114,11 @@ export default function FlightCard({ flight }) {
       </div>
 
       {/* ===== MAIN CONTENT ===== */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_2fr] gap-6 items-start">
+      <div className="flex flex-col gap-6">
 
-        {/* LEFT: FLIGHT INFO */}
-        <div className="border border-[#D9D9D9] rounded-2xl p-5">
-
+        {/* HÀNG 1: FLIGHT CARD */}
+        <div className="w-full border border-[#D9D9D9] rounded-xl p-6">
           <div className="grid grid-cols-3 items-center">
-
             {/* FROM */}
             <div>
               <p className="text-[28px] font-bold text-qa-green">
@@ -138,7 +129,6 @@ export default function FlightCard({ flight }) {
                 {flight.departure_date}
               </p>
             </div>
-
             {/* DURATION */}
             <div className="flex flex-col items-center text-gray-500 gap-1">
               <PlaneTakeoff size={18} />
@@ -147,7 +137,6 @@ export default function FlightCard({ flight }) {
                 {flight.duration} phút
               </div>
             </div>
-
             {/* TO */}
             <div className="text-right">
               <p className="text-[28px] font-bold text-qa-green">
@@ -159,32 +148,29 @@ export default function FlightCard({ flight }) {
               </p>
             </div>
           </div>
-
           {/* AIRCRAFT INFO */}
           <div className="mt-4 flex items-center gap-4 bg-[#F8F7F9] border border-[#D9D9D9] rounded-xl p-3">
             <PlaneTakeoff size={20} className="text-qa-green" />
             <div>
               <p className="font-semibold text-qa-green">
-                Boeing 747-400
+                {flight.aircraftModel}
               </p>
               <p className="text-gray-500 text-[13px]">
-                {flight.total_seats ?? 116} seats
+                {flight.total_seats} seats
               </p>
             </div>
           </div>
         </div>
 
-        {/* RIGHT: CLASS OPTIONS */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-stretch h-full">
+        {/* HÀNG 2: 4 FARE CARDS */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
           {combinedData.map((c) => {
             const meta = CLASS_META[c.name];
-
-            if (!meta) return null; // Skip if no meta
-
+            if (!meta) return null;
             return (
               <div
                 key={c.id}
-                className={`rounded-2xl border ${meta.border} ${meta.bg} p-5 flex flex-col h-full`}
+                className={`rounded-xl border ${meta.border} ${meta.bg} p-4 flex flex-col w-full xl:w-[230px]`}
               >
                 {/* Header */}
                 <div className="mb-3">
@@ -195,25 +181,22 @@ export default function FlightCard({ flight }) {
                     {c.price ? c.price.toLocaleString() + ' đ' : '—'}
                   </p>
                 </div>
-
                 {/* Meta */}
                 <p className="text-[13px] text-gray-600 mb-4">
                   {c.availableSeats ?? '—'} chỗ trống
                 </p>
-
                 {/* Features */}
-                <ul className="space-y-2 text-[13px] text-gray-700">
+                <ul className="space-y-2 text-[13px] text-gray-700 flex-grow">
                   {meta.perks.map((p, i) => (
                     <li key={i} className="flex items-center gap-2">
                       {p.icon} {p.text}
                     </li>
                   ))}
                 </ul>
-
                 {/* Action */}
                 <button
                   onClick={() => openSeatModal(flight, c.name)}
-                  className={`mt-auto h-[40px] text-white rounded-xl font-semibold transition ${meta.btn}`}
+                  className={`mt-4 h-[36px] text-white rounded-xl font-semibold transition ${meta.btn}`}
                 >
                   Chọn
                 </button>

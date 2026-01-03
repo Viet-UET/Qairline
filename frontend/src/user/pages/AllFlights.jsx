@@ -1,87 +1,85 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-
-import logo from "../../shared/assets/logo.svg";
 import bg from "../../shared/assets/bg-city-modern.jpg";
-
+import logo from "../../shared/assets/logo.svg";
 import { getAllFlights } from "../../api/flights";
 
-/* =========================
-   ADAPTER
-========================= */
 function normalizeFlight(backendFlight) {
-  const seatPrices = Array.isArray(backendFlight.seatClassPrices) ? backendFlight.seatClassPrices : [];
-  const minPrice = seatPrices.length > 0 ? Math.min(...seatPrices.map(p => p.price)) : 0;
+  let departureTime = "—";
+  let arrivalTime = "—";
 
-  const departureTime = backendFlight.departureTime
-    ? new Date(backendFlight.departureTime).toLocaleString('vi-VN', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
+  try {
+    if (backendFlight.departureTime) {
+      const deptDate = new Date(backendFlight.departureTime);
+      if (!isNaN(deptDate.getTime())) {
+        departureTime = deptDate.toLocaleTimeString("vi-VN", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      }
+    }
+
+    if (backendFlight.arrivalTime) {
+      const arrDate = new Date(backendFlight.arrivalTime);
+      if (!isNaN(arrDate.getTime())) {
+        arrivalTime = arrDate.toLocaleTimeString("vi-VN", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      }
+    }
+  } catch (e) {
+    console.error("Date parsing error:", e);
+  }
+
+  const date = backendFlight.departureTime
+    ? new Date(backendFlight.departureTime).toLocaleDateString("vi-VN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
       })
     : "—";
 
-  const arrivalTime = backendFlight.arrivalTime
-    ? new Date(backendFlight.arrivalTime).toLocaleString('vi-VN', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-      })
-    : "—";
+  const route = `${backendFlight.originCity || "—"} → ${backendFlight.destinationCity || "—"}`;
+  const airports = `${backendFlight.originAirportCode || "—"} → ${backendFlight.destinationAirportCode || "—"}`;
 
   return {
-    id: backendFlight.flightInstanceId,
-    code: backendFlight.flightNumber,
-    airline: backendFlight.airlineName,
-    departure: `${backendFlight.originCity} (${backendFlight.originAirportCode})`,
-    destination: `${backendFlight.destinationCity} (${backendFlight.destinationAirportCode})`,
+    id: backendFlight.id,
+    flightNumber: backendFlight.flightNumber || "—",
+    route,
+    airports,
     departureTime,
     arrivalTime,
-    minPrice,
-    status: backendFlight.status || 'scheduled', // Assume backend provides status
+    date,
+    airline: backendFlight.airlineName || "—",
   };
 }
 
-/* =========================
-   STATUS STYLES
-========================= */
-const statusStyle = {
-  completed: "bg-green-100 text-green-700",
-  delayed: "bg-yellow-100 text-yellow-700",
-  cancelled: "bg-red-100 text-red-600",
-  scheduled: "bg-blue-100 text-blue-600",
-};
-
-/* =========================
-   PAGINATION
-========================= */
-const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+const Pagination = ({ page, totalPages, onChange }) => {
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex items-center justify-center gap-4 mt-10">
+    <div className="flex items-center justify-center gap-6 mt-8">
       <button
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage === 0}
-        className="flex items-center gap-2 px-4 py-2 rounded-full border border-[#D9D9D9] hover:bg-[#F8F7F9] disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled={page === 0}
+        onClick={() => onChange(page - 1)}
+        className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white border border-gray-200 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
       >
-        <ChevronLeft size={16} />
-        Trang trước
+        <ChevronLeft size={18} />
+        <span className="font-medium">Trang trước</span>
       </button>
-      <span className="text-gray-600">
-        Trang {currentPage + 1} / {totalPages}
-      </span>
+
+      <div className="px-4 py-2 bg-qa-green text-white rounded-lg font-medium">
+        {page + 1} / {totalPages}
+      </div>
+
       <button
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage >= totalPages - 1}
-        className="flex items-center gap-2 px-4 py-2 rounded-full border border-[#D9D9D9] hover:bg-[#F8F7F9] disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled={page >= totalPages - 1}
+        onClick={() => onChange(page + 1)}
+        className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white border border-gray-200 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
       >
-        Trang sau
-        <ChevronRight size={16} />
+        <span className="font-medium">Trang sau</span>
+        <ChevronRight size={18} />
       </button>
     </div>
   );
@@ -89,23 +87,26 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
 
 export default function AllFlights() {
   const [flights, setFlights] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchFlights = async () => {
       setLoading(true);
-      setError(null);
       try {
-        const data = await getAllFlights(currentPage, 10);
-        const normalized = data.content.map(normalizeFlight);
+        const res = await getAllFlights(page, 10);
+        console.log("=== API Response ===");
+        console.log("Full response:", res);
+        console.log("First flight:", res.content?.[0]);
+        console.log("arrivalTime:", res.content?.[0]?.arrivalTime);
+        console.log("==================");
+        
+        const normalized = res.content.map(normalizeFlight);
         setFlights(normalized);
-        setTotalPages(data.totalPages);
-      } catch (err) {
-        console.error("Failed to load all flights:", err);
-        setError("Failed to load flights");
+        setTotalPages(res.totalPages);
+      } catch (e) {
+        console.error("Load flights failed:", e);
         setFlights([]);
       } finally {
         setLoading(false);
@@ -113,81 +114,68 @@ export default function AllFlights() {
     };
 
     fetchFlights();
-  }, [currentPage]);
-
-  const handlePageChange = (page) => {
-    if (page >= 0 && page < totalPages) {
-      setCurrentPage(page);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
+  }, [page]);
 
   return (
     <div
-      className="min-h-screen bg-cover bg-center bg-no-repeat py-16"
+      className="min-h-screen bg-cover bg-center py-16"
       style={{ backgroundImage: `url(${bg})` }}
     >
-      <div className="mx-auto w-full max-w-[1300px] px-6">
-        <div className="bg-white/95 backdrop-blur-sm shadow-2xl rounded-[36px] px-10 py-12">
-          {/* LOGO */}
-          <div className="flex justify-center mb-10">
-            <img
-              src={logo}
-              alt="QAirline"
-              className="w-[260px] h-auto object-contain"
-            />
+      <div className="max-w-[1400px] mx-auto px-6">
+        <div className="bg-white/95 backdrop-blur rounded-3xl shadow-2xl px-12 py-10">
+          <div className="flex justify-center mb-6">
+            <img src={logo} alt="QAirline" className="w-[220px]" />
           </div>
 
-          {/* TITLE */}
-          <h1 className="text-[32px] text-qa-green font-audiowide leading-tight mb-8 text-center">
+          <h1 className="text-3xl text-qa-green text-center font-bold mb-8">
             Tất cả chuyến bay
           </h1>
 
-          {/* FLIGHT LIST */}
-          <h2 className="text-[24px] text-qa-green font-semibold mb-6 font-afacad">
-            Các chuyến bay
-          </h2>
-
-          {loading && <p className="text-center text-gray-500">Đang tải chuyến bay...</p>}
-          {error && <p className="text-center text-red-500">{error}</p>}
-          {!loading && !error && flights.length === 0 && <p className="text-center text-gray-500">Hiện chưa có chuyến bay nào</p>}
-
-          {!loading && !error && flights.length > 0 && (
-            <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="bg-gray-50 text-gray-600">
+          {loading ? (
+            <div className="text-center py-16">
+              <div className="inline-block w-12 h-12 border-4 border-qa-green border-t-transparent rounded-full animate-spin"></div>
+              <p className="text-gray-500 mt-4">Đang tải dữ liệu…</p>
+            </div>
+          ) : flights.length === 0 ? (
+            <p className="text-center text-gray-500 py-16">Không có chuyến bay nào</p>
+          ) : (
+            <div className="overflow-hidden rounded-xl border border-gray-200 shadow-sm">
+              <table className="w-full">
+                <thead className="bg-gradient-to-r from-qa-green to-emerald-600 text-white">
                   <tr>
-                    <th className="px-4 py-3 text-left">Mã chuyến</th>
-                    <th className="px-4 py-3">Điểm đi</th>
-                    <th className="px-4 py-3">Điểm đến</th>
-                    <th className="px-4 py-3">Khởi hành</th>
-                    <th className="px-4 py-3">Hạ cánh</th>
-                    <th className="px-4 py-3">Hãng bay</th>
-                    <th className="px-4 py-3">Giá</th>
-                    <th className="px-4 py-3">Trạng thái</th>
+                    <th className="px-5 py-4 text-center font-semibold">STT</th>
+                    <th className="px-5 py-4 text-left font-semibold">Chuyến bay</th>
+                    <th className="px-5 py-4 text-left font-semibold">Tuyến bay</th>
+                    <th className="px-5 py-4 text-center font-semibold">Giờ khởi hành</th>
+                    <th className="px-5 py-4 text-center font-semibold">Ngày bay</th>
+                    <th className="px-5 py-4 text-left font-semibold">Hãng bay</th>
                   </tr>
                 </thead>
-                <tbody>
-                  {flights.map((f) => (
+
+                <tbody className="bg-white divide-y divide-gray-100">
+                  {flights.map((f, index) => (
                     <tr
                       key={f.id}
-                      className="border-t border-gray-100 hover:bg-gray-50"
+                      className="hover:bg-gray-50 transition-colors"
                     >
-                      <td className="px-4 py-3 font-medium">{f.code}</td>
-                      <td className="px-4 py-3">{f.departure}</td>
-                      <td className="px-4 py-3">{f.destination}</td>
-                      <td className="px-4 py-3">{f.departureTime}</td>
-                      <td className="px-4 py-3">{f.arrivalTime}</td>
-                      <td className="px-4 py-3">{f.airline}</td>
-                      <td className="px-4 py-3 font-medium">
-                        {f.minPrice.toLocaleString('vi-VN')} VND
+                      <td className="px-5 py-4 text-center text-gray-600">
+                        {page * 10 + index + 1}
                       </td>
-                      <td className="px-4 py-3">
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs ${statusStyle[f.status]}`}
-                        >
-                          {f.status}
-                        </span>
+                      <td className="px-5 py-4">
+                        <div className="font-bold text-qa-green text-lg">{f.flightNumber}</div>
+                        <div className="text-xs text-gray-500">{f.airports}</div>
+                      </td>
+                      <td className="px-5 py-4">
+                        <div className="font-medium text-gray-800">{f.route}</div>
+                      </td>
+                      <td className="px-5 py-4 text-center">
+                        <div className="font-semibold text-gray-900">{f.departureTime}</div>
+                      </td>
+                      <td className="px-5 py-4 text-center">
+                        <div className="text-gray-700">{f.date}</div>
+                      </td>
+                      <td className="px-5 py-4">
+                        <div className="font-medium text-gray-800">{f.airline}</div>
                       </td>
                     </tr>
                   ))}
@@ -196,11 +184,10 @@ export default function AllFlights() {
             </div>
           )}
 
-          {/* PAGINATION */}
           <Pagination
-            currentPage={currentPage}
+            page={page}
             totalPages={totalPages}
-            onPageChange={handlePageChange}
+            onChange={setPage}
           />
         </div>
       </div>
